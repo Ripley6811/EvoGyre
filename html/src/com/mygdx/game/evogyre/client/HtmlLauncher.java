@@ -3,13 +3,14 @@ package com.mygdx.game.evogyre.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.mygdx.game.evogyre.Constants;
 import com.mygdx.game.evogyre.EvoGyreGame;
 
 public class HtmlLauncher extends GwtApplication {
 
         @Override
         public GwtApplicationConfiguration getConfig () {
-                return new GwtApplicationConfiguration(480, 320);
+                return new GwtApplicationConfiguration(500,500);
         }
 
         @Override
