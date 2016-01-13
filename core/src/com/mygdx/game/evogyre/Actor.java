@@ -5,12 +5,49 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by Jay on 1/13/2016.
  */
-public class Actor {
-    Vector2 position;
-    Vector2 velocity;
+public class Actor extends Constants {
+    Vector2 position,
+            velocity,
+            acceleration;
 
     public Actor(float x, float y) {
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
+        acceleration = new Vector2(0, 0);
+    }
+
+    public float angle() {
+        return position.y;
+    }
+
+    public void accel(Vector2 accelVector) {
+        if (accelVector.isZero()) brake();
+        if (velocity.hasOppositeDirection(accelVector)) velocity.scl(0f);
+        acceleration.add(accelVector);
+        acceleration.setLength(ACCELERATION_RATE);
+    }
+
+    /**
+     *
+     * @param delta
+     * @return Distance moved along y-axis.
+     */
+    public float update(float delta) {
+        // Update and constrain velocity
+        velocity.x += acceleration.x * delta;
+        velocity.y += acceleration.y * delta;
+        velocity.limit(MAX_VELOCITY);
+        // Update and constrain position
+        position.x += velocity.x * delta;
+        position.y += velocity.y * delta;
+        if (position.y < 0f) position.y += MAP_SIZE;
+        if (position.y >= MAP_SIZE) position.y -= MAP_SIZE;
+        // Return change in y
+        return velocity.y * delta;
+    }
+
+    private void brake() {
+        acceleration.scl(0f);
+        velocity.scl(ACTOR_MOTION_FRICTION);
     }
 }

@@ -12,8 +12,8 @@ public class Constants {
     // Application logging levels from lowest to highest. Choose one.
 //    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
-    public static final int LOG_LEVEL = Application.LOG_INFO;
-//    public static final int LOG_LEVEL = Application.LOG_DEBUG;
+//    public static final int LOG_LEVEL = Application.LOG_INFO;
+    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
     /* DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
@@ -31,7 +31,20 @@ public class Constants {
     /* WORLD SETTINGS */
     public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
     public static final float PROJECTION_RADIUS = 290f;
-    public static final float MAP_SIZE = 360f;
-    public static final float PROJ_X_SCALING = PROJECTION_RADIUS / (MAP_SIZE * MAP_SIZE);
-    public static final float CENTER_DISPLACEMENT = 0.6f * PROJECTION_RADIUS;
+    public static final float MAP_SIZE = 360f;  // IMPORTANT: Y-axis must be 360
+    public static final double VANISHING_STRETCH = 3.0;
+    public static final float PROJ_X_SCALING = PROJECTION_RADIUS / (float) Math.pow(MAP_SIZE, VANISHING_STRETCH);
+    public static final float CENTER_DISPLACEMENT = 0.5f * PROJECTION_RADIUS;
+    public static final Color CYLINDER_COLOR = new Color(0.1f,0.3f,0.1f,0.1f);
+
+    /* ACTOR */
+    public static final float ACCELERATION_RATE = 300f;
+    public static final float MAX_VELOCITY = 150f;
+
+    /* UNCATEGORIZED (PHYSICS) */
+    public static final float G = 9.8f;  // Gravitational constant
+    // Used to prevent movement when user tries to hold device level
+    public static final float ACTOR_STATIC_THRESHOLD = 0.08f;
+    // Multiply to velocity to slow down
+    public static final float ACTOR_MOTION_FRICTION = 0.8f;
 }
