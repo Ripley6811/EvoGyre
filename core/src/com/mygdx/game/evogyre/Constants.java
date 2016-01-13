@@ -33,7 +33,6 @@ public class Constants {
     public static final float PROJECTION_RADIUS = 290f;
     public static final float MAP_SIZE = 360f;  // IMPORTANT: Y-axis must be 360
     public static final double VANISHING_STRETCH = 3.0;
-    public static final float PROJ_X_SCALING = PROJECTION_RADIUS / (float) Math.pow(MAP_SIZE, VANISHING_STRETCH);
     public static final float CENTER_DISPLACEMENT = 0.5f * PROJECTION_RADIUS;
     public static final Color CYLINDER_COLOR = new Color(0.1f,0.3f,0.1f,0.1f);
 
@@ -43,7 +42,7 @@ public class Constants {
 
     /* UNCATEGORIZED (PHYSICS) */
     public static final float G = 9.8f;  // Gravitational constant
-    // Used to prevent movement when user tries to hold device level
+    // Used for sticky movement when using accelerometer
     public static final float ACTOR_STATIC_THRESHOLD = 0.08f;
     // Multiply to velocity to slow down
     public static final float ACTOR_MOTION_FRICTION = 0.8f;
