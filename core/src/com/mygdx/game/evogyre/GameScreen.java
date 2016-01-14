@@ -58,10 +58,9 @@ public class GameScreen extends InputAdapter implements Screen {
         init();
 
         Vector2 x = new Vector2(4.5f, 6.2f);
-        Gdx.app.log(TAG, "before: " + x + x.isUnit() );
+        Gdx.app.log(TAG, "before: " + x + x.isUnit());
         x.nor();
-        Gdx.app.log(TAG, "after: " + x + x.isUnit() );
-
+        Gdx.app.log(TAG, "after: " + x + x.isUnit());
     }
 
     public void init() {
@@ -130,9 +129,9 @@ public class GameScreen extends InputAdapter implements Screen {
             Random random = new Random();
             float r = Constants.MAP_SIZE * random.nextFloat();
             debris.add(new Actor(0, r));
-            debris.add(new Actor(0, 0));
-            debris.add(new Actor(0, 90));
-            debris.add(new Actor(0, 200));
+//            debris.add(new Actor(0, 0));
+//            debris.add(new Actor(0, 90));
+//            debris.add(new Actor(0, 200));
         }
 
         // Update debris position
@@ -170,7 +169,7 @@ public class GameScreen extends InputAdapter implements Screen {
                 accelY += 1f;
             }
             for (Actor actor : vessels) {
-                actor.accel(new Vector2(0, accelY));
+                actor.accelerate(new Vector2(0, accelY));
                 float distMoved = actor.update(delta);
                 if (vesselFixed) {
                     mapRotation -= distMoved;

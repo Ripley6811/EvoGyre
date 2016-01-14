@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 /**
  * Created by Jay on 1/13/2016.
  */
-public class ProjectionUtils extends Constants {
+public class ProjectionUtils {
     private static final String TAG = ProjectionUtils.class.getName();
 
     /**
@@ -19,10 +19,10 @@ public class ProjectionUtils extends Constants {
      */
     public static Vector3 projectPoint(Vector2 mapPt, float rotation) {
         // Distant objects move slower. F(x) = a * x^2
-        Vector2 vector2 = new Vector2(PROJECTION_RADIUS * vanishingPower(mapPt.x / MAP_SIZE), 0f);
+        Vector2 vector2 = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE), 0f);
         // Y-component becomes the degrees from x-axis.
         vector2.rotate(mapPt.y + rotation);
-        return new Vector3(vector2, vanishingPower(mapPt.x / MAP_SIZE));
+        return new Vector3(vector2, vanishingPower(mapPt.x / Constants.MAP_SIZE));
 //        return new Vector3(vector2, vector2.x / PROJECTION_RADIUS);
     }
 
@@ -57,6 +57,6 @@ public class ProjectionUtils extends Constants {
 
     public static float vanishingPower(float x) throws IllegalArgumentException {
 //        if (x > 1f || x < 0f) throw new IllegalArgumentException("Parameter must be in range [0, 1].");
-        return (float) Math.pow(x, VANISHING_STRETCH);
+        return (float) Math.pow(x, Constants.VANISHING_STRETCH);
     }
 }

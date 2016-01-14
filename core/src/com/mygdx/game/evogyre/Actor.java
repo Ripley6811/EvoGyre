@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by Jay on 1/13/2016.
  */
-public class Actor extends Constants {
+public class Actor implements Propulsion {
     Vector2 position,
             velocity,
             acceleration;
@@ -20,11 +20,12 @@ public class Actor extends Constants {
         return position.y;
     }
 
-    public void accel(Vector2 accelVector) {
-        if (accelVector.isZero()) brake();
+    @Override
+    public void accelerate(Vector2 accelVector) {
+        if (accelVector.isZero()) decelerate();
         if (velocity.hasOppositeDirection(accelVector)) velocity.scl(0f);
         acceleration.add(accelVector);
-        acceleration.setLength(ACCELERATION_RATE);
+        acceleration.setLength(Constants.ACCELERATION_RATE);
     }
 
     /**
@@ -36,18 +37,28 @@ public class Actor extends Constants {
         // Update and constrain velocity
         velocity.x += acceleration.x * delta;
         velocity.y += acceleration.y * delta;
-        velocity.limit(MAX_VELOCITY);
+        velocity.limit(Constants.MAX_VELOCITY);
         // Update and constrain position
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
-        if (position.y < 0f) position.y += MAP_SIZE;
-        if (position.y >= MAP_SIZE) position.y -= MAP_SIZE;
+        if (position.y < 0f) position.y += Constants.MAP_SIZE;
+        if (position.y >= Constants.MAP_SIZE) position.y -= Constants.MAP_SIZE;
         // Return change in y
         return velocity.y * delta;
     }
 
-    private void brake() {
+    @Override
+    public void decelerate() {
         acceleration.scl(0f);
-        velocity.scl(ACTOR_MOTION_FRICTION);
+        velocity.scl(Constants.ACTOR_MOTION_FRICTION);
+    }
+
+    /**
+     * Returns a unit vector of the heading (velocity).
+     * @return Vector2
+     */
+    public Vector2 heading() {
+        Vector2 heading = new Vector2(velocity);
+        return heading.nor();
     }
 }
