@@ -16,7 +16,7 @@ public class Actor implements Propulsion {
         acceleration = new Vector2(0, 0);
     }
 
-    public float angle() {
+    public float positionAngle() {
         return position.y;
     }
 
@@ -41,8 +41,8 @@ public class Actor implements Propulsion {
         // Update and constrain position
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
-        if (position.y < 0f) position.y += Constants.MAP_SIZE;
-        if (position.y >= Constants.MAP_SIZE) position.y -= Constants.MAP_SIZE;
+        if (position.y < 0f) position.y += Constants.MAP_SIZE_Y;
+        if (position.y >= Constants.MAP_SIZE_Y) position.y -= Constants.MAP_SIZE_Y;
         // Return change in y
         return velocity.y * delta;
     }

@@ -27,8 +27,11 @@ public class GameScreen extends InputAdapter implements Screen {
     Array<Actor> debris;
     Vector2 vanishingPoint;
     Array<Actor> vessels;  // Possible multiple spaceships, powerup
+    Array<ShieldBlast> blasts;
+    Random random = new Random();
 
     float timer;
+    float timerDebris;
     float mapRotation;
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
@@ -42,10 +45,12 @@ public class GameScreen extends InputAdapter implements Screen {
         actionViewport.apply(true);
 
         timer = 0f;
+        timerDebris = 0f;
         setAccelerometerBalanced();
 
         debris = new Array<Actor>();
         vessels = new Array<Actor>();
+        blasts = new Array<ShieldBlast>();
         // Unit vector giving direction of vanishing point transposition.
         // TODO: change this to be based on player position
         vanishingPoint = new Vector2(0f, 1f);
@@ -54,20 +59,17 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.setAutoShapeType(true);
         renderer.setProjectionMatrix(actionViewport.getCamera().combined);
         renderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
+//        Gdx.gl.glEnable(GL20.GL_BLEND);
+//        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         init();
-
-        Vector2 x = new Vector2(4.5f, 6.2f);
-        Gdx.app.log(TAG, "before: " + x + x.isUnit());
-        x.nor();
-        Gdx.app.log(TAG, "after: " + x + x.isUnit());
     }
 
     public void init() {
         mapRotation = 0f;
         vessels.clear();
-        vessels.add(new Actor(Constants.MAP_SIZE, 270f));
-        vanishingPoint.setAngle(vessels.get(0).angle() + 180f);
+        vessels.add(new Actor(Constants.MAP_SIZE_X, 270f));
+        vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
     }
 
     @Override
@@ -124,10 +126,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
         // Add debris every 2 seconds
         float rate = 0.2f;
-        if (timer > rate) {
-            timer -= rate;
-            Random random = new Random();
-            float r = Constants.MAP_SIZE * random.nextFloat();
+        if (timer > rate + timerDebris) {
+            timerDebris += rate;
+            float r = Constants.MAP_SIZE_Y * random.nextFloat();
             debris.add(new Actor(0, r));
 //            debris.add(new Actor(0, 0));
 //            debris.add(new Actor(0, 90));
@@ -136,14 +137,23 @@ public class GameScreen extends InputAdapter implements Screen {
 
         // Update debris position
         for (int i = debris.size-1; i >= 0; i--) {
-            debris.get(i).position.x += 0.5f;
-            if (debris.get(i).position.x >= Constants.MAP_SIZE * 1.2) {
+            debris.get(i).position.x += 1f;
+            if (debris.get(i).position.x >= Constants.MAP_SIZE_X * 1.2) {
                 debris.removeIndex(i);
                 continue;
             }
         }
 
         updateRotation(delta);
+
+
+        if (random.nextFloat() > 0.99f) {
+            blasts.add(new ShieldBlast());
+        }
+        // TODO: Remove finished effects
+        for (ShieldBlast blast: blasts) {
+            blast.update(delta);
+        }
     }
 
     public void updateRotation(float delta) {
@@ -156,7 +166,7 @@ public class GameScreen extends InputAdapter implements Screen {
             if (vesselFixed) {
                 // TODO: Vessel moves with X-axis leaning
             } else {
-                // TODO: Move towards deviceAccel angle
+                // TODO: Move towards deviceAccel positionAngle
             }
         } else {
             // Key input
@@ -175,7 +185,7 @@ public class GameScreen extends InputAdapter implements Screen {
                     mapRotation -= distMoved;
                 }
             }
-            vanishingPoint.setAngle(vessels.get(0).angle() + 180f + mapRotation);
+            vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f + mapRotation);
         }
     }
 
@@ -189,21 +199,32 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+//        renderer.begin(ShapeRenderer.ShapeType.Line);
+//        renderer.setColor(Constants.CYLINDER_COLOR);
+//        for (float i=1f; i>=0.5f; i -= 0.1f) {
+//            float vi = ProjectionUtils.vanishingPower(i);
+//            Vector2 tmpV = new Vector2(vanishingPoint);
+//            tmpV.setLength((1f-vi) * Constants.CENTER_DISPLACEMENT);
+//            renderer.circle(tmpV.x, tmpV.y, vi * Constants.PROJECTION_RADIUS, 100);
+//        }
+//        renderer.end();
+
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(Color.BLUE);
+        renderer.circle(vanishingPoint.x * Constants.CENTER_DISPLACEMENT, vanishingPoint.y * Constants.CENTER_DISPLACEMENT, 20, 100);
+        renderer.end();
+
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(Constants.CYLINDER_COLOR);
-        for (float i=1f; i>=0.5f; i -= 0.1f) {
-            float vi = ProjectionUtils.vanishingPower(i);
-            Vector2 tmpV = new Vector2(vanishingPoint);
-            tmpV.setLength((1f-vi) * Constants.CENTER_DISPLACEMENT);
-            renderer.circle(tmpV.x, tmpV.y, vi * Constants.PROJECTION_RADIUS, 100);
+        for (float i=Constants.MAP_SIZE_X; i>0f && i>Constants.MAP_SIZE_X-500*timer; i -= 50f) {
+            Vector3 tmpV1 = ProjectionUtils.projectPoint(new Vector2(i, 0), mapRotation, vanishingPoint);
+            Vector3 tmpV2 = ProjectionUtils.projectPoint(new Vector2(i, 180), mapRotation, vanishingPoint);
+            renderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
         }
         renderer.end();
 
         // Draw all debris
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.BLUE);
-        renderer.circle(vanishingPoint.x * Constants.CENTER_DISPLACEMENT, vanishingPoint.y * Constants.CENTER_DISPLACEMENT, 20, 100);
-
         renderer.setColor(Color.GOLD);
         for (Actor d: debris) {
             Vector3 placement = ProjectionUtils.projectPoint(d.position, mapRotation, vanishingPoint);
@@ -217,6 +238,13 @@ public class GameScreen extends InputAdapter implements Screen {
             renderer.circle(placement.x, placement.y, 6f);
         }
         renderer.end();
+
+        for (ShieldBlast blast: blasts) {
+            if (!blast.isDone) {
+                ImageAssets.radialGradientFill(renderer, 90f, blast.phase, blast.alpha);
+            }
+        }
+//        ImageAssets.radialGradientFill(renderer, 90f, .8f, .8f);
     }
 
     @Override

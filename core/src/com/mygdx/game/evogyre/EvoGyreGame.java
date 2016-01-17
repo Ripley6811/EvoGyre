@@ -2,8 +2,13 @@ package com.mygdx.game.evogyre;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 
 public class EvoGyreGame extends Game {
+
+    AssetManager assets;
+    GameSettings settings;
+
     TitleScreen titleScreen;
     SettingsScreen settingsScreen;
     StoryScreen storyScreen;
@@ -12,6 +17,8 @@ public class EvoGyreGame extends Game {
     @Override
     public void create() {
         Gdx.app.setLogLevel(Constants.LOG_LEVEL);
+        assets = new AssetManager();
+        settings = new GameSettings();
 
         titleScreen = new TitleScreen(this);
         settingsScreen = new SettingsScreen(this);

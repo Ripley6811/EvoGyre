@@ -14,15 +14,15 @@ public class ProjectionUtils {
      * Maps a point from the game map to the displayed position.
      * The z-component is used for scaling [0.0 - 1.0] image according to distance.
      * @param mapPt Game map coordinate
-     * @param rotation Rotation angle
+     * @param rotation Rotation positionAngle
      * @return Vector for rendering to screen
      */
     public static Vector3 projectPoint(Vector2 mapPt, float rotation) {
         // Distant objects move slower. F(x) = a * x^2
-        Vector2 vector2 = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE), 0f);
+        Vector2 vector2 = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE_X), 0f);
         // Y-component becomes the degrees from x-axis.
         vector2.rotate(mapPt.y + rotation);
-        return new Vector3(vector2, vanishingPower(mapPt.x / Constants.MAP_SIZE));
+        return new Vector3(vector2, vanishingPower(mapPt.x / Constants.MAP_SIZE_X));
 //        return new Vector3(vector2, vector2.x / PROJECTION_RADIUS);
     }
 
@@ -30,7 +30,7 @@ public class ProjectionUtils {
      * Maps a point from the game map to the display position.
      * Adjusts display position according to vanishing pt vector.
      * @param mapPt Game map coordinate
-     * @param rotation Rotation angle
+     * @param rotation Rotation positionAngle
      * @param transposition Vanishing point of display cylinder
      * @return
      */
@@ -48,10 +48,13 @@ public class ProjectionUtils {
         Vector2 scaledV = new Vector2(centerTransposition);
         scaledV.setLength(Constants.CENTER_DISPLACEMENT);
         // TODO: Keep testing - Curving funnel or Straight tunnel...
-        // Straight cylinder view
-//        scaledV.scl(1.0f - displayPt.z);
-        // Curving funnel view
-        scaledV.scl(1.0f - (float) Math.sqrt(displayPt.z));
+        if (Constants.FUNNEL_SHAPE) {
+            // Curving funnel view
+            scaledV.scl(1.0f - (float) Math.sqrt(displayPt.z));
+        } else {
+            // Straight cylinder view
+            scaledV.scl(1.0f - displayPt.z);
+        }
         return displayPt.add(scaledV.x, scaledV.y, 0f);
     }
 

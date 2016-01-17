@@ -31,9 +31,11 @@ public class Constants {
     /* WORLD SETTINGS */
     public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
     public static final float PROJECTION_RADIUS = 290f;
-    public static final float MAP_SIZE = 360f;  // IMPORTANT: Y-axis must be 360
+    public static final boolean FUNNEL_SHAPE = true;  // Else straight cylinder flow
+    public static final float MAP_SIZE_X = 3*360f;
+    public static final float MAP_SIZE_Y = 360f;  // IMPORTANT: Y-axis must be 360
     public static final double VANISHING_STRETCH = 3.0;
-    public static final float CENTER_DISPLACEMENT = 0.5f * PROJECTION_RADIUS;
+    public static final float CENTER_DISPLACEMENT = 0.8f * PROJECTION_RADIUS;
     public static final Color CYLINDER_COLOR = new Color(0.1f,0.3f,0.1f,0.1f);
 
     /* ACTOR */
