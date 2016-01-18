@@ -37,7 +37,7 @@ public class Constants {
     public static final double VANISHING_STRETCH = 3.0;
     public static final float CENTER_DISPLACEMENT = 0.8f * PROJECTION_RADIUS;
     public static final Color FUNNEL_COLOR = new Color(0.01f,0.25f,0.01f,0.1f);
-    public static final boolean DRAW_FUNNEL = true;
+    public static final boolean DRAW_RINGS = true;
     public static final float ANIMATE_FUNNEL_DURATION = 0.4f;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,1f,0.5f);
