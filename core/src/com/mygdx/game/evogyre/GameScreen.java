@@ -104,6 +104,9 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean keyDown(int keycode) {
         // TODO: Same as touchDown with firing
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            game.settings.DRAW_RINGS(!game.settings.DRAW_RINGS());
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             vesselFixed = !vesselFixed;
         }
@@ -171,7 +174,6 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         } else {
             // Key input
-            // TODO: include acceleration like Parallax game
             float accelY = 0f;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                 accelY -= 1f;
@@ -209,11 +211,11 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.end();
 
         /** DRAW FUNNEL **/
-        if (game.settings.prefs.getBoolean("draw funnel", Constants.DRAW_FUNNEL)) {
+        if (game.settings.DRAW_RINGS()) {
             VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint);
         }
 
-        // Draw all debris
+        /** DRAW TEMP DEBRIS **/
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.GOLD);
         for (Actor d: debris) {

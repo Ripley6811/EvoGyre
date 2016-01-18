@@ -33,9 +33,8 @@ public class VisualEffects {
     public static void shieldGradientEffect(ShapeRenderer renderer,
                                             Vector3 center,
                                             boolean angleInward, float phase, float alpha) {
-        // TODO: include position as parameter and employ angle of strike
+        // TODO: Create a less computationally intensive alternate version
         Color col1 = new Color(0,0,0,0);
-        Color col2 = new Color(0.8f,0.8f,1f,.8f);
 
         boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
         if (!blend_enabled) {
