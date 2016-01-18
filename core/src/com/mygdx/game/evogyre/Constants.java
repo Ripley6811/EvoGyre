@@ -36,7 +36,7 @@ public class Constants {
     public static final float MAP_SIZE_Y = 360f;  // IMPORTANT: Y-axis must be 360
     public static final double VANISHING_STRETCH = 3.0;
     public static final float CENTER_DISPLACEMENT = 0.8f * PROJECTION_RADIUS;
-    public static final Color FUNNEL_COLOR = new Color(0.1f,0.5f,0.1f,0.5f);
+    public static final Color FUNNEL_COLOR = new Color(0.05f,0.4f,0.05f,0.7f);
     public static final boolean DRAW_RINGS = true;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
     public static final int NUMBER_OF_STARS = 160;

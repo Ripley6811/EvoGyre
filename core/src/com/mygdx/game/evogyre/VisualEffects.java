@@ -91,6 +91,7 @@ public class VisualEffects {
             funnelAlpha = Math.max(funnelAlpha - delta, 0f);
         }
         funnelColor.a = funnelAlpha;
+        if (funnelAlpha == 0f) return;
 
         float ringDistances[] = new float[20];
         float interval = Constants.MAP_SIZE_X / ringDistances.length;
