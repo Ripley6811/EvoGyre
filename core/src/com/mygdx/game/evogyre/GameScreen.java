@@ -27,7 +27,7 @@ public class GameScreen extends InputAdapter implements Screen {
     Array<Actor> debris;
     Vector2 vanishingPoint;
     Array<Actor> vessels;  // Possible multiple spaceships, powerup
-    Array<ShieldBlast> blasts;
+    Array<ShieldBlast> sheild_effects;
     Random random = new Random();
 
     float timer;
@@ -50,7 +50,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
         debris = new Array<Actor>();
         vessels = new Array<Actor>();
-        blasts = new Array<ShieldBlast>();
+        sheild_effects = new Array<ShieldBlast>();
         // Unit vector giving direction of vanishing point transposition.
         // TODO: change this to be based on player position
         vanishingPoint = new Vector2(0f, 1f);
@@ -70,6 +70,7 @@ public class GameScreen extends InputAdapter implements Screen {
         vessels.clear();
         vessels.add(new Actor(Constants.MAP_SIZE_X, 270f));
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
+//        ImageAssets.drawTunnelInit();
     }
 
     @Override
@@ -91,6 +92,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // TODO: Create a boolean for dealing with continuous touch, use for firing weapons
+        ImageAssets.drawTunnelInit();
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -147,11 +149,11 @@ public class GameScreen extends InputAdapter implements Screen {
         updateRotation(delta);
 
 
-        if (random.nextFloat() > 0.99f) {
-            blasts.add(new ShieldBlast());
+        if (random.nextFloat() > 0.98f) {
+            sheild_effects.add(new ShieldBlast());
         }
         // TODO: Remove finished effects
-        for (ShieldBlast blast: blasts) {
+        for (ShieldBlast blast: sheild_effects) {
             blast.update(delta);
         }
     }
@@ -214,14 +216,7 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.circle(vanishingPoint.x * Constants.CENTER_DISPLACEMENT, vanishingPoint.y * Constants.CENTER_DISPLACEMENT, 20, 100);
         renderer.end();
 
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Constants.CYLINDER_COLOR);
-        for (float i=Constants.MAP_SIZE_X; i>0f && i>Constants.MAP_SIZE_X-500*timer; i -= 50f) {
-            Vector3 tmpV1 = ProjectionUtils.projectPoint(new Vector2(i, 0), mapRotation, vanishingPoint);
-            Vector3 tmpV2 = ProjectionUtils.projectPoint(new Vector2(i, 180), mapRotation, vanishingPoint);
-            renderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
-        }
-        renderer.end();
+        ImageAssets.drawTunnel(delta, renderer, mapRotation, vanishingPoint);
 
         // Draw all debris
         renderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -233,18 +228,19 @@ public class GameScreen extends InputAdapter implements Screen {
 
         // Draw player vessels
         renderer.setColor(Color.GREEN);
+        Vector3 placement = new Vector3(0,0,0);
         for (Actor actor: vessels) {
-            Vector3 placement = ProjectionUtils.projectPoint(actor.position, mapRotation, vanishingPoint);
-            renderer.circle(placement.x, placement.y, 6f);
+            placement = ProjectionUtils.projectPoint(actor.position, mapRotation, vanishingPoint);
+            renderer.circle(placement.x, placement.y, 10f);
         }
         renderer.end();
 
-        for (ShieldBlast blast: blasts) {
-            if (!blast.isDone) {
-                ImageAssets.radialGradientFill(renderer, 90f, blast.phase, blast.alpha);
+        for (ShieldBlast effect: sheild_effects) {
+            if (!effect.isDone) {
+                ImageAssets.shieldGradientEffect(renderer, placement, true, effect.phase, effect.alpha);
             }
         }
-//        ImageAssets.radialGradientFill(renderer, 90f, .8f, .8f);
+//        ImageAssets.shieldGradientEffect(renderer, 90f, .8f, .8f);
     }
 
     @Override

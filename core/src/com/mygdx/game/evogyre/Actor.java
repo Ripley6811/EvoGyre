@@ -57,8 +57,16 @@ public class Actor implements Propulsion {
      * Returns a unit vector of the heading (velocity).
      * @return Vector2
      */
-    public Vector2 heading() {
+    public Vector2 headingVector2() {
         Vector2 heading = new Vector2(velocity);
         return heading.nor();
+    }
+
+    /**
+     * Returns the heading (velocity direction).
+     * @return Float value for heading angle
+     */
+    public float heading() {
+        return velocity.angle();
     }
 }

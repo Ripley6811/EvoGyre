@@ -36,11 +36,19 @@ public class Constants {
     public static final float MAP_SIZE_Y = 360f;  // IMPORTANT: Y-axis must be 360
     public static final double VANISHING_STRETCH = 3.0;
     public static final float CENTER_DISPLACEMENT = 0.8f * PROJECTION_RADIUS;
-    public static final Color CYLINDER_COLOR = new Color(0.1f,0.3f,0.1f,0.1f);
+    public static final Color CYLINDER_COLOR = new Color(0.01f,0.25f,0.01f,0.1f);
 
     /* ACTOR */
     public static final float ACCELERATION_RATE = 300f;
     public static final float MAX_VELOCITY = 150f;
+    public static final float SHIELD_RADIUS = 20f;
+    public static final float SHIELD_EFFECT_OFFSET = 15f;
+
+    /* SHIELDS */
+    public static final float PHASE_MAX = 1f;  // [0f, 1f]
+    public static final float PHASE_MULTIPLIER = 2f;  // Effect spread rate
+    public static final float ALPHA_FADE_MAX = 0.9f;  // [0f, 1f]
+    public static final float ALPHA_FADE_MULTIPLIER = 1.5f;  // Effect fade rate
 
     /* UNCATEGORIZED (PHYSICS) */
     public static final float G = 9.8f;  // Gravitational constant
