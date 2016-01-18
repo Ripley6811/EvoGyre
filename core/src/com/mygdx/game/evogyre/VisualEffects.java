@@ -102,13 +102,11 @@ public class VisualEffects {
     public static void drawStars(ShapeRenderer renderer, float mapRotation, Vector2 vanishingPoint) {
         if (stars == null) {
             stars = new Array<Vector2>(Constants.NUMBER_OF_STARS);
-            System.out.println("INSIDE");
             Random random = new Random();
             float DISPLAY_SIZE = Constants.DISPLAY_SIZE;
             for (int i=0; i<Constants.NUMBER_OF_STARS; i++) {
                 stars.add(new Vector2(2f * DISPLAY_SIZE * random.nextFloat() - DISPLAY_SIZE,
                         2f * DISPLAY_SIZE * random.nextFloat() - DISPLAY_SIZE));
-                System.out.println(stars.peek());
             }
         }
 
