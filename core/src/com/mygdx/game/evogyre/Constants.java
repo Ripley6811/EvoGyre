@@ -49,6 +49,7 @@ public class Constants {
     public static final float PHASE_MULTIPLIER = 2f;  // Effect spread rate
     public static final float ALPHA_FADE_MAX = 0.9f;  // [0f, 1f]
     public static final float ALPHA_FADE_MULTIPLIER = 1.5f;  // Effect fade rate
+    public static final int STARTING_SHIELD_POINTS = 5;  // Effect fade rate
 
     /* UNCATEGORIZED (PHYSICS) */
     public static final float G = 9.8f;  // Gravitational constant

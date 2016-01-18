@@ -26,7 +26,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     Array<Actor> debris;
     Vector2 vanishingPoint;
-    Array<Actor> vessels;  // Possible multiple spaceships, powerup
+    Array<Vessel> vessels;  // Possible multiple spaceships, powerup
     Array<ShieldBlast> sheild_effects;
     Random random = new Random();
 
@@ -49,7 +49,7 @@ public class GameScreen extends InputAdapter implements Screen {
         setAccelerometerBalanced();
 
         debris = new Array<Actor>();
-        vessels = new Array<Actor>();
+        vessels = new Array<Vessel>();
         sheild_effects = new Array<ShieldBlast>();
         // Unit vector giving direction of vanishing point transposition.
         // TODO: change this to be based on player position
@@ -68,7 +68,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public void init() {
         mapRotation = 0f;
         vessels.clear();
-        vessels.add(new Actor(Constants.MAP_SIZE_X, 270f));
+        vessels.add(new Vessel(Constants.MAP_SIZE_X, 270f));
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
 //        ImageAssets.drawTunnelInit();
     }
@@ -131,7 +131,7 @@ public class GameScreen extends InputAdapter implements Screen {
         if (timer > rate + timerDebris) {
             timerDebris += rate;
             float r = Constants.MAP_SIZE_Y * random.nextFloat();
-            debris.add(new Actor(0, r));
+            debris.add(new Vessel(0, r));
 //            debris.add(new Actor(0, 0));
 //            debris.add(new Actor(0, 90));
 //            debris.add(new Actor(0, 200));
@@ -180,7 +180,7 @@ public class GameScreen extends InputAdapter implements Screen {
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                 accelY += 1f;
             }
-            for (Actor actor : vessels) {
+            for (Vessel actor : vessels) {
                 actor.accelerate(new Vector2(0, accelY));
                 float distMoved = actor.update(delta);
                 if (vesselFixed) {
@@ -229,7 +229,7 @@ public class GameScreen extends InputAdapter implements Screen {
         // Draw player vessels
         renderer.setColor(Color.GREEN);
         Vector3 placement = new Vector3(0,0,0);
-        for (Actor actor: vessels) {
+        for (Vessel actor: vessels) {
             placement = ProjectionUtils.projectPoint(actor.position, mapRotation, vanishingPoint);
             renderer.circle(placement.x, placement.y, 10f);
         }

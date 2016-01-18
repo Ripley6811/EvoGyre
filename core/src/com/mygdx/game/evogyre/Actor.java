@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Created by Jay on 1/13/2016.
  */
-public class Actor implements Propulsion {
+public class Actor {
     Vector2 position,
             velocity,
             acceleration;
@@ -18,14 +18,6 @@ public class Actor implements Propulsion {
 
     public float positionAngle() {
         return position.y;
-    }
-
-    @Override
-    public void accelerate(Vector2 accelVector) {
-        if (accelVector.isZero()) decelerate();
-        if (velocity.hasOppositeDirection(accelVector)) velocity.scl(0f);
-        acceleration.add(accelVector);
-        acceleration.setLength(Constants.ACCELERATION_RATE);
     }
 
     /**
@@ -45,12 +37,6 @@ public class Actor implements Propulsion {
         if (position.y >= Constants.MAP_SIZE_Y) position.y -= Constants.MAP_SIZE_Y;
         // Return change in y
         return velocity.y * delta;
-    }
-
-    @Override
-    public void decelerate() {
-        acceleration.scl(0f);
-        velocity.scl(Constants.ACTOR_MOTION_FRICTION);
     }
 
     /**
