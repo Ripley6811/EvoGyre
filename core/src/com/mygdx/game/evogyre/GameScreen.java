@@ -30,7 +30,7 @@ public class GameScreen extends InputAdapter implements Screen {
     Array<ShieldBlast> sheild_effects;
     Random random = new Random();
 
-    float timer;
+    float timerGame;
     float timerDebris;
     float mapRotation;
     boolean vesselFixed = false;
@@ -44,7 +44,7 @@ public class GameScreen extends InputAdapter implements Screen {
         actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
         actionViewport.apply(true);
 
-        timer = 0f;
+        timerGame = 0f;
         timerDebris = 0f;
         setAccelerometerBalanced();
 
@@ -59,8 +59,6 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.setAutoShapeType(true);
         renderer.setProjectionMatrix(actionViewport.getCamera().combined);
         renderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
-//        Gdx.gl.glEnable(GL20.GL_BLEND);
-//        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         init();
     }
@@ -68,9 +66,10 @@ public class GameScreen extends InputAdapter implements Screen {
     public void init() {
         mapRotation = 0f;
         vessels.clear();
-        vessels.add(new Vessel(Constants.MAP_SIZE_X, 270f));
+        vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f));
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
-//        ImageAssets.drawTunnelInit();
+        VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
+        timerGame = 0f;
     }
 
     @Override
@@ -92,7 +91,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // TODO: Create a boolean for dealing with continuous touch, use for firing weapons
-        ImageAssets.drawTunnelInit();
+        VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -124,11 +123,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public void update(float delta) {
         // Update timer
-        timer += delta;
+        timerGame += delta;
 
         // Add debris every 2 seconds
         float rate = 0.2f;
-        if (timer > rate + timerDebris) {
+        if (timerGame > rate + timerDebris) {
             timerDebris += rate;
             float r = Constants.MAP_SIZE_Y * random.nextFloat();
             debris.add(new Vessel(0, r));
@@ -200,23 +199,19 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        /** DRAW STARS **/
+        VisualEffects.drawStars(renderer, mapRotation, vanishingPoint);
 
-//        renderer.begin(ShapeRenderer.ShapeType.Line);
-//        renderer.setColor(Constants.CYLINDER_COLOR);
-//        for (float i=1f; i>=0.5f; i -= 0.1f) {
-//            float vi = ProjectionUtils.vanishingPower(i);
-//            Vector2 tmpV = new Vector2(vanishingPoint);
-//            tmpV.setLength((1f-vi) * Constants.CENTER_DISPLACEMENT);
-//            renderer.circle(tmpV.x, tmpV.y, vi * Constants.PROJECTION_RADIUS, 100);
-//        }
-//        renderer.end();
-
+        /** DRAW PLANET **/
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.BLUE);
         renderer.circle(vanishingPoint.x * Constants.CENTER_DISPLACEMENT, vanishingPoint.y * Constants.CENTER_DISPLACEMENT, 20, 100);
         renderer.end();
 
-        ImageAssets.drawTunnel(delta, renderer, mapRotation, vanishingPoint);
+        /** DRAW FUNNEL **/
+        if (game.settings.prefs.getBoolean("draw funnel", Constants.DRAW_FUNNEL)) {
+            VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint);
+        }
 
         // Draw all debris
         renderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -226,7 +221,7 @@ public class GameScreen extends InputAdapter implements Screen {
             renderer.circle(placement.x, placement.y, 5f*placement.z);
         }
 
-        // Draw player vessels
+        /** Draw player vessels **/
         renderer.setColor(Color.GREEN);
         Vector3 placement = new Vector3(0,0,0);
         for (Vessel actor: vessels) {
@@ -235,12 +230,12 @@ public class GameScreen extends InputAdapter implements Screen {
         }
         renderer.end();
 
+        /** DRAW SHIELD EFFECTS **/
         for (ShieldBlast effect: sheild_effects) {
             if (!effect.isDone) {
-                ImageAssets.shieldGradientEffect(renderer, placement, true, effect.phase, effect.alpha);
+                VisualEffects.shieldGradientEffect(renderer, placement, true, effect.phase, effect.alpha);
             }
         }
-//        ImageAssets.shieldGradientEffect(renderer, 90f, .8f, .8f);
     }
 
     @Override
