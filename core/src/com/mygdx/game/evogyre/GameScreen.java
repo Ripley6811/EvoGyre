@@ -6,6 +6,8 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -23,6 +25,7 @@ public class GameScreen extends InputAdapter implements Screen {
     EvoGyreGame game;
     FitViewport actionViewport;
     ShapeRenderer renderer;
+    SpriteBatch spriteBatch;
 
     Array<Actor> debris;
     Vector2 vanishingPoint;
@@ -36,6 +39,8 @@ public class GameScreen extends InputAdapter implements Screen {
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any position
+
+    Texture player;
 
     public GameScreen(EvoGyreGame game) {
         Gdx.input.setInputProcessor(this);
@@ -59,6 +64,12 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.setAutoShapeType(true);
         renderer.setProjectionMatrix(actionViewport.getCamera().combined);
         renderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
+
+        spriteBatch = new SpriteBatch();
+        spriteBatch.setProjectionMatrix(renderer.getProjectionMatrix());
+        spriteBatch.setTransformMatrix(renderer.getTransformMatrix());
+        /** LOAD ASSETS **/
+        player = game.assets.get("sprites/player/player_1.png", Texture.class);
 
         init();
     }
@@ -211,9 +222,7 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.end();
 
         /** DRAW FUNNEL **/
-        if (game.settings.DRAW_RINGS()) {
-            VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint);
-        }
+        VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint, game.settings.DRAW_RINGS());
 
         /** DRAW TEMP DEBRIS **/
         renderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -222,15 +231,25 @@ public class GameScreen extends InputAdapter implements Screen {
             Vector3 placement = ProjectionUtils.projectPoint(d.position, mapRotation, vanishingPoint);
             renderer.circle(placement.x, placement.y, 5f*placement.z);
         }
+        renderer.end();
 
         /** Draw player vessels **/
-        renderer.setColor(Color.GREEN);
+        spriteBatch.begin();
         Vector3 placement = new Vector3(0,0,0);
         for (Vessel actor: vessels) {
             placement = ProjectionUtils.projectPoint(actor.position, mapRotation, vanishingPoint);
-            renderer.circle(placement.x, placement.y, 10f);
+            spriteBatch.draw(player,
+                    placement.x - 0.5f*player.getWidth(),
+                    placement.y - 0.5f*player.getHeight(),
+                    0.5f*player.getWidth(), 0.5f*player.getHeight(),
+                    player.getWidth(), player.getHeight(),
+                    1.28f, 0.8f,
+                    actor.positionAngle() + mapRotation + 90f,
+                    0, 0,  // texel space coordinate (offset image within drawing area)
+                    player.getWidth(), player.getHeight(),  // texel
+                    false, false);
         }
-        renderer.end();
+        spriteBatch.end();
 
         /** DRAW SHIELD EFFECTS **/
         for (ShieldBlast effect: sheild_effects) {

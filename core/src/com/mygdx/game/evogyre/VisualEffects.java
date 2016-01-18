@@ -73,12 +73,24 @@ public class VisualEffects {
     }
 
     private static Tween.SineOut sineOut;
+    private static float funnelAlpha;
     public static void drawTunnelInit(float duration) {
         sineOut = new Tween.SineOut(-Constants.MAP_SIZE_X, 0f, duration);
+        funnelAlpha = 0.1f;
     }
     public static void drawTunnel(float delta, ShapeRenderer renderer,
-                                  float mapRotation, Vector2 vanishingPoint) {
+                                  float mapRotation, Vector2 vanishingPoint,
+                                  boolean showDrawing) {
         if (sineOut == null) drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
+
+        // Funnel rings fade in/out.
+        Color funnelColor = new Color(Constants.FUNNEL_COLOR);
+        if (showDrawing) {
+            funnelAlpha = Math.min(funnelAlpha + delta, funnelColor.a);
+        } else {
+            funnelAlpha = Math.max(funnelAlpha - delta, 0f);
+        }
+        funnelColor.a = funnelAlpha;
 
         float ringDistances[] = new float[20];
         float interval = Constants.MAP_SIZE_X / ringDistances.length;
@@ -86,8 +98,13 @@ public class VisualEffects {
         for (int i = 0; i < ringDistances.length; i++) {
             ringDistances[i] = i * interval + ringDisplacement;
         }
+        boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
+        if (!blend_enabled) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        }
         renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Constants.FUNNEL_COLOR);
+        renderer.setColor(funnelColor);
         for (float ringX: ringDistances) {
             float i = Constants.MAP_SIZE_X - ringX;
             Vector3 tmpV1 = ProjectionUtils.projectPoint(new Vector2(i, 0), mapRotation, vanishingPoint);
@@ -95,6 +112,9 @@ public class VisualEffects {
             renderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
         }
         renderer.end();
+        if (!blend_enabled) {
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
     }
 
     private static Array<Vector2> stars;

@@ -3,6 +3,7 @@ package com.mygdx.game.evogyre;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 
 public class EvoGyreGame extends Game {
 
@@ -18,6 +19,8 @@ public class EvoGyreGame extends Game {
     public void create() {
         Gdx.app.setLogLevel(Constants.LOG_LEVEL);
         assets = new AssetManager();
+        assets.load("sprites/player/player_1.png", Texture.class);
+        assets.finishLoading();
         settings = new GameSettings();
 
         titleScreen = new TitleScreen(this);

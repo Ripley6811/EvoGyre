@@ -30,17 +30,17 @@ public class Constants {
 
     /* WORLD SETTINGS */
     public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
-    public static final float PROJECTION_RADIUS = 290f;
+    public static final float PROJECTION_RADIUS = 280f;
     public static final boolean FUNNEL_SHAPE = true;  // Else straight cylinder flow
     public static final float MAP_SIZE_X = 3*360f;
     public static final float MAP_SIZE_Y = 360f;  // IMPORTANT: Y-axis must be 360
     public static final double VANISHING_STRETCH = 3.0;
     public static final float CENTER_DISPLACEMENT = 0.8f * PROJECTION_RADIUS;
-    public static final Color FUNNEL_COLOR = new Color(0.01f,0.25f,0.01f,0.1f);
+    public static final Color FUNNEL_COLOR = new Color(0.1f,0.5f,0.1f,0.5f);
     public static final boolean DRAW_RINGS = true;
-    public static final float ANIMATE_FUNNEL_DURATION = 0.4f;
+    public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
     public static final int NUMBER_OF_STARS = 160;
-    public static final Color STAR_COLOR = new Color(1f,1f,1f,0.5f);
+    public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
 
     /* ACTOR */
     public static final float ACCELERATION_RATE = 300f;
