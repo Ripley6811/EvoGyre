@@ -3,9 +3,6 @@ package com.mygdx.game.evogyre;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,22 +11,24 @@ import com.badlogic.gdx.utils.Array;
 import java.util.Random;
 
 /**
+ * NOTE: Creating gradient effects with ShapeRenderer is limited to the "line",
+ * "rectangle" and "triangle" methods. PixMap is more flexible but the disadvantage
+ * is that the result is a raster image. ShapeRenderer creates vector images.
  * Created by Jay on 1/12/2016.
  */
 public class VisualEffects {
 
-    public static Sprite createSpaceship() {
-        int W = 64;
-        int H = 16;
-        // NOTE: Coordinate origin for Pixmap is top-left.
-        Pixmap pixmap = new Pixmap(W, H, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.LIGHT_GRAY);
-        pixmap.fillTriangle(0, 15, 31, 15, 31, 0);
-        pixmap.setColor(Color.DARK_GRAY);
-        pixmap.fillTriangle(31, 15, 63, 15, 31, 0);
-        return new Sprite(new Texture(pixmap));
-    }
-
+    /**
+     * Creates a shield absorption/dissipating effect around spaceship from a hit.
+     * Unlike the funnel rings effect, there can be multiple instances of this
+     * effect, so the "phase" and "alpha" is maintained separately. It also depends
+     * on the vehicle position which changes independently.
+     * @param renderer
+     * @param center
+     * @param angleInward True for player and false for enemies
+     * @param phase
+     * @param alpha
+     */
     public static void shieldGradientEffect(ShapeRenderer renderer,
                                             Vector3 center,
                                             boolean angleInward, float phase, float alpha) {

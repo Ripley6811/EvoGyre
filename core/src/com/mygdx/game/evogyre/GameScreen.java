@@ -7,7 +7,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -24,13 +26,12 @@ public class GameScreen extends InputAdapter implements Screen {
 
     EvoGyreGame game;
     FitViewport actionViewport;
-    ShapeRenderer renderer;
-    SpriteBatch spriteBatch;
+    MyShapeRenderer renderer;
 
+    TextureAtlas atlas;
     Array<Actor> debris;
     Vector2 vanishingPoint;
     Array<Vessel> vessels;  // Possible multiple spaceships, powerup
-    Array<ShieldBlast> sheild_effects;
     Random random = new Random();
 
     float timerGame;
@@ -39,8 +40,6 @@ public class GameScreen extends InputAdapter implements Screen {
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any position
-
-    Texture player;
 
     public GameScreen(EvoGyreGame game) {
         Gdx.input.setInputProcessor(this);
@@ -55,21 +54,17 @@ public class GameScreen extends InputAdapter implements Screen {
 
         debris = new Array<Actor>();
         vessels = new Array<Vessel>();
-        sheild_effects = new Array<ShieldBlast>();
         // Unit vector giving direction of vanishing point transposition.
         // TODO: change this to be based on player position
         vanishingPoint = new Vector2(0f, 1f);
 
-        renderer = new ShapeRenderer();
+        renderer = new MyShapeRenderer();
         renderer.setAutoShapeType(true);
         renderer.setProjectionMatrix(actionViewport.getCamera().combined);
         renderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
 
-        spriteBatch = new SpriteBatch();
-        spriteBatch.setProjectionMatrix(renderer.getProjectionMatrix());
-        spriteBatch.setTransformMatrix(renderer.getTransformMatrix());
         /** LOAD ASSETS **/
-        player = game.assets.get("sprites/player/player_1.png", Texture.class);
+        atlas = game.assets.get(Constants.MAIN_ATLAS);
 
         init();
     }
@@ -77,7 +72,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public void init() {
         mapRotation = 0f;
         vessels.clear();
-        vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f));
+        vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f, atlas));
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
         VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         timerGame = 0f;
@@ -144,7 +139,7 @@ public class GameScreen extends InputAdapter implements Screen {
         if (timerGame > rate + timerDebris) {
             timerDebris += rate;
             float r = Constants.MAP_SIZE_Y * random.nextFloat();
-            debris.add(new Vessel(0, r));
+            debris.add(new Actor(0, r));
 //            debris.add(new Actor(0, 0));
 //            debris.add(new Actor(0, 90));
 //            debris.add(new Actor(0, 200));
@@ -162,12 +157,8 @@ public class GameScreen extends InputAdapter implements Screen {
         updateRotation(delta);
 
 
-        if (random.nextFloat() > 0.98f) {
-            sheild_effects.add(new ShieldBlast());
-        }
-        // TODO: Remove finished effects
-        for (ShieldBlast blast: sheild_effects) {
-            blast.update(delta);
+        if (random.nextFloat() > 0.996f) {
+            vessels.get(0).damage(1);
         }
     }
 
@@ -234,28 +225,8 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.end();
 
         /** Draw player vessels **/
-        spriteBatch.begin();
-        Vector3 placement = new Vector3(0,0,0);
-        for (Vessel actor: vessels) {
-            placement = ProjectionUtils.projectPoint(actor.position, mapRotation, vanishingPoint);
-            spriteBatch.draw(player,
-                    placement.x - 0.5f*player.getWidth(),
-                    placement.y - 0.5f*player.getHeight(),
-                    0.5f*player.getWidth(), 0.5f*player.getHeight(),
-                    player.getWidth(), player.getHeight(),
-                    1.28f, 0.8f,
-                    actor.positionAngle() + mapRotation + 90f,
-                    0, 0,  // texel space coordinate (offset image within drawing area)
-                    player.getWidth(), player.getHeight(),  // texel
-                    false, false);
-        }
-        spriteBatch.end();
-
-        /** DRAW SHIELD EFFECTS **/
-        for (ShieldBlast effect: sheild_effects) {
-            if (!effect.isDone) {
-                VisualEffects.shieldGradientEffect(renderer, placement, true, effect.phase, effect.alpha);
-            }
+        for (Vessel vessel: vessels) {
+            vessel.render(renderer, delta, mapRotation, vanishingPoint);
         }
     }
 

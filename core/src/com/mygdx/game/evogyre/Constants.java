@@ -10,10 +10,10 @@ import com.badlogic.gdx.utils.Array;
 public class Constants {
     /* LOGGING LEVELS */
     // Application logging levels from lowest to highest. Choose one.
-    public static final int LOG_LEVEL = Application.LOG_NONE;
+//    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
 //    public static final int LOG_LEVEL = Application.LOG_INFO;
-//    public static final int LOG_LEVEL = Application.LOG_DEBUG;
+    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
     /* DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
@@ -27,6 +27,7 @@ public class Constants {
     public static final String[] DIFFICULTY_NAMES = {"Easy", "Hard", "Insane!"};
     public static final Array<String> DIFFICULTY = new Array<String>(DIFFICULTY_NAMES);
     public static final Color BACKGROUND_COLOR = Color.BLACK;
+    public static final String MAIN_ATLAS = "images/evogyre.pack.atlas";
 
     /* WORLD SETTINGS */
     public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
@@ -52,7 +53,7 @@ public class Constants {
     public static final float SHIELD_EFFECT_OFFSET = 15f;
     public static final float PHASE_MAX = 1f;  // [0f, 1f]
     public static final float PHASE_MULTIPLIER = 2f;  // Effect spread rate
-    public static final float ALPHA_FADE_MAX = 0.9f;  // [0f, 1f]
+    public static final float ALPHA_FADE_MAX = 1f;  // [0f, 1f]
     public static final float ALPHA_FADE_MULTIPLIER = 1.5f;  // Effect fade rate
     public static final int STARTING_SHIELD_POINTS = 5;
 

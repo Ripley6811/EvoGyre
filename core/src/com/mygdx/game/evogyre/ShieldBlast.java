@@ -1,5 +1,7 @@
 package com.mygdx.game.evogyre;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+
 /**
  * Created by Jay on 1/18/2016.
  */
@@ -17,13 +19,10 @@ public class ShieldBlast {
     public void update(float delta) {
         if (!isDone) {
             // TODO: add curve like createjs ease.circOut for phase
-            phase -= delta * Constants.PHASE_MULTIPLIER;
-            if (phase < 0f) {
-                phase = 0f;
-            }
+            phase = Math.max(0f, phase - delta * Constants.PHASE_MULTIPLIER);
             // TODO: add curve like createjs ease.quadOut for alpha
-            alpha -= delta * Constants.ALPHA_FADE_MULTIPLIER;
-            if (alpha <= 0f) {
+            alpha = Math.max(0f, alpha - delta * Constants.ALPHA_FADE_MULTIPLIER);
+            if (alpha == 0f) {
                 isDone = true;
             }
         }
