@@ -1,3 +1,6 @@
+// Added manually
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
 buildscript {
     repositories {
         mavenCentral()
@@ -8,6 +11,8 @@ buildscript {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:1.2.3'
         classpath 'org.robovm:robovm-gradle-plugin:1.8.0'
+        // Added manually
+        classpath 'com.badlogicgames.gdx:gdx-tools:1.7.0'
     }
 }
 
@@ -85,6 +90,18 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     }
+
+    // Added manually
+    task packTextures << {
+        def pack = new File("android/assets/images/evogyre.pack.png")
+        pack.delete()
+        def atlas = new File("android/assets/images/evogyre.pack.atlas")
+        atlas.delete()
+        TexturePacker.process("core/rawAssets/sprites", "android/assets/images", "evogyre.pack")
+    }
+
+    // Added manually
+    project.tasks.compileJava.dependsOn packTextures
 }
 
 project(":ios") {
