@@ -6,9 +6,6 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -33,6 +30,7 @@ public class GameScreen extends InputAdapter implements Screen {
     Vector2 vanishingPoint;
     Array<Vessel> vessels;  // Possible multiple spaceships, powerup
     Random random = new Random();
+    BulletManager bullets;
 
     float timerGame;
     float timerDebris;
@@ -65,6 +63,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
         /** LOAD ASSETS **/
         atlas = game.assets.get(Constants.MAIN_ATLAS);
+        bullets = new BulletManager(atlas);
 
         init();
     }
@@ -134,15 +133,12 @@ public class GameScreen extends InputAdapter implements Screen {
         // Update timer
         timerGame += delta;
 
-        // Add debris every 2 seconds
-        float rate = 0.2f;
+        // Add debris
+        float rate = 0.5f;
         if (timerGame > rate + timerDebris) {
             timerDebris += rate;
-            float r = Constants.MAP_SIZE_Y * random.nextFloat();
+            float r = Constants.MAP_SIZE_Y_360 * random.nextFloat();
             debris.add(new Actor(0, r));
-//            debris.add(new Actor(0, 0));
-//            debris.add(new Actor(0, 90));
-//            debris.add(new Actor(0, 200));
         }
 
         // Update debris position
@@ -154,12 +150,31 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
 
-        updateRotation(delta);
-
-
-        if (random.nextFloat() > 0.996f) {
-            vessels.get(0).damage(1);
+        // Getting pressed keys
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            // Fire primary weapon
+            for (Vessel vessel: vessels) {
+                if (vessel.canFire()){
+                    vessel.fire();
+                    int weaponLevel = vessel.weaponLevel;
+                    float xPos = vessel.position.x - 8f;
+                    float yPos = vessel.position.y;
+                    bullets.add(weaponLevel, xPos, yPos + 2.2f, -1f, 0f);
+                    bullets.add(weaponLevel, xPos, yPos - 2.2f, -1f, 0f);
+                    bullets.add(weaponLevel, xPos, yPos - 2.2f, -10f, -1f);
+                    bullets.add(weaponLevel, xPos, yPos + 2.2f, -10f, 1f);
+                }
+            }
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            // Fire secondary weapon
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            // Fire tertiary weapon
+        }
+
+        bullets.update(delta);
+        updateRotation(delta);
     }
 
     public void updateRotation(float delta) {
@@ -228,6 +243,8 @@ public class GameScreen extends InputAdapter implements Screen {
         for (Vessel vessel: vessels) {
             vessel.render(renderer, delta, mapRotation, vanishingPoint);
         }
+
+        bullets.render(renderer, mapRotation, vanishingPoint);
     }
 
     @Override

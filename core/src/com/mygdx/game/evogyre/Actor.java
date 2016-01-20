@@ -38,8 +38,8 @@ public class Actor {
         // Update and constrain position
         position.x += velocity.x * delta;
         position.y += velocity.y * delta;
-        if (position.y < 0f) position.y += Constants.MAP_SIZE_Y;
-        if (position.y >= Constants.MAP_SIZE_Y) position.y -= Constants.MAP_SIZE_Y;
+        if (position.y < 0f) position.y += Constants.MAP_SIZE_Y_360;
+        if (position.y >= Constants.MAP_SIZE_Y_360) position.y -= Constants.MAP_SIZE_Y_360;
         // Return change in y
         return velocity.y * delta;
     }

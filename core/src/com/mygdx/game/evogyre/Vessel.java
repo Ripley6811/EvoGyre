@@ -19,6 +19,9 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     private Animation fly_left_fire;
     private Shield shield;
     private boolean justFired = false;
+    private float FIRE_RATE = 0.2f;
+    private float fireCooldown = 0f;
+    public int weaponLevel = 0;
 
     public Vessel(float x, float y, TextureAtlas atlas) {
         super(x, y);
@@ -65,7 +68,21 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
     }
 
+    public boolean canFire() {
+        return fireCooldown == 0f;
+    }
+
+    public void fire() {
+        if (canFire()) {
+            fireCooldown = FIRE_RATE;
+            justFired = true;
+        }
+    }
+
     public Vector3 render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+        // Update fire cool-down
+        fireCooldown = Math.max(0f, fireCooldown-delta);
+
         TextureRegion texture = fly_level.getKeyFrame(elapsedTime);
         if (justFired) {
             if (acceleration.y == 0f) {
@@ -75,6 +92,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
             } else if (acceleration.y < 0f) {
                 texture = fly_left_fire.getKeyFrame(elapsedTime);
             }
+            justFired = false;
         } else {
             if (acceleration.y > 0f) {
                 texture = fly_right.getKeyFrame(elapsedTime);

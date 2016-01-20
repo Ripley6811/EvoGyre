@@ -34,14 +34,27 @@ public class Constants {
     public static final float PROJECTION_RADIUS = 280f;
     public static final boolean FUNNEL_SHAPE = true;  // Else straight cylinder flow
     public static final float MAP_SIZE_X = 3*360f;
-    public static final float MAP_SIZE_Y = 360f;  // IMPORTANT: Y-axis must be 360
+    public static final float MAP_SIZE_Y_360 = 360f;  // DO NOT CHANGE
     public static final double VANISHING_STRETCH = 3.0;
-    public static final float CENTER_DISPLACEMENT = 0.8f * PROJECTION_RADIUS;
+    public static final float CENTER_DISPLACEMENT = 0.7f * PROJECTION_RADIUS;
     public static final Color FUNNEL_COLOR = new Color(0.05f,0.4f,0.05f,0.7f);
     public static final boolean DRAW_RINGS = true;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
+    // Cutoff where bullets are removed.
+    public static final float BULLET_CUTOFF = 0.4f * Constants.MAP_SIZE_X;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
+    public enum BulletType {
+        BLUELASER ("bluelaser", 500f),
+        REDLASER ("redlaser", 800f);
+
+        public final String textureName;
+        public final float velocity;
+        BulletType (String textureName, float velocity) {
+            this.textureName = textureName;
+            this.velocity = velocity;
+        }
+    }
 
     /* ACTOR */
     public static final float ACCELERATION_RATE = 300f;
