@@ -9,9 +9,8 @@ public class Actor {
     Vector2 position,
             velocity,
             acceleration;
-    private float ACTOR_FRAME_RATE = 0.1f;
-    private float elapsedTime = 0f;
-    private int currentFrame = 0;
+    public float ACTOR_FRAME_RATE = 0.1f;
+    public float elapsedTime = 0f;
 
     public Actor(float x, float y) {
         position = new Vector2(x, y);
@@ -23,10 +22,6 @@ public class Actor {
         return position.y;
     }
 
-    public int getFrame(int modSize) {
-        return currentFrame % modSize;
-    }
-
     /**
      *
      * @param delta
@@ -35,10 +30,6 @@ public class Actor {
     public float update(float delta) {
         // Update animation
         elapsedTime += delta;
-        if (elapsedTime > ACTOR_FRAME_RATE) {
-            elapsedTime %= ACTOR_FRAME_RATE;
-            currentFrame += 1;
-        }
 
         // Update and constrain velocity
         velocity.x += acceleration.x * delta;
