@@ -157,12 +157,9 @@ public class GameScreen extends InputAdapter implements Screen {
                 if (vessel.canFire()){
                     vessel.fire();
                     int weaponLevel = vessel.weaponLevel;
-                    float xPos = vessel.position.x - 8f;
+                    float xPos = vessel.position.x;
                     float yPos = vessel.position.y;
-                    bullets.add(weaponLevel, xPos, yPos + 2.2f, -1f, 0f);
-                    bullets.add(weaponLevel, xPos, yPos - 2.2f, -1f, 0f);
-                    bullets.add(weaponLevel, xPos, yPos - 2.2f, -10f, -1f);
-                    bullets.add(weaponLevel, xPos, yPos + 2.2f, -10f, 1f);
+                    bullets.add(weaponLevel, xPos, yPos);
                 }
             }
         }
@@ -172,6 +169,21 @@ public class GameScreen extends InputAdapter implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             // Fire tertiary weapon
         }
+
+        // TODO: For testing, switch weapons with number keys
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
+            vessels.get(0).weaponLevel = 0;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
+            vessels.get(0).weaponLevel = 1;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
+            vessels.get(0).weaponLevel = 2;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) {
+            vessels.get(0).weaponLevel = 3;
+        }
+
 
         bullets.update(delta);
         updateRotation(delta);

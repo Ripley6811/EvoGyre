@@ -1,11 +1,11 @@
 package com.mygdx.game.evogyre;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 
 /**
  * Created by Jay on 1/20/2016.
@@ -17,18 +17,21 @@ public class BulletManager {
 
     public BulletManager(TextureAtlas atlas) {
         bulletTextures = new Array<TextureRegion>();
-        for (Constants.BulletType type: Constants.BulletType.values()) {
-            bulletTextures.add(atlas.findRegion(type.textureName));
+        for (JsonValue setup: Constants.PRIMARY_WEAPON_SETUP) {
+            bulletTextures.add(atlas.findRegion(setup.getString("texture")));
         }
         bullets = new Array<Bullet>();
-        // TODO: Delete this
-        System.out.println(Constants.BulletType.values()[1]);
     }
 
-    public void add(int type, float x, float y, float vx, float vy) {
-        bullets.add(new Bullet(Constants.BulletType.values()[type],
-                new Vector2(x,y),
-                new Vector2(vx, vy).setLength(Constants.BulletType.values()[type].velocity)));
+    public void add(int type, float x, float y) {
+        JsonValue setup = Constants.PRIMARY_WEAPON_SETUP.get(type);
+        for (int i=0; i<setup.get("positionOffset").size; i++) {
+            JsonValue offset = setup.get("positionOffset").get(i);
+            JsonValue heading = setup.get("heading").get(i);
+            bullets.add(new Bullet(type,
+                    new Vector2(x + offset.getFloat("x"), y + offset.getFloat("y")),
+                    new Vector2(heading.getFloat("x"), heading.getFloat("y")).setLength(setup.getFloat("velocity"))));
+        }
     }
 
     public void update(float delta) {
@@ -41,6 +44,10 @@ public class BulletManager {
             bullet.lastPosition.set(bullet.position);
             bullet.position.x += delta * bullet.velocity.x;
             bullet.position.y += delta * bullet.velocity.y;
+            // Keep bullets on game map
+            if (bullet.position.y < 0f) bullet.position.y += 360f;
+            if (bullet.position.y >= 360f) bullet.position.y -= 360f;
+            // Kill off distant bullets. Don't let them run to end of game map
             if (bullet.position.x <= Constants.BULLET_CUTOFF) bullet.isFinished = true;
         }
     }
@@ -53,7 +60,7 @@ public class BulletManager {
             placement = ProjectionUtils.projectPoint(b.position, mapRotation, vanishingPoint);
             placement2 = ProjectionUtils.projectPoint(b.lastPosition, mapRotation, vanishingPoint);
             float angle = new Vector2(placement.x-placement2.x, placement.y-placement2.y).angle();
-            TextureRegion texture = bulletTextures.get(b.type.ordinal());
+            TextureRegion texture = bulletTextures.get(b.type);
             int width = texture.getRegionWidth();
             int height = texture.getRegionHeight();
             renderer.batch.draw(texture,
@@ -68,13 +75,13 @@ public class BulletManager {
     }
 
     private class Bullet {
-        Constants.BulletType type;
+        int type;
         Vector2 position;
         Vector2 velocity;
         Vector2 lastPosition;  // For aligning bullet image
         boolean isFinished = false;
 
-        public Bullet(Constants.BulletType type, Vector2 position, Vector2 velocity) {
+        public Bullet(int type, Vector2 position, Vector2 velocity) {
             this.type = type;
             this.position = new Vector2(position);
             this.velocity = new Vector2(velocity);

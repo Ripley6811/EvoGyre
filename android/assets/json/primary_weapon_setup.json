@@ -1,0 +1,74 @@
+[
+  {
+    "index": 0,
+    "description": "Pair of blue lasers flying straight",
+    "texture": "bluelaser",
+    "fireRate": 0.2,
+    "positionOffset": [
+      {"x": -8, "y": 2.2},
+      {"x": -8, "y": -2.2}
+    ],
+    "velocity": 500,
+    "heading": [
+      {"x": -200, "y": 1},
+      {"x": -200, "y": -1}
+    ]
+  },
+  {
+    "index": 1,
+    "description": "Pairs of triple blue lasers flying straight and angled left and right",
+    "texture": "bluelaser",
+    "fireRate": 0.2,
+    "positionOffset": [
+      {"x": -8, "y": 2.2},
+      {"x": -8, "y": -2.2},
+      {"x": -8, "y": 2.2},
+      {"x": -8, "y": -2.2}
+    ],
+    "velocity": 500,
+    "heading": [
+      {"x": -200, "y": 1},
+      {"x": -200, "y": -1},
+      {"x": -8, "y": 1},
+      {"x": -8, "y": -1}
+    ]
+  },
+  {
+    "index": 2,
+    "description": "Pair of red lasers flying straight",
+    "texture": "redlaser",
+    "fireRate": 0.11,
+    "positionOffset": [
+      {"x": -8, "y": 2.2},
+      {"x": -12, "y": 0},
+      {"x": -8, "y": -2.2}
+    ],
+    "velocity": 800,
+    "heading": [
+      {"x": -50, "y": 1},
+      {"x": -1, "y": 0},
+      {"x": -50, "y": -1}
+    ]
+  },
+  {
+    "index": 3,
+    "description": "Pairs of triple red lasers flying straight and angled left and right",
+    "texture": "redlaser",
+    "fireRate": 0.15,
+    "positionOffset": [
+      {"x": -8, "y": 2.2},
+      {"x": -8, "y": 2.2},
+      {"x": -12, "y": 0},
+      {"x": -8, "y": -2.2},
+      {"x": -8, "y": -2.2}
+    ],
+    "velocity": 800,
+    "heading": [
+      {"x": -8, "y": 1},
+      {"x": -20, "y": 1},
+      {"x": -1, "y": 0},
+      {"x": -20, "y": -1},
+      {"x": -8, "y": -1}
+    ]
+  }
+]

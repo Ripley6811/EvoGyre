@@ -17,11 +17,12 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     private Animation fly_level_fire;
     private Animation fly_right_fire;
     private Animation fly_left_fire;
+    private TextureRegion missile;
     private Shield shield;
     private boolean justFired = false;
-    private float FIRE_RATE = 0.2f;
     private float fireCooldown = 0f;
     public int weaponLevel = 0;
+    private int nMissiles = 1;
 
     public Vessel(float x, float y, TextureAtlas atlas) {
         super(x, y);
@@ -33,6 +34,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         fly_right_fire = animateLoop(atlas.findRegions("playerturnshoot"));
         fly_left_fire = animateLoop(atlas.findRegions("playerturnshoot"));
         for (TextureRegion each: fly_left_fire.getKeyFrames()) each.flip(true, false);
+        missile = atlas.createSprite("missile");
         shield = new Shield(2f*Constants.SHIELD_RADIUS,
                 2f*Constants.SHIELD_WIDTH_MULTIPLIER*Constants.SHIELD_RADIUS,
                 Constants.STARTING_SHIELD_POINTS);
@@ -68,13 +70,17 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
     }
 
+    public void addMissiles(int amount) {
+        this.nMissiles += amount;
+    }
+
     public boolean canFire() {
         return fireCooldown == 0f;
     }
 
     public void fire() {
         if (canFire()) {
-            fireCooldown = FIRE_RATE;
+            fireCooldown = Constants.PRIMARY_WEAPON_SETUP.get(weaponLevel).getFloat("fireRate");
             justFired = true;
         }
     }
@@ -82,6 +88,8 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     public Vector3 render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
+        float missileRightOffset = Constants.MISSILE_RIGHT_OFFSET;
+        float missileLeftOffset = Constants.MISSILE_LEFT_OFFSET;
 
         TextureRegion texture = fly_level.getKeyFrame(elapsedTime);
         if (justFired) {
@@ -89,27 +97,57 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
                 texture = fly_level_fire.getKeyFrame(elapsedTime);
             } else if (acceleration.y > 0f) {
                 texture = fly_right_fire.getKeyFrame(elapsedTime);
+                missileRightOffset = Constants.MISSILE_RIGHT_LEAN_RIGHT;
+                missileLeftOffset = Constants.MISSILE_LEFT_LEAN_RIGHT;
             } else if (acceleration.y < 0f) {
                 texture = fly_left_fire.getKeyFrame(elapsedTime);
+                missileRightOffset = Constants.MISSILE_RIGHT_LEAN_LEFT;
+                missileLeftOffset = Constants.MISSILE_LEFT_LEAN_LEFT;
             }
             justFired = false;
         } else {
             if (acceleration.y > 0f) {
                 texture = fly_right.getKeyFrame(elapsedTime);
+                missileRightOffset = Constants.MISSILE_RIGHT_LEAN_RIGHT;
+                missileLeftOffset = Constants.MISSILE_LEFT_LEAN_RIGHT;
             } else if (acceleration.y < 0f) {
                 texture = fly_left.getKeyFrame(elapsedTime);
+                missileRightOffset = Constants.MISSILE_RIGHT_LEAN_LEFT;
+                missileLeftOffset = Constants.MISSILE_LEFT_LEAN_LEFT;
             }
         }
-        int width = texture.getRegionWidth();
-        int height = texture.getRegionHeight();
-
+        int pWidth = texture.getRegionWidth();
+        int pHeight = texture.getRegionHeight();
         Vector3 placement = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
+
+        // Draw missiles under wings
+        if (nMissiles > 0) {
+            int mWidth = missile.getRegionWidth();
+            int mHeight = missile.getRegionHeight();
+            renderer.batch.begin();
+            renderer.batch.draw(missile,
+                    placement.x + missileRightOffset * pWidth,
+                    placement.y - 0.4f * pHeight,
+                    -missileRightOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
+                    mWidth, mHeight,
+                    0.5f, 0.5f,  // Scale
+                    positionAngle() + mapRotation + 90f);
+            renderer.batch.draw(missile,
+                    placement.x + missileLeftOffset * pWidth,
+                    placement.y - 0.4f * pHeight,
+                    -missileLeftOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
+                    mWidth, mHeight,
+                    0.5f, 0.5f,  // Scale
+                    positionAngle() + mapRotation + 90f);
+            renderer.batch.end();
+        }
+
         renderer.batch.begin();
         renderer.batch.draw(texture,
-                placement.x - 0.5f * width,
-                placement.y - 0.5f * height,
-                0.5f * width, 0.5f * height,
-                width, height,
+                placement.x - 0.5f * pWidth,
+                placement.y - 0.5f * pHeight,
+                0.5f * pWidth, 0.5f * pHeight,
+                pWidth, pHeight,
                 1.28f, 0.8f,  // Scale
                 positionAngle() + mapRotation + 90f);
         renderer.batch.end();

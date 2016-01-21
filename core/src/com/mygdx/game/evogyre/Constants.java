@@ -1,8 +1,11 @@
 package com.mygdx.game.evogyre;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
 /**
  * Created by Jay on 1/12/2016.
@@ -40,21 +43,20 @@ public class Constants {
     public static final Color FUNNEL_COLOR = new Color(0.05f,0.4f,0.05f,0.7f);
     public static final boolean DRAW_RINGS = true;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
-    // Cutoff where bullets are removed.
-    public static final float BULLET_CUTOFF = 0.4f * Constants.MAP_SIZE_X;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
-    public enum BulletType {
-        BLUELASER ("bluelaser", 500f),
-        REDLASER ("redlaser", 800f);
 
-        public final String textureName;
-        public final float velocity;
-        BulletType (String textureName, float velocity) {
-            this.textureName = textureName;
-            this.velocity = velocity;
-        }
-    }
+    /* WEAPONS */
+    public static final JsonValue PRIMARY_WEAPON_SETUP =
+            new JsonReader().parse(Gdx.files.internal("json/primary_weapon_setup.json"));
+    public static final float MISSILE_RIGHT_OFFSET = 0.5f;
+    public static final float MISSILE_LEFT_OFFSET = -1.1f;
+    public static final float MISSILE_RIGHT_LEAN_RIGHT = 0.28f;
+    public static final float MISSILE_RIGHT_LEAN_LEFT = 0.4f;
+    public static final float MISSILE_LEFT_LEAN_RIGHT = -1.0f;
+    public static final float MISSILE_LEFT_LEAN_LEFT = -0.88f;
+    // Cutoff where bullets are removed.
+    public static final float BULLET_CUTOFF = 0.4f * Constants.MAP_SIZE_X;
 
     /* ACTOR */
     public static final float ACCELERATION_RATE = 300f;
@@ -62,7 +64,7 @@ public class Constants {
 
     /* SHIELDS */
     public static final float SHIELD_RADIUS = 20f;
-    public static final float SHIELD_WIDTH_MULTIPLIER = 1.6f;
+    public static final float SHIELD_WIDTH_MULTIPLIER = 1.3f;
     public static final float SHIELD_EFFECT_OFFSET = 15f;
     public static final float PHASE_MAX = 1f;  // [0f, 1f]
     public static final float PHASE_MULTIPLIER = 2f;  // Effect spread rate
