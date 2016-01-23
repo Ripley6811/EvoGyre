@@ -49,6 +49,7 @@ public class BulletManager {
             if (bullet.position.y >= 360f) bullet.position.y -= 360f;
             // Kill off distant bullets. Don't let them run to end of game map
             if (bullet.position.x <= Constants.BULLET_CUTOFF) bullet.isFinished = true;
+            if (bullet.position.x > Constants.MAP_SIZE_X) bullet.isFinished = true;
         }
     }
 

@@ -92,11 +92,10 @@ public class VisualEffects {
         funnelColor.a = funnelAlpha;
         if (funnelAlpha == 0f) return;
 
-        float ringDistances[] = new float[20];
-        float interval = Constants.MAP_SIZE_X / ringDistances.length;
+        float ringDistances[] = new float[Constants.NUMBER_OF_RINGS];
         float ringDisplacement = sineOut.next(delta);
         for (int i = 0; i < ringDistances.length; i++) {
-            ringDistances[i] = i * interval + ringDisplacement;
+            ringDistances[i] = i * Constants.RING_INTERVAL + ringDisplacement;
         }
         boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
         if (!blend_enabled) {

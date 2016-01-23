@@ -7,10 +7,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.Random;
@@ -31,6 +33,8 @@ public class GameScreen extends InputAdapter implements Screen {
     Array<Vessel> vessels;  // Possible multiple spaceships, powerup
     Random random = new Random();
     BulletManager bullets;
+    EnemyManager enemies;
+    TextureRegion planet;
 
     float timerGame;
     float timerDebris;
@@ -64,6 +68,8 @@ public class GameScreen extends InputAdapter implements Screen {
         /** LOAD ASSETS **/
         atlas = game.assets.get(Constants.MAIN_ATLAS);
         bullets = new BulletManager(atlas);
+        enemies = new EnemyManager(atlas);
+        planet = atlas.createSprite("lavender");
 
         init();
     }
@@ -75,6 +81,20 @@ public class GameScreen extends InputAdapter implements Screen {
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
         VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         timerGame = 0f;
+
+        // Load level enemies
+        for (JsonValue group: Constants.ATTACK_PLAN_1) {
+            boolean isAbreast = group.getString("pattern").toLowerCase().startsWith("abreast");
+            float enterTime = group.getFloat("enterTime");
+            float interval = group.getFloat("interval");
+            float startY = group.getFloat("enterYPos");
+            for (int i=0; i<group.getInt("quantity"); i++) {
+                // TODO: change enemy type into Enum
+                enemies.enqueue(0, enterTime, startY, group.getString("pattern"));
+                if (isAbreast) startY += Constants.ABREAST_DISTANCE;
+                enterTime += interval;
+            }
+        }
     }
 
     @Override
@@ -129,7 +149,7 @@ public class GameScreen extends InputAdapter implements Screen {
         actionViewport.update(width, height, true);
     }
 
-    public void update(float delta) {
+    public void updateAssets(float delta) {
         // Update timer
         timerGame += delta;
 
@@ -142,7 +162,7 @@ public class GameScreen extends InputAdapter implements Screen {
         }
 
         // Update debris position
-        for (int i = debris.size-1; i >= 0; i--) {
+        for (int i = debris.size - 1; i >= 0; i--) {
             debris.get(i).position.x += 1f;
             if (debris.get(i).position.x >= Constants.MAP_SIZE_X * 1.2) {
                 debris.removeIndex(i);
@@ -150,12 +170,18 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
 
+
+        enemies.update(timerGame);
+
+        bullets.update(delta);
+    }
+
+    public void updateInput(float delta) {
         // Getting pressed keys
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             // Fire primary weapon
             for (Vessel vessel: vessels) {
-                if (vessel.canFire()){
-                    vessel.fire();
+                if (vessel.fire()){
                     int weaponLevel = vessel.weaponLevel;
                     float xPos = vessel.position.x;
                     float yPos = vessel.position.y;
@@ -184,9 +210,6 @@ public class GameScreen extends InputAdapter implements Screen {
             vessels.get(0).weaponLevel = 3;
         }
 
-
-        bullets.update(delta);
-        updateRotation(delta);
     }
 
     public void updateRotation(float delta) {
@@ -223,7 +246,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void render(float delta) {
-        update(delta);
+        updateInput(delta);
+        updateAssets(delta);
+        updateRotation(delta);
 
         // Background color fill
         Color BG_COLOR = Constants.BACKGROUND_COLOR;
@@ -234,27 +259,43 @@ public class GameScreen extends InputAdapter implements Screen {
         VisualEffects.drawStars(renderer, mapRotation, vanishingPoint);
 
         /** DRAW PLANET **/
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.BLUE);
-        renderer.circle(vanishingPoint.x * Constants.CENTER_DISPLACEMENT, vanishingPoint.y * Constants.CENTER_DISPLACEMENT, 20, 100);
-        renderer.end();
+        renderer.batch.begin();
+        Vector3 pos = ProjectionUtils.projectPoint(new Vector2(0,0), mapRotation, vanishingPoint);
+        renderer.batch.draw(planet,
+                pos.x-planet.getRegionWidth()/2, pos.y-planet.getRegionHeight()/2,
+                planet.getRegionWidth()/2, planet.getRegionWidth()/2,
+                planet.getRegionWidth(), planet.getRegionHeight(),
+                0.5f, 0.5f,
+                mapRotation);
+        renderer.batch.end();
 
         /** DRAW FUNNEL **/
         VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint, game.settings.DRAW_RINGS());
 
         /** DRAW TEMP DEBRIS **/
+        boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
+        if (!blend_enabled) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        }
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(Color.GOLD);
+        renderer.setColor(new Color(1f, .9f, 0f, .5f));
         for (Actor d: debris) {
             Vector3 placement = ProjectionUtils.projectPoint(d.position, mapRotation, vanishingPoint);
-            renderer.circle(placement.x, placement.y, 5f*placement.z);
+            renderer.circle(placement.x, placement.y, 1f*placement.z);
         }
         renderer.end();
+        if (!blend_enabled) {
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
 
         /** Draw player vessels **/
         for (Vessel vessel: vessels) {
             vessel.render(renderer, delta, mapRotation, vanishingPoint);
         }
+
+        /** Draw enemies **/
+        enemies.render(renderer, delta, mapRotation, vanishingPoint);
 
         bullets.render(renderer, mapRotation, vanishingPoint);
     }

@@ -1,0 +1,41 @@
+{
+  "level": 1,
+  "notes": "Order enemy groups by 'enterTime'.",
+  "description": {
+    "enterTime": "Time since start of game when enemy will enter game map",
+    "quantity": "Number of enemies in this group",
+    "interval": "Time interval between each enemy's entrance for this group",
+    "type": "Denotes enemy type and image set to use",
+    "enterYPos": "Degree position (Y) for enemy entrance",
+    "pattern": "The flight plan for the group"
+  },
+  "patternsAvailable": [
+    "snake_zigzag", "abreast_zigzag", "snake_spiral"
+  ],
+  "enemies": [
+    {
+      "enterTime": 1,
+      "quantity": 6,
+      "interval": 0.1,
+      "type": "trident",
+      "enterYPos": 0,
+      "pattern": "snake_zigzag"
+    },
+    {
+      "enterTime": 10,
+      "quantity": 3,
+      "interval": 0,
+      "type": "trident",
+      "enterYPos": 0,
+      "pattern": "abreast_zigzag"
+    },
+    {
+      "enterTime": 20,
+      "quantity": 10,
+      "interval": 0.2,
+      "type": "ball",
+      "enterYPos": 0,
+      "pattern": "snake_spiral"
+    }
+  ]
+}

@@ -11,14 +11,14 @@ import com.badlogic.gdx.graphics.g2d.Animation;
  * Created by Jay on 1/18/2016.
  */
 public class Vessel extends Actor implements Propulsion, ShieldInterface {
-    private Animation fly_level;
-    private Animation fly_right;
-    private Animation fly_left;
-    private Animation fly_level_fire;
-    private Animation fly_right_fire;
-    private Animation fly_left_fire;
-    private TextureRegion missile;
-    private Shield shield;
+    private final Animation fly_level;
+    private final Animation fly_right;
+    private final Animation fly_left;
+    private final Animation fly_level_fire;
+    private final Animation fly_right_fire;
+    private final Animation fly_left_fire;
+    private final TextureRegion missile;
+    private final Shield shield;
     private boolean justFired = false;
     private float fireCooldown = 0f;
     public int weaponLevel = 0;
@@ -38,10 +38,6 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         shield = new Shield(2f*Constants.SHIELD_RADIUS,
                 2f*Constants.SHIELD_WIDTH_MULTIPLIER*Constants.SHIELD_RADIUS,
                 Constants.STARTING_SHIELD_POINTS);
-    }
-
-    private Animation animateLoop(Array<TextureAtlas.AtlasRegion> textures) {
-        return new Animation(ACTOR_FRAME_RATE, textures, Animation.PlayMode.LOOP);
     }
 
     @Override
@@ -74,18 +70,21 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         this.nMissiles += amount;
     }
 
-    public boolean canFire() {
-        return fireCooldown == 0f;
-    }
-
-    public void fire() {
-        if (canFire()) {
+    /**
+     * Returns true if after firing cool down cycle is initialized or false if
+     * still in cool down from last firing.
+     * @return Boolean of weapon fire success.
+     */
+    public boolean fire() {
+        if (fireCooldown == 0f) {
             fireCooldown = Constants.PRIMARY_WEAPON_SETUP.get(weaponLevel).getFloat("fireRate");
             justFired = true;
+            return true;
         }
+        return false;
     }
 
-    public Vector3 render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+    public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
         float missileRightOffset = Constants.MISSILE_RIGHT_OFFSET;
@@ -153,6 +152,5 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         renderer.batch.end();
 
         shield.render(renderer, delta, placement, positionAngle() + mapRotation);
-        return placement;
     }
 }

@@ -42,6 +42,8 @@ public class Constants {
     public static final float CENTER_DISPLACEMENT = 0.7f * PROJECTION_RADIUS;
     public static final Color FUNNEL_COLOR = new Color(0.05f,0.4f,0.05f,0.7f);
     public static final boolean DRAW_RINGS = true;
+    public static final int NUMBER_OF_RINGS = 20;
+    public static final float RING_INTERVAL = MAP_SIZE_X / NUMBER_OF_RINGS;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
@@ -61,6 +63,19 @@ public class Constants {
     /* ACTOR */
     public static final float ACCELERATION_RATE = 300f;
     public static final float MAX_VELOCITY = 150f;
+    public enum Flight_Patterns {
+        SNAKE_ZIGZAG ("snake-zigzag"),
+        ABREAST_ZIGZAG ("abreast-zigzag"),
+        SNAKE_SPIRAL ("snake-spiral");
+
+        public final String string;
+        Flight_Patterns(String str) {
+            this.string = str;
+        }
+    }
+    public static final JsonValue ATTACK_PLAN_1 =
+            new JsonReader().parse(Gdx.files.internal("json/level_1.json")).get("enemies");
+    public static final float ABREAST_DISTANCE = 12f;
 
     /* SHIELDS */
     public static final float SHIELD_RADIUS = 20f;

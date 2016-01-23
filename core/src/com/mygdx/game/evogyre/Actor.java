@@ -1,6 +1,9 @@
 package com.mygdx.game.evogyre;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Jay on 1/13/2016.
@@ -59,5 +62,9 @@ public class Actor {
      */
     public float heading() {
         return velocity.angle();
+    }
+
+    public Animation animateLoop(Array<TextureAtlas.AtlasRegion> textures) {
+        return new Animation(ACTOR_FRAME_RATE, textures, Animation.PlayMode.LOOP);
     }
 }
