@@ -12,25 +12,29 @@ import com.badlogic.gdx.utils.JsonValue;
  */
 public class BulletManager {
     private Array<TextureRegion> bulletTextures;
+    private JsonValue weaponSet;
 
     Array<Bullet> bullets;
 
-    public BulletManager(TextureAtlas atlas) {
+    public BulletManager(TextureAtlas atlas, JsonValue weaponSetup) {
         bulletTextures = new Array<TextureRegion>();
-        for (JsonValue setup: Constants.PRIMARY_WEAPON_SETUP) {
+        weaponSet = weaponSetup;
+        for (JsonValue setup: weaponSet) {
             bulletTextures.add(atlas.findRegion(setup.getString("texture")));
         }
         bullets = new Array<Bullet>();
     }
 
-    public void add(int type, float x, float y) {
-        JsonValue setup = Constants.PRIMARY_WEAPON_SETUP.get(type);
+    public void add(int index, float x, float y) {
+        JsonValue setup = weaponSet.get(index);
         for (int i=0; i<setup.get("positionOffset").size; i++) {
             JsonValue offset = setup.get("positionOffset").get(i);
             JsonValue heading = setup.get("heading").get(i);
-            bullets.add(new Bullet(type,
+            bullets.add(new Bullet(index,
                     new Vector2(x + offset.getFloat("x"), y + offset.getFloat("y")),
-                    new Vector2(heading.getFloat("x"), heading.getFloat("y")).setLength(setup.getFloat("velocity"))));
+                    new Vector2(heading.getFloat("x"), heading.getFloat("y")).setLength(setup.getFloat("velocity")),
+                    setup.getString("texture").startsWith("round")
+            ));
         }
     }
 
@@ -49,7 +53,7 @@ public class BulletManager {
             if (bullet.position.y >= 360f) bullet.position.y -= 360f;
             // Kill off distant bullets. Don't let them run to end of game map
             if (bullet.position.x <= Constants.BULLET_CUTOFF) bullet.isFinished = true;
-            if (bullet.position.x > Constants.MAP_SIZE_X) bullet.isFinished = true;
+            if (bullet.position.x > Constants.MAP_SIZE_X + Constants.RING_INTERVAL) bullet.isFinished = true;
         }
     }
 
@@ -58,19 +62,30 @@ public class BulletManager {
         Vector3 placement2;
         renderer.batch.begin();
         for (Bullet b: bullets) {
+            if (b.isFinished) continue;
             placement = ProjectionUtils.projectPoint(b.position, mapRotation, vanishingPoint);
             placement2 = ProjectionUtils.projectPoint(b.lastPosition, mapRotation, vanishingPoint);
             float angle = new Vector2(placement.x-placement2.x, placement.y-placement2.y).angle();
             TextureRegion texture = bulletTextures.get(b.type);
             int width = texture.getRegionWidth();
             int height = texture.getRegionHeight();
-            renderer.batch.draw(texture,
-                    placement.x - 0.5f * width,
-                    placement.y - 0.5f * height,
-                    0.5f * width, 0.5f * height,
-                    width, height,
-                    placement.z/2f, placement.z*placement.z,  // Scale
-                    angle + 90f);
+            if (b.isRound) {
+                renderer.batch.draw(texture,
+                        placement.x - 0.5f * width,
+                        placement.y - 0.5f * height,
+                        0.5f * width, 0.5f * height,
+                        width, height,
+                        placement.z / 2f, placement.z / 2f,  // Scale
+                        angle + 90f);
+            } else {
+                renderer.batch.draw(texture,
+                        placement.x - 0.5f * width,
+                        placement.y - 0.5f * height,
+                        0.5f * width, 0.5f * height,
+                        width, height,
+                        placement.z / 2f, placement.z * placement.z,  // Scale
+                        angle + 90f);
+            }
         }
         renderer.batch.end();
     }
@@ -81,12 +96,18 @@ public class BulletManager {
         Vector2 velocity;
         Vector2 lastPosition;  // For aligning bullet image
         boolean isFinished = false;
+        boolean isRound;
 
         public Bullet(int type, Vector2 position, Vector2 velocity) {
+            this(type, position, velocity, false);
+        }
+
+        public Bullet(int type, Vector2 position, Vector2 velocity, boolean isRound) {
             this.type = type;
             this.position = new Vector2(position);
             this.velocity = new Vector2(velocity);
             this.lastPosition = new Vector2(position);
+            this.isRound = isRound;
         }
     }
 }

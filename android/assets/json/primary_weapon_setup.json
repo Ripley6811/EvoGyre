@@ -35,7 +35,7 @@
   },
   {
     "index": 2,
-    "description": "Pair of red lasers flying straight",
+    "description": "Triple of red lasers flying straight",
     "texture": "redlaser",
     "fireRate": 0.11,
     "positionOffset": [
@@ -52,9 +52,9 @@
   },
   {
     "index": 3,
-    "description": "Pairs of triple red lasers flying straight and angled left and right",
+    "description": "Triple pairs of red lasers flying straight and angled left and right",
     "texture": "redlaser",
-    "fireRate": 0.17,
+    "fireRate": 0.16,
     "positionOffset": [
       {"x": -8, "y": 2.2},
       {"x": -8, "y": 2.2},

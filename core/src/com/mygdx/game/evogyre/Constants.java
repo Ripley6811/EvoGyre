@@ -35,7 +35,8 @@ public class Constants {
     /* WORLD SETTINGS */
     public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
     public static final float PROJECTION_RADIUS = 280f;
-    public static final boolean FUNNEL_SHAPE = true;  // Else straight cylinder flow
+    // Affects curvature of cylinder/funnel. 1 = cylinder, over 1 increases curve
+    public static final int FUNNEL_POWER = 3;
     public static final float MAP_SIZE_X = 3*360f;
     public static final float MAP_SIZE_Y_360 = 360f;  // DO NOT CHANGE
     public static final double VANISHING_STRETCH = 3.0;
@@ -51,6 +52,8 @@ public class Constants {
     /* WEAPONS */
     public static final JsonValue PRIMARY_WEAPON_SETUP =
             new JsonReader().parse(Gdx.files.internal("json/primary_weapon_setup.json"));
+    public static final JsonValue ENEMY_WEAPON_SETUP =
+            new JsonReader().parse(Gdx.files.internal("json/enemy_weapon_setup.json"));
     public static final float MISSILE_RIGHT_OFFSET = 0.5f;
     public static final float MISSILE_LEFT_OFFSET = -1.1f;
     public static final float MISSILE_RIGHT_LEAN_RIGHT = 0.28f;
@@ -59,6 +62,8 @@ public class Constants {
     public static final float MISSILE_LEFT_LEAN_LEFT = -0.88f;
     // Cutoff where bullets are removed.
     public static final float BULLET_CUTOFF = 0.4f * Constants.MAP_SIZE_X;
+    // Reduce and randomize enemy firing rate
+    public static final float ENEMY_FIRE_REDUCTION = 0.005f;  // 0.06 = 6% success rate
 
     /* ACTOR */
     public static final float ACCELERATION_RATE = 300f;

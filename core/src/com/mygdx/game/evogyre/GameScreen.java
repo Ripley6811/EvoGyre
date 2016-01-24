@@ -32,7 +32,8 @@ public class GameScreen extends InputAdapter implements Screen {
     Vector2 vanishingPoint;
     Array<Vessel> vessels;  // Possible multiple spaceships, powerup
     Random random = new Random();
-    BulletManager bullets;
+    BulletManager playerBullets;
+    BulletManager enemyBullets;
     EnemyManager enemies;
     TextureRegion planet;
 
@@ -67,8 +68,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
         /** LOAD ASSETS **/
         atlas = game.assets.get(Constants.MAIN_ATLAS);
-        bullets = new BulletManager(atlas);
-        enemies = new EnemyManager(atlas);
+        playerBullets = new BulletManager(atlas, Constants.PRIMARY_WEAPON_SETUP);
+        enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
+        enemies = new EnemyManager(atlas, enemyBullets);
         planet = atlas.createSprite("lavender");
 
         init();
@@ -88,11 +90,12 @@ public class GameScreen extends InputAdapter implements Screen {
             float enterTime = group.getFloat("enterTime");
             float interval = group.getFloat("interval");
             float startY = group.getFloat("enterYPos");
+            String type = group.getString("type");
             for (int i=0; i<group.getInt("quantity"); i++) {
                 // TODO: change enemy type into Enum
-                enemies.enqueue(0, enterTime, startY, group.getString("pattern"));
-                if (isAbreast) startY += Constants.ABREAST_DISTANCE;
-                enterTime += interval;
+                enemies.enqueue(type, enterTime, startY, group.getString("pattern"));
+                if (isAbreast) startY = (startY + Constants.ABREAST_DISTANCE) % 360f;
+                else enterTime += interval;
             }
         }
     }
@@ -116,7 +119,6 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // TODO: Create a boolean for dealing with continuous touch, use for firing weapons
-        VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -154,7 +156,7 @@ public class GameScreen extends InputAdapter implements Screen {
         timerGame += delta;
 
         // Add debris
-        float rate = 0.5f;
+        float rate = 0.8f;
         if (timerGame > rate + timerDebris) {
             timerDebris += rate;
             float r = Constants.MAP_SIZE_Y_360 * random.nextFloat();
@@ -170,10 +172,12 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
 
-
         enemies.update(timerGame);
 
-        bullets.update(delta);
+        playerBullets.update(delta);
+
+        enemyBullets.update(delta);
+        // TODO: Check bullet collision and resolve
     }
 
     public void updateInput(float delta) {
@@ -185,7 +189,7 @@ public class GameScreen extends InputAdapter implements Screen {
                     int weaponLevel = vessel.weaponLevel;
                     float xPos = vessel.position.x;
                     float yPos = vessel.position.y;
-                    bullets.add(weaponLevel, xPos, yPos);
+                    playerBullets.add(weaponLevel, xPos, yPos);
                 }
             }
         }
@@ -279,7 +283,7 @@ public class GameScreen extends InputAdapter implements Screen {
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(new Color(1f, .9f, 0f, .5f));
+        renderer.setColor(new Color(1f, .9f, 0.4f, 0.4f));
         for (Actor d: debris) {
             Vector3 placement = ProjectionUtils.projectPoint(d.position, mapRotation, vanishingPoint);
             renderer.circle(placement.x, placement.y, 1f*placement.z);
@@ -297,7 +301,7 @@ public class GameScreen extends InputAdapter implements Screen {
         /** Draw enemies **/
         enemies.render(renderer, delta, mapRotation, vanishingPoint);
 
-        bullets.render(renderer, mapRotation, vanishingPoint);
+        playerBullets.render(renderer, mapRotation, vanishingPoint);
     }
 
     @Override

@@ -14,25 +14,17 @@
   ],
   "enemies": [
     {
-      "enterTime": 1,
-      "quantity": 6,
-      "interval": 0.1,
-      "type": "trident",
-      "enterYPos": 0,
-      "pattern": "snake_zigzag"
-    },
-    {
-      "enterTime": 10,
-      "quantity": 3,
+      "enterTime": 8,
+      "quantity": 29,
       "interval": 0,
       "type": "trident",
-      "enterYPos": 0,
+      "enterYPos": 180,
       "pattern": "abreast_zigzag"
     },
     {
-      "enterTime": 20,
-      "quantity": 10,
-      "interval": 0.2,
+      "enterTime": 14,
+      "quantity": 100,
+      "interval": 0.1,
       "type": "ball",
       "enterYPos": 0,
       "pattern": "snake_spiral"

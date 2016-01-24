@@ -19,9 +19,6 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     private final Animation fly_left_fire;
     private final TextureRegion missile;
     private final Shield shield;
-    private boolean justFired = false;
-    private float fireCooldown = 0f;
-    public int weaponLevel = 0;
     private int nMissiles = 1;
 
     public Vessel(float x, float y, TextureAtlas atlas) {
@@ -75,6 +72,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
      * still in cool down from last firing.
      * @return Boolean of weapon fire success.
      */
+    @Override
     public boolean fire() {
         if (fireCooldown == 0f) {
             fireCooldown = Constants.PRIMARY_WEAPON_SETUP.get(weaponLevel).getFloat("fireRate");

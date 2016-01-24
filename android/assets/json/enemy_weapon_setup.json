@@ -1,0 +1,30 @@
+[
+  {
+    "index": 0,
+    "description": "Round bullets fired by spherical enemies",
+    "texture": "round_sm",
+    "fireRate": 0.2,
+    "positionOffset": [
+      {"x": 0, "y": 0}
+    ],
+    "velocity": 100,
+    "heading": [
+      {"x": 1, "y": 0}
+    ]
+  },
+  {
+    "index": 1,
+    "description": "Pointy red bullets fired by trident ships",
+    "texture": "sharp",
+    "fireRate": 0.2,
+    "positionOffset": [
+      {"x": 20, "y": 2.2},
+      {"x": 20, "y": -2.2}
+    ],
+    "velocity": 200,
+    "heading": [
+      {"x": 250, "y": -1},
+      {"x": 250, "y": 1}
+    ]
+  }
+]

@@ -14,15 +14,26 @@ public class Actor {
             acceleration;
     public float ACTOR_FRAME_RATE = 0.1f;
     public float elapsedTime = 0f;
+    public boolean justFired = false;
+    public float fireCooldown = 0f;
+    public int weaponLevel = 0;
+    public boolean isDead = false;
+    public boolean isEntering = true;
+    public Constants.Flight_Patterns pattern;
 
     public Actor(float x, float y) {
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         acceleration = new Vector2(0, 0);
+        pattern = Constants.Flight_Patterns.SNAKE_SPIRAL;
     }
 
     public float positionAngle() {
         return position.y;
+    }
+
+    public boolean fire() {
+        return false;
     }
 
     /**
@@ -66,5 +77,9 @@ public class Actor {
 
     public Animation animateLoop(Array<TextureAtlas.AtlasRegion> textures) {
         return new Animation(ACTOR_FRAME_RATE, textures, Animation.PlayMode.LOOP);
+    }
+
+    public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+
     }
 }

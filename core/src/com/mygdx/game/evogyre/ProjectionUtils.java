@@ -47,14 +47,7 @@ public class ProjectionUtils {
     public static Vector3 transposeCenter(Vector3 displayPt, Vector2 centerTransposition) {
         Vector2 scaledV = new Vector2(centerTransposition);
         scaledV.setLength(Constants.CENTER_DISPLACEMENT);
-        // TODO: Keep testing - Curving funnel or Straight tunnel...
-        if (Constants.FUNNEL_SHAPE) {
-            // Curving funnel view
-            scaledV.scl(1.0f - (float) Math.sqrt(displayPt.z));
-        } else {
-            // Straight cylinder view
-            scaledV.scl(1.0f - displayPt.z);
-        }
+        scaledV.scl(1.0f - (float) Math.pow(displayPt.z, 1f/Constants.FUNNEL_POWER));
         return displayPt.add(scaledV.x, scaledV.y, 0f);
     }
 
