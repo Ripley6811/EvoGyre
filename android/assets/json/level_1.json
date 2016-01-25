@@ -15,7 +15,7 @@
   "enemies": [
     {
       "enterTime": 2,
-      "quantity": 29,
+      "quantity": 30,
       "interval": 0,
       "type": "trident",
       "enterYPos": 180,

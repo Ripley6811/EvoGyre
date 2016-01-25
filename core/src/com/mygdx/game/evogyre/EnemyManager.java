@@ -43,11 +43,9 @@ public class EnemyManager {
 
     public void update(float elapsedTime) {
         // Move enemies from queue and into play when start time is reached.
-        if (enemyQueue.size > 0) {
-            if (queueTimes.get(0) < elapsedTime) {
-                queueTimes.removeIndex(0);
-                enemies.add(enemyQueue.removeIndex(0));
-            }
+        while (enemyQueue.size > 0 && queueTimes.get(0) < elapsedTime) {
+            queueTimes.removeIndex(0);
+            enemies.add(enemyQueue.removeIndex(0));
         }
 
         // Update flight paths
@@ -55,6 +53,7 @@ public class EnemyManager {
             switch (enemy.pattern) {
                 case SNAKE_SPIRAL:
                     // TODO: Make better paths
+                    if (enemy.isEntering) enemy.velocity.setAngle(45f);
                     if (enemy.position.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {
                         enemy.isEntering = false;
                     } else if (!enemy.isEntering) {
