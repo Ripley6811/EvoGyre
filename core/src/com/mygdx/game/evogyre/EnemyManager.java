@@ -52,7 +52,6 @@ public class EnemyManager {
 
         // Update flight paths
         for (Actor enemy: enemies) {
-            // TODO: Fix the effects of hiding and showing screen.
             switch (enemy.pattern) {
                 case SNAKE_SPIRAL:
                     // TODO: Make better paths

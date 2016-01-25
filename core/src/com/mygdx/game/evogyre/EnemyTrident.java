@@ -32,7 +32,7 @@ public class EnemyTrident extends Actor {
     }
 
     public void damage(int amount) {
-        // TODO: ship itself takes damage without shielding
+
     }
 
     public void recharge(int amount) {
