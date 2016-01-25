@@ -102,7 +102,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.app.log(TAG, "called 'show()'");
     }
 
     public void setAccelerometerBalanced() {
@@ -113,7 +113,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.app.log(TAG, "called 'hide()'");
     }
 
     @Override
@@ -148,6 +148,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        Gdx.app.log(TAG, "called 'resize()'");
         actionViewport.update(width, height, true);
     }
 
@@ -250,6 +251,9 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.app.log(TAG, "delta = " + delta);
+        if (delta > 0.05f) return;  // Avoids spikes in delta value.
+
         updateInput(delta);
         updateAssets(delta);
         updateRotation(delta);
@@ -306,12 +310,12 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public void pause() {
-
+        Gdx.app.log(TAG, "called 'pause()'");
     }
 
     @Override
     public void resume() {
-
+        Gdx.app.log(TAG, "called 'resume()'");
     }
 
     @Override

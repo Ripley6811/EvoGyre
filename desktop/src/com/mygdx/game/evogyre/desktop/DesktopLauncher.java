@@ -6,7 +6,10 @@ import com.mygdx.game.evogyre.EvoGyreGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new EvoGyreGame(), config);
+		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
+		cfg.title = "Evo-Gyre";
+		cfg.height = 800;
+		cfg.width = 800;
+		new LwjglApplication(new EvoGyreGame(), cfg);
 	}
 }

@@ -4,7 +4,7 @@
   "description": {
     "enterTime": "Time since start of game when enemy will enter game map",
     "quantity": "Number of enemies in this group",
-    "interval": "Time interval between each enemy's entrance for this group",
+    "interval": "Time interval between each enemy's entrance for this group. 0 for 'abreast'",
     "type": "Denotes enemy type and image set to use",
     "enterYPos": "Degree position (Y) for enemy entrance",
     "pattern": "The flight plan for the group"
@@ -14,7 +14,7 @@
   ],
   "enemies": [
     {
-      "enterTime": 8,
+      "enterTime": 2,
       "quantity": 29,
       "interval": 0,
       "type": "trident",
@@ -22,7 +22,7 @@
       "pattern": "abreast_zigzag"
     },
     {
-      "enterTime": 14,
+      "enterTime": 10,
       "quantity": 100,
       "interval": 0.1,
       "type": "ball",
