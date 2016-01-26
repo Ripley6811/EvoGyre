@@ -17,6 +17,8 @@ X corresponds to the distance down the funnel and does not wrap.
 
 #### Collisions
 Bullets are considered as points in collisions and ships will be simple polygons.
+Collision interaction is based on the projected point and rendered image size
+(Map motion coordinates do not correspond well to image size).
 
 #### Image assets
 Spaceship graphics provided by [Udacity](www.udacity.com). Planets created by JWJ in

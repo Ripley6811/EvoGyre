@@ -1,13 +1,13 @@
 package com.mygdx.game.evogyre;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Jay on 1/22/2016.
@@ -33,6 +33,7 @@ public class EnemyTrident extends Actor {
         fly_left_fire = animateLoop(atlas.findRegions("enemyturnshoot"));
         for (TextureRegion each: fly_left_fire.getKeyFrames()) each.flip(true, false);
         weaponLevel = 1;
+        polygon = Constants.TRIDENT_POLYGON;
     }
 
     public void damage(int amount) {
@@ -57,6 +58,7 @@ public class EnemyTrident extends Actor {
     public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
+        float rotation = positionAngle() + mapRotation;
 
         TextureRegion texture = fly_level.getKeyFrame(elapsedTime);
         float imageLeanThreshold = 10f;
@@ -78,37 +80,22 @@ public class EnemyTrident extends Actor {
         }
         int pWidth = texture.getRegionWidth();
         int pHeight = texture.getRegionHeight();
-        Vector3 placement = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
+        float halfWidth = 0.5f * pWidth;
+        float halfHeight = 0.5f * pHeight;
+        display = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
 
         renderer.batch.begin();
         renderer.batch.draw(texture,
-                placement.x - 0.5f * pWidth,
-                placement.y - 0.5f * pHeight,
-                0.5f * pWidth, 0.5f * pHeight,
+                display.x - halfWidth, display.y - halfHeight,
+                halfWidth, halfHeight,
                 pWidth, pHeight,
-                1.28f*placement.z, 0.8f*placement.z,  // Scale
-                positionAngle() + mapRotation + 90f);
+                1.28f*display.z, 0.8f*display.z,  // Scale
+                rotation + 90f);
         renderer.batch.end();
 
         // Show collision polygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.enableBlend();
-            Vector2 a = new Vector2(0.5f*pHeight - 3f, 0);  // Tip
-            Vector2 b = new Vector2( -1f, -0.5f*pWidth);  // left wing
-            Vector2 c = new Vector2( -1f, 0.5f*pWidth);  // right wing
-            a.rotate(positionAngle() + mapRotation + 180f);
-            b.rotate(positionAngle() + mapRotation + 180f);
-            c.rotate(positionAngle() + mapRotation + 180f);
-            renderer.begin(ShapeRenderer.ShapeType.Filled);
-            renderer.setColor(new Color(0f, 1f, 1f, 0.4f));
-            float[] vertices = {placement.x + a.x, placement.y + a.y,
-                    placement.x + b.x, placement.y + b.y,
-                    placement.x + c.x, placement.y + c.y};
-            renderer.polygon(
-                    vertices
-            );
-            renderer.end();
-            DrawingUtils.disableBlend();
+            DrawingUtils.drawDebugPolygon(renderer, this);
         }
     }
 }

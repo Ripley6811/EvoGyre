@@ -33,7 +33,7 @@ public class EnemyManager {
 
     public void enqueue(String type, float startTime, float startY, String pattern) {
         Constants.Flight_Patterns efp = Constants.Flight_Patterns.valueOf(pattern.toUpperCase());
-        Actor enemy = new Actor(0,0);
+        Actor enemy = null;
         if (type.equals("trident")) enemy = new EnemyTrident(0f, startY, efp, atlas);
         if (type.equals("ball")) enemy = new EnemyBall(0f, startY, efp, atlas);
         enemy.velocity = new Vector2(70f, 50f);

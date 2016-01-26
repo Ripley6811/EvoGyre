@@ -3,6 +3,7 @@ package com.mygdx.game.evogyre;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -48,6 +49,7 @@ public class Constants {
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
+    public static final Color COLLISION_DEBUG_COLOR = new Color(0f, 1f, 1f, 0.8f);
 
     /* WEAPONS */
     public static final JsonValue PRIMARY_WEAPON_SETUP =
@@ -98,4 +100,31 @@ public class Constants {
     public static final float ACTOR_STATIC_THRESHOLD = 0.08f;
     // Multiply to velocity to slow down
     public static final float ACTOR_MOTION_FRICTION = 0.8f;
+
+    /* COLLISION POLYGONS */
+    // Trident = The green T-shaped enemy craft
+    private static Vector2[] tp_corners = {
+            new Vector2(12f, 20f),  // Tip
+            new Vector2(12f, -20f),  // left wing
+            new Vector2(0, -20f),  // right wing
+            new Vector2(0, 20f)  // right wing
+    };
+    public static final Array<Vector2> TRIDENT_POLYGON = new Array<Vector2>(tp_corners);
+    // Ball = The yellow ball-shaped enemy craft
+    private static Vector2[] bp_corners = {
+            new Vector2(12, 6),  // Tip
+            new Vector2(12, -6),  // left wing
+            new Vector2(0, -13f),  // right wing
+            new Vector2(0, 13f)  // right wing
+    };
+    public static final Array<Vector2> BALLSHIP_POLYGON = new Array<Vector2>(bp_corners);
+    // Vessel = The player craft
+    private static Vector2[] vp_corners = {
+            new Vector2(-17f, 0),  // Tip
+            new Vector2( 1f, -20),  // left wing
+            new Vector2( 4f, -20),
+            new Vector2( 4f, 20),
+            new Vector2( 1f, 20)  // right wing
+    };
+    public static final Array<Vector2> VESSEL_POLYGON = new Array<Vector2>(vp_corners);
 }

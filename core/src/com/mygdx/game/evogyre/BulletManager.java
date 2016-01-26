@@ -2,6 +2,7 @@ package com.mygdx.game.evogyre;
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -112,11 +113,15 @@ public class BulletManager {
         }
     }
 
-    public int[] checkForCollisions(Array<Actor> ships) {
-//        int[] hits = new int[ships.size];
-//        for (int i=0; i<ships.size; i++) {
-//            // TODO: Save ship/shield shape to Actor for collision checking
-//        }
-        return new int[0];
+    public int checkForCollisions(Actor ship) {
+        int hits = 0;
+        for (Bullet b: bullets) {
+            // TODO: THIS IS WRONG, need it translated to display position
+            if (Intersector.isPointInPolygon(ship.polygon, b.position)) {
+                hits += 1;
+                b.isFinished = true;
+            }
+        }
+        return hits;
     }
 }

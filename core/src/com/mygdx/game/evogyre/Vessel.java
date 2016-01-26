@@ -42,6 +42,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         shield = new Shield(2f*Constants.SHIELD_RADIUS,
                 2f*Constants.SHIELD_WIDTH_MULTIPLIER*Constants.SHIELD_RADIUS,
                 Constants.STARTING_SHIELD_POINTS);
+        polygon = Constants.VESSEL_POLYGON;
     }
 
     @Override
@@ -94,6 +95,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         fireCooldown = Math.max(0f, fireCooldown-delta);
         float missileRightOffset = Constants.MISSILE_RIGHT_OFFSET;
         float missileLeftOffset = Constants.MISSILE_LEFT_OFFSET;
+        float rotation = positionAngle() + mapRotation + 180f;
 
         TextureRegion texture = fly_level.getKeyFrame(elapsedTime);
         if (justFired) {
@@ -122,7 +124,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         }
         int pWidth = texture.getRegionWidth();
         int pHeight = texture.getRegionHeight();
-        Vector3 placement = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
+        display = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
 
         // Draw missiles under wings
         if (nMissiles > 0) {
@@ -130,53 +132,38 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
             int mHeight = missile.getRegionHeight();
             renderer.batch.begin();
             renderer.batch.draw(missile,
-                    placement.x + missileRightOffset * pWidth,
-                    placement.y - 0.4f * pHeight,
+                    display.x + missileRightOffset * pWidth,
+                    display.y - 0.4f * pHeight,
                     -missileRightOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
                     mWidth, mHeight,
                     0.5f, 0.5f,  // Scale
-                    positionAngle() + mapRotation + 90f);
+                    rotation - 90f);
             renderer.batch.draw(missile,
-                    placement.x + missileLeftOffset * pWidth,
-                    placement.y - 0.4f * pHeight,
+                    display.x + missileLeftOffset * pWidth,
+                    display.y - 0.4f * pHeight,
                     -missileLeftOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
                     mWidth, mHeight,
                     0.5f, 0.5f,  // Scale
-                    positionAngle() + mapRotation + 90f);
+                    rotation - 90f);
             renderer.batch.end();
         }
 
         // Draw vessel
         renderer.batch.begin();
         renderer.batch.draw(texture,
-                placement.x - 0.5f * pWidth,
-                placement.y - 0.5f * pHeight,
+                display.x - 0.5f * pWidth,
+                display.y - 0.5f * pHeight,
                 0.5f * pWidth, 0.5f * pHeight,
                 pWidth, pHeight,
                 1.28f, 0.8f,  // Scale
-                positionAngle() + mapRotation + 90f);
+                rotation - 90f);
         renderer.batch.end();
 
         // Show collision polygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.enableBlend();
-            Vector2 a = new Vector2(0.5f*pHeight - 3f, 0);  // Tip
-            Vector2 b = new Vector2( -1f, -0.5f*pWidth);  // left wing
-            Vector2 c = new Vector2( -1f, 0.5f*pWidth);  // right wing
-            a.rotate(positionAngle() + mapRotation + 180f);
-            b.rotate(positionAngle() + mapRotation + 180f);
-            c.rotate(positionAngle() + mapRotation + 180f);
-            renderer.begin(ShapeRenderer.ShapeType.Filled);
-            renderer.setColor(new Color(0f, 1f, 1f, 0.4f));
-            renderer.triangle(
-                    placement.x + a.x, placement.y + a.y,
-                    placement.x + b.x, placement.y + b.y,
-                    placement.x + c.x, placement.y + c.y
-            );
-            renderer.end();
-            DrawingUtils.disableBlend();
+            DrawingUtils.drawDebugPolygon(renderer, this);
         }
 
-        shield.render(renderer, delta, placement, positionAngle() + mapRotation);
+        shield.render(renderer, delta, display, positionAngle() + mapRotation);
     }
 }

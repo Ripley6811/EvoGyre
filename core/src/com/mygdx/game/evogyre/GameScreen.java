@@ -29,8 +29,10 @@ public class GameScreen extends InputAdapter implements Screen {
 
     TextureAtlas atlas;
     Array<Actor> debris;
-    Vector2 vanishingPoint;
-    Array<Vessel> vessels;  // Possible multiple spaceships, powerup
+    // Unit vector giving direction of vanishing point transposition.
+    static Vector2 vanishingPoint = new Vector2(0f, 1f);
+    // Player vessel array. Allows possibly multiple vessels as power-up
+    Array<Vessel> vessels;
     Random random = new Random();
     BulletManager playerBullets;
     BulletManager enemyBullets;
@@ -39,10 +41,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
     float timerGame;
     float timerDebris;
-    float mapRotation;
+    static float mapRotation = 0f;
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any position
+    boolean pause = false;
 
     public GameScreen(EvoGyreGame game) {
         Gdx.input.setInputProcessor(this);
@@ -57,9 +60,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
         debris = new Array<Actor>();
         vessels = new Array<Vessel>();
-        // Unit vector giving direction of vanishing point transposition.
-        // TODO: change this to be based on player position
-        vanishingPoint = new Vector2(0f, 1f);
 
         renderer = new MyShapeRenderer();
         renderer.setAutoShapeType(true);
@@ -106,6 +106,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Gdx.app.log(TAG, "called 'show()'");
+        pause = false;
     }
 
     public void setAccelerometerBalanced() {
@@ -117,6 +118,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public void hide() {
         Gdx.app.log(TAG, "called 'hide()'");
+        pause = true;
     }
 
     @Override
@@ -181,7 +183,6 @@ public class GameScreen extends InputAdapter implements Screen {
         playerBullets.update(delta);
 
         enemyBullets.update(delta);
-        // TODO: Check bullet collision and resolve
     }
 
     public void updateInput(float delta) {
@@ -257,18 +258,23 @@ public class GameScreen extends InputAdapter implements Screen {
         // playerBullets
         // enemyBullets
         // vessels
-//        for ()
+        for (Actor enemy: enemies.enemies) {
+            int hits = playerBullets.checkForCollisions(enemy);
+        }
     }
 
     @Override
     public void render(float delta) {
-        Gdx.app.log(TAG, "delta = " + delta);
         if (delta > 0.05f) return;  // Avoids spikes in delta value.
 
-        updateInput(delta);
-        updateAssets(delta);
-        updateRotation(delta);
-        updateCollision();
+        if (!pause) {
+            // TODO: keep all updates out of the render methods
+            // TODO: Enemy position update remove from render methods
+            updateInput(delta);
+            updateAssets(delta);
+            updateRotation(delta);
+            updateCollision();
+        }
 
         // Background color fill
         Color BG_COLOR = Constants.BACKGROUND_COLOR;
@@ -317,11 +323,13 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public void pause() {
         Gdx.app.log(TAG, "called 'pause()'");
+        pause = true;
     }
 
     @Override
     public void resume() {
         Gdx.app.log(TAG, "called 'resume()'");
+        pause = false;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.mygdx.game.evogyre;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -21,7 +22,8 @@ public class Actor {
     public boolean isDead = false;
     public boolean isEntering = true;
     public Constants.Flight_Patterns pattern;
-//    public // TODO: Save ship/shield shape to Actor for collision checking
+    public Vector3 display;
+    public Array<Vector2> polygon;// TODO: Save ship/shield shape to Actor for collision checking
 
     public Actor(float x, float y) {
         position = new Vector2(x, y);
