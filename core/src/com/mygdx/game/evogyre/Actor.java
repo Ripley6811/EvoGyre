@@ -20,6 +20,7 @@ public class Actor {
     public boolean isDead = false;
     public boolean isEntering = true;
     public Constants.Flight_Patterns pattern;
+    public // TODO: Save ship/shield shape to Actor for collision checking
 
     public Actor(float x, float y) {
         position = new Vector2(x, y);

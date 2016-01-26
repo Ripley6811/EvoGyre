@@ -13,9 +13,9 @@ import java.util.Random;
  */
 public class EnemyManager {
     TextureAtlas atlas;
-    Array<Actor> enemies;
-    Array<Float> queueTimes;
-    Array<Actor> enemyQueue;
+    Array<Actor> enemies;  // In play
+    Array<Float> queueTimes;  // Times for queued enemies to enter play
+    Array<Actor> enemyQueue;  // Waiting to enter at specified time (queueTimes)
     BulletManager bulletManager;
     Random random;
 
@@ -49,6 +49,7 @@ public class EnemyManager {
         }
 
         // Update flight paths
+        // TODO: move patterns to another file or JSON file
         for (Actor enemy: enemies) {
             switch (enemy.pattern) {
                 case SNAKE_SPIRAL:

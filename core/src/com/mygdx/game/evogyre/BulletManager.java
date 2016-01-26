@@ -14,7 +14,7 @@ public class BulletManager {
     private Array<TextureRegion> bulletTextures;
     private JsonValue weaponSet;
 
-    Array<Bullet> bullets;
+    private Array<Bullet> bullets;
 
     public BulletManager(TextureAtlas atlas, JsonValue weaponSetup) {
         bulletTextures = new Array<TextureRegion>();
@@ -108,6 +108,13 @@ public class BulletManager {
             this.velocity = new Vector2(velocity);
             this.lastPosition = new Vector2(position);
             this.isRound = isRound;
+        }
+    }
+
+    public int[] checkForCollisions(Array<Actor> ships) {
+        int[] hits = new int[ships.size];
+        for (int i=0; i<ships.size; i++) {
+            // TODO: Save ship/shield shape to Actor for collision checking
         }
     }
 }

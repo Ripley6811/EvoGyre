@@ -13,10 +13,10 @@ import com.badlogic.gdx.utils.JsonValue;
 public class Constants {
     /* LOGGING LEVELS */
     // Application logging levels from lowest to highest. Choose one.
-//    public static final int LOG_LEVEL = Application.LOG_NONE;
+    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
 //    public static final int LOG_LEVEL = Application.LOG_INFO;
-    public static final int LOG_LEVEL = Application.LOG_DEBUG;
+//    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
     /* DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
@@ -80,7 +80,7 @@ public class Constants {
     }
     public static final JsonValue ATTACK_PLAN_1 =
             new JsonReader().parse(Gdx.files.internal("json/level_1.json")).get("enemies");
-    public static final float ABREAST_DISTANCE = 12f;
+    public static final float ABREAST_DISTANCE = 12f;  // Degrees
 
     /* SHIELDS */
     public static final float SHIELD_RADIUS = 20f;

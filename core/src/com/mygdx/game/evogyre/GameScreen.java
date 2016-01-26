@@ -76,6 +76,9 @@ public class GameScreen extends InputAdapter implements Screen {
         init();
     }
 
+    /**
+     * Initialize new game. Loads level enemies and attributes from JSON.
+     */
     public void init() {
         mapRotation = 0f;
         vessels.clear();
@@ -249,6 +252,14 @@ public class GameScreen extends InputAdapter implements Screen {
         }
     }
 
+    public void updateCollision() {
+        // enemies.enemies
+        // playerBullets
+        // enemyBullets
+        // vessels
+        for ()
+    }
+
     @Override
     public void render(float delta) {
         Gdx.app.log(TAG, "delta = " + delta);
@@ -257,6 +268,7 @@ public class GameScreen extends InputAdapter implements Screen {
         updateInput(delta);
         updateAssets(delta);
         updateRotation(delta);
+        updateCollision();
 
         // Background color fill
         Color BG_COLOR = Constants.BACKGROUND_COLOR;

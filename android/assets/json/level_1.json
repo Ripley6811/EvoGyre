@@ -14,7 +14,7 @@
   ],
   "enemies": [
     {
-      "enterTime": 2,
+      "enterTime": 1,
       "quantity": 30,
       "interval": 0,
       "type": "trident",
@@ -22,7 +22,7 @@
       "pattern": "abreast_zigzag"
     },
     {
-      "enterTime": 10,
+      "enterTime": 8,
       "quantity": 100,
       "interval": 0.1,
       "type": "ball",
