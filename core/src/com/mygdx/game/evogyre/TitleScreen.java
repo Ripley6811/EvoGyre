@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
  * Created by Jay on 1/12/2016.
  */
 public class TitleScreen extends InputAdapter implements Screen {
+    private static final String TAG = TitleScreen.class.getName();
     EvoGyreGame game;
 
     public TitleScreen(EvoGyreGame game) {

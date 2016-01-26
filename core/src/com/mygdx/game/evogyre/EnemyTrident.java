@@ -1,8 +1,11 @@
 package com.mygdx.game.evogyre;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -10,6 +13,7 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Jay on 1/22/2016.
  */
 public class EnemyTrident extends Actor {
+    private static final String TAG = EnemyTrident.class.getName();
     private final Animation fly_level;
     private final Animation fly_right;
     private final Animation fly_left;
@@ -85,5 +89,26 @@ public class EnemyTrident extends Actor {
                 1.28f*placement.z, 0.8f*placement.z,  // Scale
                 positionAngle() + mapRotation + 90f);
         renderer.batch.end();
+
+        // Show collision polygon in debug mode
+        if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
+            DrawingUtils.enableBlend();
+            Vector2 a = new Vector2(0.5f*pHeight - 3f, 0);  // Tip
+            Vector2 b = new Vector2( -1f, -0.5f*pWidth);  // left wing
+            Vector2 c = new Vector2( -1f, 0.5f*pWidth);  // right wing
+            a.rotate(positionAngle() + mapRotation + 180f);
+            b.rotate(positionAngle() + mapRotation + 180f);
+            c.rotate(positionAngle() + mapRotation + 180f);
+            renderer.begin(ShapeRenderer.ShapeType.Filled);
+            renderer.setColor(new Color(0f, 1f, 1f, 0.4f));
+            float[] vertices = {placement.x + a.x, placement.y + a.y,
+                    placement.x + b.x, placement.y + b.y,
+                    placement.x + c.x, placement.y + c.y};
+            renderer.polygon(
+                    vertices
+            );
+            renderer.end();
+            DrawingUtils.disableBlend();
+        }
     }
 }

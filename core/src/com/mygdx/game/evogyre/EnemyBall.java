@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Jay on 1/22/2016.
  */
 public class EnemyBall extends Actor {
+    private static final String TAG = EnemyBall.class.getName();
     private final TextureRegion large_ball;
     private final TextureRegion inner_ball;
     private float elapsedTime;

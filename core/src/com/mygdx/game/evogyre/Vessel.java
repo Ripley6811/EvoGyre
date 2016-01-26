@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
  * Created by Jay on 1/18/2016.
  */
 public class Vessel extends Actor implements Propulsion, ShieldInterface {
+    private static final String TAG = Vessel.class.getName();
     private final Animation fly_level;
     private final Animation fly_right;
     private final Animation fly_left;
@@ -158,11 +159,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
         // Show collision polygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
-            if (!blend_enabled) {
-                Gdx.gl.glEnable(GL20.GL_BLEND);
-                Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            }
+            DrawingUtils.enableBlend();
             Vector2 a = new Vector2(0.5f*pHeight - 3f, 0);  // Tip
             Vector2 b = new Vector2( -1f, -0.5f*pWidth);  // left wing
             Vector2 c = new Vector2( -1f, 0.5f*pWidth);  // right wing
@@ -177,9 +174,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
                     placement.x + c.x, placement.y + c.y
             );
             renderer.end();
-            if (!blend_enabled) {
-                Gdx.gl.glDisable(GL20.GL_BLEND);
-            }
+            DrawingUtils.disableBlend();
         }
 
         shield.render(renderer, delta, placement, positionAngle() + mapRotation);

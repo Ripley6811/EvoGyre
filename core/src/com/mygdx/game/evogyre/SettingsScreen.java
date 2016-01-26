@@ -7,6 +7,7 @@ import com.badlogic.gdx.Screen;
  * Created by Jay on 1/14/2016.
  */
 public class SettingsScreen extends InputAdapter implements Screen {
+    private static final String TAG = SettingsScreen.class.getName();
     EvoGyreGame game;
 
     public SettingsScreen(EvoGyreGame game) {

@@ -282,8 +282,8 @@ public class GameScreen extends InputAdapter implements Screen {
         renderer.batch.begin();
         Vector3 pos = ProjectionUtils.projectPoint(new Vector2(0,0), mapRotation, vanishingPoint);
         renderer.batch.draw(planet,
-                pos.x-planet.getRegionWidth()/2, pos.y-planet.getRegionHeight()/2,
-                planet.getRegionWidth()/2, planet.getRegionWidth()/2,
+                pos.x - planet.getRegionWidth() / 2, pos.y - planet.getRegionHeight() / 2,
+                planet.getRegionWidth() / 2, planet.getRegionWidth() / 2,
                 planet.getRegionWidth(), planet.getRegionHeight(),
                 0.5f, 0.5f,
                 mapRotation);
@@ -293,11 +293,7 @@ public class GameScreen extends InputAdapter implements Screen {
         VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint, game.settings.DRAW_RINGS());
 
         /** DRAW TEMP DEBRIS **/
-        boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
-        if (!blend_enabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        }
+        DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(new Color(1f, .9f, 0.4f, 0.8f));
         for (Actor d: debris) {
@@ -305,9 +301,7 @@ public class GameScreen extends InputAdapter implements Screen {
             renderer.circle(placement.x, placement.y, 1f*placement.z);
         }
         renderer.end();
-        if (!blend_enabled) {
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-        }
+        DrawingUtils.disableBlend();
 
         /** Draw player vessels **/
         for (Vessel vessel: vessels) {

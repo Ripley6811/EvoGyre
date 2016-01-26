@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
  * Created by Jay on 1/13/2016.
  */
 public class Actor {
+    private static final String TAG = Actor.class.getName();
     Vector2 position,
             velocity,
             acceleration;

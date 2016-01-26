@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.JsonValue;
  * Created by Jay on 1/20/2016.
  */
 public class BulletManager {
+    private static final String TAG = BulletManager.class.getName();
     private Array<TextureRegion> bulletTextures;
     private JsonValue weaponSet;
 

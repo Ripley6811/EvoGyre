@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
  * Created by Jay on 1/19/2016.
  */
 public class Shield {
+    private static final String TAG = Shield.class.getName();
     private int hitPoints;
     private float width;
     private float height;

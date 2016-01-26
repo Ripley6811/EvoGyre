@@ -17,6 +17,7 @@ import java.util.Random;
  * Created by Jay on 1/12/2016.
  */
 public class VisualEffects {
+    private static final String TAG = VisualEffects.class.getName();
 
     /**
      * Creates a shield absorption/dissipating effect around spaceship from a hit.
@@ -35,11 +36,7 @@ public class VisualEffects {
         // TODO: Create a less computationally intensive alternate version
         Color col1 = new Color(0,0,0,0);
 
-        boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
-        if (!blend_enabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        }
+        DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
         float SHIELD_RADIUS = Constants.SHIELD_RADIUS;
@@ -66,9 +63,7 @@ public class VisualEffects {
             }
         }
         renderer.end();
-        if (!blend_enabled) {
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-        }
+        DrawingUtils.disableBlend();
     }
 
     private static Tween.SineOut sineOut;
@@ -97,11 +92,7 @@ public class VisualEffects {
         for (int i = 0; i < ringDistances.length; i++) {
             ringDistances[i] = i * Constants.RING_INTERVAL + ringDisplacement;
         }
-        boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
-        if (!blend_enabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        }
+        DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Line);
         renderer.setColor(funnelColor);
         for (float ringX: ringDistances) {
@@ -111,9 +102,7 @@ public class VisualEffects {
             renderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
         }
         renderer.end();
-        if (!blend_enabled) {
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-        }
+        DrawingUtils.disableBlend();
     }
 
     private static Array<Vector2> stars;
@@ -128,11 +117,7 @@ public class VisualEffects {
             }
         }
 
-        boolean blend_enabled = Gdx.gl.glIsEnabled(GL20.GL_BLEND);
-        if (!blend_enabled) {
-            Gdx.gl.glEnable(GL20.GL_BLEND);
-            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        }
+        DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Constants.STAR_COLOR);
         for (Vector2 star: stars) {
@@ -142,8 +127,6 @@ public class VisualEffects {
             renderer.circle(rotateStar.x, rotateStar.y, 1f);
         }
         renderer.end();
-        if (!blend_enabled) {
-            Gdx.gl.glDisable(GL20.GL_BLEND);
-        }
+        DrawingUtils.disableBlend();
     }
 }

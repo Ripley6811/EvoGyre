@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
  * Created by Jay on 1/12/2016.
  */
 public class StoryScreen extends InputAdapter implements Screen {
+    private static final String TAG = StoryScreen.class.getName();
     EvoGyreGame game;
 
     public StoryScreen(EvoGyreGame game) {

@@ -12,6 +12,7 @@ import java.util.Random;
  * This class manages the flight paths and entrances of enemies.
  */
 public class EnemyManager {
+    private static final String TAG = EnemyManager.class.getName();
     TextureAtlas atlas;
     Array<Actor> enemies;  // In play
     Array<Float> queueTimes;  // Times for queued enemies to enter play

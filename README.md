@@ -7,14 +7,18 @@ Gyruss-inspired game written with LibGDX
 ## Gameplay
 
 
-## Features
+## Design Notes
+
+#### Projection
 All motion calculations are done on a rectangular map that wraps around in the y-direction.
 The map positions are projected onto the funnel shape display.
 Y ranges from 0 to 360 and corresponds to a position on the cross-section of the funnel.
 X corresponds to the distance down the funnel and does not wrap.
 
-#### Image assets
+#### Collisions
+Bullets are considered as points in collisions and ships will be simple polygons.
 
+#### Image assets
 Spaceship graphics provided by [Udacity](www.udacity.com). Planets created by JWJ in
 Photoshop. Other special effects designed by JWJ in LibGDX.
 
@@ -23,7 +27,9 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 
 - Creative Lead - Jay W J
 - Special Effects - Jay W J
-- Art Assets - Udacity
+- Art Assets
+    - Spaceships & Bullets - Udacity
+    - Planets - Jay W J
 - Music - Jay W J
 - Sound Effects - Jay W J
 

@@ -6,6 +6,8 @@ package com.mygdx.game.evogyre;
  * Tween equations taken from "http://gizma.com/easing/" by Robert Penner.
  */
 public class Tween {
+    private static final String TAG = Tween.class.getName();
+
     static class SineOut {
         private float timePassed;
         private float startValue;

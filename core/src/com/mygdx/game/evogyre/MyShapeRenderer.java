@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Matrix4;
  * Created by Jay on 1/19/2016.
  */
 public class MyShapeRenderer extends ShapeRenderer {
+    private static final String TAG = MyShapeRenderer.class.getName();
     public SpriteBatch batch;
 
     public MyShapeRenderer() {

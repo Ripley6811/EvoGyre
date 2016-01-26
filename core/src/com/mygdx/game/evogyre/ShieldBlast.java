@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
  * Created by Jay on 1/18/2016.
  */
 public class ShieldBlast {
+    private static final String TAG = ShieldBlast.class.getName();
     float phase;
     float alpha;
     boolean isDone;
