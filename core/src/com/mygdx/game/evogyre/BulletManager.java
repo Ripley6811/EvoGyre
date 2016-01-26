@@ -112,9 +112,10 @@ public class BulletManager {
     }
 
     public int[] checkForCollisions(Array<Actor> ships) {
-        int[] hits = new int[ships.size];
-        for (int i=0; i<ships.size; i++) {
-            // TODO: Save ship/shield shape to Actor for collision checking
-        }
+//        int[] hits = new int[ships.size];
+//        for (int i=0; i<ships.size; i++) {
+//            // TODO: Save ship/shield shape to Actor for collision checking
+//        }
+        return new int[0];
     }
 }

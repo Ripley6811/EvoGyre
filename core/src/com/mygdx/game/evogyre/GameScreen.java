@@ -257,7 +257,7 @@ public class GameScreen extends InputAdapter implements Screen {
         // playerBullets
         // enemyBullets
         // vessels
-        for ()
+//        for ()
     }
 
     @Override
@@ -299,7 +299,7 @@ public class GameScreen extends InputAdapter implements Screen {
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(new Color(1f, .9f, 0.4f, 0.4f));
+        renderer.setColor(new Color(1f, .9f, 0.4f, 0.8f));
         for (Actor d: debris) {
             Vector3 placement = ProjectionUtils.projectPoint(d.position, mapRotation, vanishingPoint);
             renderer.circle(placement.x, placement.y, 1f*placement.z);
