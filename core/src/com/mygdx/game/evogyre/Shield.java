@@ -27,24 +27,27 @@ public class Shield {
 
     /**
      * Attempts to reduce shield points.
-     * @return True if points reduced, false if shields already down.
+     * @return Remaining damage after shield absorption.
      */
-    public boolean takeDamage() {
-        if (hitPoints == 0) return false;
+    public int takeDamage(int amount) {
+        while (hitPoints > 0 && amount > 0) {
+            hitPoints -= 1;
+            amount -= 1;
+            effects.add(new ShieldBlast());
+        }
 
-        hitPoints -= 1;
         // Remove finished effects
         for (int i=effects.size-1; i>=0; i--) {
             if (effects.get(i).isDone) effects.removeIndex(i);
         }
-        effects.add(new ShieldBlast());
-        return true;
+
+        return amount;
     }
 
     public void render(MyShapeRenderer renderer, float delta, Vector3 center, float angle) {
         if (hitPoints > 0) {
-            renderer.batch.begin();
-            renderer.batch.draw(texture,
+            GameScreen.batch.begin();
+            GameScreen.batch.draw(texture,
                     center.x - 0.5f * width,
                     center.y - 0.5f * height,
                     0.5f * width, 0.5f * height,
@@ -54,7 +57,7 @@ public class Shield {
                     0, 0,  // texel space coordinate (offset image within drawing area)
                     texture.getWidth(), texture.getHeight(),  // texel
                     false, false);
-            renderer.batch.end();
+            GameScreen.batch.end();
         }
 
         for (ShieldBlast effect: effects) {
@@ -88,7 +91,7 @@ public class Shield {
 
     /**
      * Class for producing a shield hit effect. Maintains its own variables for
-     * the tweening effect. Multiple instances can overlap in the display.
+     * the tweening effect. Multiple instances can overlap in the dspPosition.
      */
     private class ShieldBlast {
         float phase;

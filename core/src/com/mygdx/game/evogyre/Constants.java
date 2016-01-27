@@ -16,8 +16,8 @@ public class Constants {
     // Application logging levels from lowest to highest. Choose one.
 //    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
-//    public static final int LOG_LEVEL = Application.LOG_INFO;
-    public static final int LOG_LEVEL = Application.LOG_DEBUG;
+    public static final int LOG_LEVEL = Application.LOG_INFO;
+//    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
     /* DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
@@ -50,6 +50,8 @@ public class Constants {
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
     public static final Color COLLISION_DEBUG_COLOR = new Color(0f, 1f, 1f, 0.8f);
+    public static final int HALF_SHIP = 20;
+    public static final int HALF_BALLSHIP = 24;
 
     /* WEAPONS */
     public static final JsonValue PRIMARY_WEAPON_SETUP =
@@ -74,7 +76,6 @@ public class Constants {
         SNAKE_ZIGZAG ("snake-zigzag"),
         ABREAST_ZIGZAG ("abreast-zigzag"),
         SNAKE_SPIRAL ("snake-spiral");
-
         public final String string;
         Flight_Patterns(String str) {
             this.string = str;
@@ -92,22 +93,25 @@ public class Constants {
     public static final float PHASE_MULTIPLIER = 2f;  // Effect spread rate
     public static final float ALPHA_FADE_MAX = 1f;  // [0f, 1f]
     public static final float ALPHA_FADE_MULTIPLIER = 1.5f;  // Effect fade rate
-    public static final int STARTING_SHIELD_POINTS = 5;
+    public static final int STARTING_SHIELD_POINTS = 4;
+    public static final int VESSEL_HIT_POINTS = 1;
+    public static final int TRIDENT_HIT_POINTS = 4;
+    public static final int BALLSHIP_HIT_POINTS = 2;
 
-    /* UNCATEGORIZED (PHYSICS) */
+    /* ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
     // Used for sticky movement when using accelerometer
     public static final float ACTOR_STATIC_THRESHOLD = 0.08f;
     // Multiply to velocity to slow down
     public static final float ACTOR_MOTION_FRICTION = 0.8f;
 
-    /* COLLISION POLYGONS */
+    /* COLLISION POLYGONS FOR ACTORS */
     // Trident = The green T-shaped enemy craft
     private static Vector2[] tp_corners = {
             new Vector2(12f, 20f),  // Tip
             new Vector2(12f, -20f),  // left wing
-            new Vector2(0, -20f),  // right wing
-            new Vector2(0, 20f)  // right wing
+            new Vector2(-2, -20f),  // right wing
+            new Vector2(-2, 20f)  // right wing
     };
     public static final Array<Vector2> TRIDENT_POLYGON = new Array<Vector2>(tp_corners);
     // Ball = The yellow ball-shaped enemy craft
@@ -120,11 +124,11 @@ public class Constants {
     public static final Array<Vector2> BALLSHIP_POLYGON = new Array<Vector2>(bp_corners);
     // Vessel = The player craft
     private static Vector2[] vp_corners = {
-            new Vector2(-17f, 0),  // Tip
-            new Vector2( 1f, -20),  // left wing
-            new Vector2( 4f, -20),
-            new Vector2( 4f, 20),
-            new Vector2( 1f, 20)  // right wing
+            new Vector2(17f, 0),  // Tip
+            new Vector2(-1f, -20),  // left wing
+            new Vector2(-4f, -20),
+            new Vector2(-4f, 20),
+            new Vector2(-1f, 20)  // right wing
     };
     public static final Array<Vector2> VESSEL_POLYGON = new Array<Vector2>(vp_corners);
 }

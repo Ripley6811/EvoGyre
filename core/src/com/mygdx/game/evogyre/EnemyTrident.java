@@ -4,10 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by Jay on 1/22/2016.
@@ -33,15 +30,8 @@ public class EnemyTrident extends Actor {
         fly_left_fire = animateLoop(atlas.findRegions("enemyturnshoot"));
         for (TextureRegion each: fly_left_fire.getKeyFrames()) each.flip(true, false);
         weaponLevel = 1;
-        polygon = Constants.TRIDENT_POLYGON;
-    }
-
-    public void damage(int amount) {
-
-    }
-
-    public void recharge(int amount) {
-
+        collisionPolygon = Constants.TRIDENT_POLYGON;
+        hitPoints = Constants.TRIDENT_HIT_POINTS;
     }
 
     @Override
@@ -55,10 +45,18 @@ public class EnemyTrident extends Actor {
     }
 
     @Override
-    public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+    public void render(MyShapeRenderer renderer, float delta) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
-        float rotation = positionAngle() + mapRotation;
+        float rotation = positionAngle() + GameScreen.dspRotation;
+        dspPosition = ProjectionUtils.projectPoint3D(mapPosition);
+
+        // Update collision polygon
+        dspPolygon.clear();
+        for (Vector2 v : collisionPolygon) {
+            dspPolygon.add(new Vector2(v).rotate(rotation).scl(dspPosition.z).add(dspPosition.x, dspPosition.y));
+        }
+
 
         TextureRegion texture = fly_level.getKeyFrame(elapsedTime);
         float imageLeanThreshold = 10f;
@@ -80,22 +78,22 @@ public class EnemyTrident extends Actor {
         }
         int pWidth = texture.getRegionWidth();
         int pHeight = texture.getRegionHeight();
-        float halfWidth = 0.5f * pWidth;
-        float halfHeight = 0.5f * pHeight;
-        display = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
 
-        renderer.batch.begin();
-        renderer.batch.draw(texture,
-                display.x - halfWidth, display.y - halfHeight,
-                halfWidth, halfHeight,
+        GameScreen.batch.begin();
+        GameScreen.batch.draw(texture,
+                dspPosition.x - Constants.HALF_SHIP,
+                dspPosition.y - Constants.HALF_SHIP,
+                Constants.HALF_SHIP, Constants.HALF_SHIP,
                 pWidth, pHeight,
-                1.28f*display.z, 0.8f*display.z,  // Scale
+                1.28f* dspPosition.z, 0.8f* dspPosition.z,  // Scale
                 rotation + 90f);
-        renderer.batch.end();
+        GameScreen.batch.end();
+
 
         // Show collision polygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.drawDebugPolygon(renderer, this);
+            DrawingUtils.drawDebugPolygon(renderer,
+                    DrawingUtils.vectors2floats(dspPolygon));
         }
     }
 }

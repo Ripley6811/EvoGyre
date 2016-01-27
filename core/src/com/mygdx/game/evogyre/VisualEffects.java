@@ -1,8 +1,6 @@
 package com.mygdx.game.evogyre;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -23,7 +21,7 @@ public class VisualEffects {
      * Creates a shield absorption/dissipating effect around spaceship from a hit.
      * Unlike the funnel rings effect, there can be multiple instances of this
      * effect, so the "phase" and "alpha" is maintained separately. It also depends
-     * on the vehicle position which changes independently.
+     * on the vehicle mapPosition which changes independently.
      * @param renderer
      * @param center
      * @param angleInward True for player and false for enemies
@@ -97,8 +95,8 @@ public class VisualEffects {
         renderer.setColor(funnelColor);
         for (float ringX: ringDistances) {
             float i = Constants.MAP_SIZE_X - ringX;
-            Vector3 tmpV1 = ProjectionUtils.projectPoint(new Vector2(i, 0), mapRotation, vanishingPoint);
-            Vector3 tmpV2 = ProjectionUtils.projectPoint(new Vector2(i, 180), mapRotation, vanishingPoint);
+            Vector3 tmpV1 = ProjectionUtils.projectPoint3D(new Vector2(i, 0));
+            Vector3 tmpV2 = ProjectionUtils.projectPoint3D(new Vector2(i, 180));
             renderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
         }
         renderer.end();

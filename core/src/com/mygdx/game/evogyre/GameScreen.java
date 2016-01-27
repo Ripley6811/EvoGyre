@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -25,7 +25,8 @@ public class GameScreen extends InputAdapter implements Screen {
 
     EvoGyreGame game;
     FitViewport actionViewport;
-    MyShapeRenderer renderer;
+    static SpriteBatch batch;
+    static MyShapeRenderer renderer;
 
     TextureAtlas atlas;
     Array<Actor> debris;
@@ -41,10 +42,10 @@ public class GameScreen extends InputAdapter implements Screen {
 
     float timerGame;
     float timerDebris;
-    static float mapRotation = 0f;
+    static float dspRotation = 0f;
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
-    Vector2 accelBalancer = new Vector2();  // For centering device in any position
+    Vector2 accelBalancer = new Vector2();  // For centering device in any mapPosition
     boolean pause = false;
 
     public GameScreen(EvoGyreGame game) {
@@ -61,7 +62,8 @@ public class GameScreen extends InputAdapter implements Screen {
         debris = new Array<Actor>();
         vessels = new Array<Vessel>();
 
-        renderer = new MyShapeRenderer();
+        batch = new SpriteBatch();
+        renderer = new MyShapeRenderer(batch);
         renderer.setAutoShapeType(true);
         renderer.setProjectionMatrix(actionViewport.getCamera().combined);
         renderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
@@ -73,6 +75,8 @@ public class GameScreen extends InputAdapter implements Screen {
         enemies = new EnemyManager(atlas, enemyBullets);
         planet = atlas.createSprite("lavender");
 
+        DrawingUtils.initGLSettings();
+
         init();
     }
 
@@ -80,7 +84,7 @@ public class GameScreen extends InputAdapter implements Screen {
      * Initialize new game. Loads level enemies and attributes from JSON.
      */
     public void init() {
-        mapRotation = 0f;
+        dspRotation = 0f;
         vessels.clear();
         vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f, atlas));
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
@@ -167,12 +171,13 @@ public class GameScreen extends InputAdapter implements Screen {
             timerDebris += rate;
             float r = Constants.MAP_SIZE_Y_360 * random.nextFloat();
             debris.add(new Actor(0, r));
+            debris.peek().velocity.x = 1000;
         }
 
-        // Update debris position
+        // Update debris mapPosition
         for (int i = debris.size - 1; i >= 0; i--) {
-            debris.get(i).position.x += 1f;
-            if (debris.get(i).position.x >= Constants.MAP_SIZE_X * 1.2) {
+            debris.get(i).mapPosition.x += 1f;
+            if (debris.get(i).mapPosition.x >= Constants.MAP_SIZE_X * 1.2) {
                 debris.removeIndex(i);
                 continue;
             }
@@ -190,10 +195,10 @@ public class GameScreen extends InputAdapter implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             // Fire primary weapon
             for (Vessel vessel: vessels) {
-                if (vessel.fire()){
+                if (!vessel.isDead && vessel.fire()){
                     int weaponLevel = vessel.weaponLevel;
-                    float xPos = vessel.position.x;
-                    float yPos = vessel.position.y;
+                    float xPos = vessel.mapPosition.x;
+                    float yPos = vessel.mapPosition.y;
                     playerBullets.add(weaponLevel, xPos, yPos);
                 }
             }
@@ -206,19 +211,10 @@ public class GameScreen extends InputAdapter implements Screen {
         }
 
         // TODO: For testing, switch weapons with number keys
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) {
-            vessels.get(0).weaponLevel = 0;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) {
-            vessels.get(0).weaponLevel = 1;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) {
-            vessels.get(0).weaponLevel = 2;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) {
-            vessels.get(0).weaponLevel = 3;
-        }
-
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) vessels.get(0).weaponLevel = 0;
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) vessels.get(0).weaponLevel = 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) vessels.get(0).weaponLevel = 2;
+        if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) vessels.get(0).weaponLevel = 3;
     }
 
     public void updateRotation(float delta) {
@@ -246,20 +242,23 @@ public class GameScreen extends InputAdapter implements Screen {
                 actor.accelerate(new Vector2(0, accelY));
                 float distMoved = actor.update(delta);
                 if (vesselFixed) {
-                    mapRotation -= distMoved;
+                    dspRotation -= distMoved;
                 }
             }
-            vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f + mapRotation);
+            vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f + dspRotation);
         }
     }
 
     public void updateCollision() {
-        // enemies.enemies
-        // playerBullets
-        // enemyBullets
-        // vessels
         for (Actor enemy: enemies.enemies) {
-            int hits = playerBullets.checkForCollisions(enemy);
+            if (!enemy.isDead) {
+                int hits = playerBullets.checkForCollisions(enemy);
+            }
+        }
+        for (Actor vessel: vessels) {
+            if (!vessel.isDead) {
+                int hits = enemyBullets.checkForCollisions(vessel);
+            }
         }
     }
 
@@ -269,7 +268,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
         if (!pause) {
             // TODO: keep all updates out of the render methods
-            // TODO: Enemy position update remove from render methods
+            // TODO: Enemy mapPosition update remove from render methods
             updateInput(delta);
             updateAssets(delta);
             updateRotation(delta);
@@ -277,33 +276,31 @@ public class GameScreen extends InputAdapter implements Screen {
         }
 
         // Background color fill
-        Color BG_COLOR = Constants.BACKGROUND_COLOR;
-        Gdx.gl.glClearColor(BG_COLOR.r, BG_COLOR.g, BG_COLOR.b, 1);
-        Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        DrawingUtils.clearScreen();
 
         /** DRAW STARS **/
-        VisualEffects.drawStars(renderer, mapRotation, vanishingPoint);
+        VisualEffects.drawStars(renderer, dspRotation, vanishingPoint);
 
         /** DRAW PLANET **/
-        renderer.batch.begin();
-        Vector3 pos = ProjectionUtils.projectPoint(new Vector2(0,0), mapRotation, vanishingPoint);
-        renderer.batch.draw(planet,
+        GameScreen.batch.begin();
+        Vector3 pos = ProjectionUtils.projectPoint3D(new Vector2(0, 0));
+        GameScreen.batch.draw(planet,
                 pos.x - planet.getRegionWidth() / 2, pos.y - planet.getRegionHeight() / 2,
                 planet.getRegionWidth() / 2, planet.getRegionWidth() / 2,
                 planet.getRegionWidth(), planet.getRegionHeight(),
                 0.5f, 0.5f,
-                mapRotation);
-        renderer.batch.end();
+                dspRotation);
+        GameScreen.batch.end();
 
         /** DRAW FUNNEL **/
-        VisualEffects.drawTunnel(delta, renderer, mapRotation, vanishingPoint, game.settings.DRAW_RINGS());
+        VisualEffects.drawTunnel(delta, renderer, dspRotation, vanishingPoint, game.settings.DRAW_RINGS());
 
         /** DRAW TEMP DEBRIS **/
         DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(new Color(1f, .9f, 0.4f, 0.8f));
+        renderer.setColor(new Color(.8f, .9f, 1f, 0.3f));
         for (Actor d: debris) {
-            Vector3 placement = ProjectionUtils.projectPoint(d.position, mapRotation, vanishingPoint);
+            Vector3 placement = ProjectionUtils.projectPoint3D(d.mapPosition);
             renderer.circle(placement.x, placement.y, 1f*placement.z);
         }
         renderer.end();
@@ -311,13 +308,13 @@ public class GameScreen extends InputAdapter implements Screen {
 
         /** Draw player vessels **/
         for (Vessel vessel: vessels) {
-            vessel.render(renderer, delta, mapRotation, vanishingPoint);
+            vessel.render(renderer, delta);
         }
 
         /** Draw enemies **/
-        enemies.render(renderer, delta, mapRotation, vanishingPoint);
+        enemies.render(renderer, delta, dspRotation, vanishingPoint);
 
-        playerBullets.render(renderer, mapRotation, vanishingPoint);
+        playerBullets.render();
     }
 
     @Override

@@ -35,7 +35,7 @@ public class EnemyManager {
         Constants.Flight_Patterns efp = Constants.Flight_Patterns.valueOf(pattern.toUpperCase());
         Actor enemy = null;
         if (type.equals("trident")) enemy = new EnemyTrident(0f, startY, efp, atlas);
-        if (type.equals("ball")) enemy = new EnemyBall(0f, startY, efp, atlas);
+        if (type.equals("ball")) enemy = new EnemyBallship(0f, startY, efp, atlas);
         enemy.velocity = new Vector2(70f, 50f);
         queueTimes.add(startTime);
         enemyQueue.add(enemy);
@@ -56,43 +56,46 @@ public class EnemyManager {
                 case SNAKE_SPIRAL:
                     // TODO: Make better paths
                     if (enemy.isEntering) enemy.velocity.setAngle(45f);
-                    if (enemy.position.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {
+                    if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {
                         enemy.isEntering = false;
                     } else if (!enemy.isEntering) {
-                        if (enemy.position.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL)
+                        if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL)
                             enemy.velocity.x -= 0.3f;
                         else enemy.velocity.x += 0.3f;
                     }
                     break;
                 case SNAKE_ZIGZAG:
                     enemy.velocity.y = 40f * (float)Math.sin(2f*enemy.elapsedTime);
-                    if (enemy.position.x > Constants.MAP_SIZE_X - 2.2 * Constants.RING_INTERVAL)
+                    if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 2.2 * Constants.RING_INTERVAL)
                         enemy.velocity.x = -Math.abs(enemy.velocity.x);
-                    if (enemy.position.x < Constants.MAP_SIZE_X - 8 * Constants.RING_INTERVAL)
+                    if (enemy.mapPosition.x < Constants.MAP_SIZE_X - 8 * Constants.RING_INTERVAL)
                         enemy.velocity.x = Math.abs(enemy.velocity.x);
                     // TODO: make plans
                     break;
                 case ABREAST_ZIGZAG:
-                    if (enemy.position.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {
+                    if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {
                         enemy.isEntering = false;
                     } else if (!enemy.isEntering) {
                         enemy.velocity.y = 40f * (float) Math.sin(2f * elapsedTime);
-                        if (enemy.position.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL)
+                        if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL)
                             enemy.velocity.x *= 0.8f;
                     }
                     break;
             }
         }
-        // TODO: Ensure dead enemies are deleted from array
 
+        // Ensure dead enemies are deleted from array
+        for (int i=enemies.size-1; i>=0; i--) {
+            if (enemies.get(i).isDead) enemies.removeIndex(i);
+        }
 
         // Fire enemy bullets
         for (Actor enemy: enemies) {
             if (random.nextFloat() < Constants.ENEMY_FIRE_REDUCTION) {
-                if (enemy.fire()) {
+                if (!enemy.isDead && enemy.fire()) {
                     int weaponLevel = enemy.weaponLevel;
-                    float xPos = enemy.position.x;
-                    float yPos = enemy.position.y;
+                    float xPos = enemy.mapPosition.x;
+                    float yPos = enemy.mapPosition.y;
                     bulletManager.add(weaponLevel, xPos, yPos);
                 }
             }
@@ -103,10 +106,10 @@ public class EnemyManager {
         for (Actor enemy: enemies) {
             if (!enemy.isDead) {
                 enemy.update(delta);
-                enemy.render(renderer, delta, mapRotation, vanishingPoint);
+                enemy.render(renderer, delta);
             }
         }
 
-        bulletManager.render(renderer, mapRotation, vanishingPoint);
+        bulletManager.render();
     }
 }

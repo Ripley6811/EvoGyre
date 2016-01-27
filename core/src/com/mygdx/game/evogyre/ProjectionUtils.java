@@ -1,6 +1,5 @@
 package com.mygdx.game.evogyre;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -11,48 +10,52 @@ public class ProjectionUtils {
     private static final String TAG = ProjectionUtils.class.getName();
 
     /**
-     * Maps a point from the game map to the displayed position.
+     * Maps a point from the game map to the displayed mapPosition including depth.
      * The z-component is used for scaling [0.0 - 1.0] image according to distance.
      * @param mapPt Game map coordinate
-     * @param rotation Rotation positionAngle
      * @return Vector for rendering to screen
      */
-    public static Vector3 projectPoint(Vector2 mapPt, float rotation) {
+    public static Vector3 projectPoint3D(Vector2 mapPt) {
         // Distant objects move slower. F(x) = a * x^2
-        Vector2 vector2 = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE_X), 0f);
-        // Y-component becomes the degrees from x-axis.
-        vector2.rotate(mapPt.y + rotation);
-        return new Vector3(vector2, vanishingPower(mapPt.x / Constants.MAP_SIZE_X));
-//        return new Vector3(vector2, vector2.x / PROJECTION_RADIUS);
+        Vector2 dspPt = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE_X), 0f);
+        // Y-component becomes the degrees away from positive x-axis.
+        dspPt.rotate(mapPt.y + GameScreen.dspRotation);
+        float depth = vanishingPower(mapPt.x / Constants.MAP_SIZE_X);
+        transposeCenter(dspPt, depth);
+        return new Vector3(dspPt, depth);
     }
 
     /**
-     * Maps a point from the game map to the display position.
-     * Adjusts display position according to vanishing pt vector.
+     * Maps a point from the game map position to the display position.
+     * The z-component (depth) is not returned. See `projectPoint3D` for depth.
      * @param mapPt Game map coordinate
-     * @param rotation Rotation positionAngle
-     * @param transposition Vanishing point of display cylinder
-     * @return
+     * @return Vector for rendering to screen
      */
-    public static Vector3 projectPoint(Vector2 mapPt, float rotation, Vector2 transposition) {
-        return transposeCenter(projectPoint(mapPt, rotation), transposition);
+    public static Vector2 projectPoint2D(Vector2 mapPt) {
+        // Distant objects move slower. F(x) = a * x^2
+        Vector2 dspPt = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE_X), 0f);
+        // Y-component becomes the degrees away from positive x-axis.
+        dspPt.rotate(mapPt.y + GameScreen.dspRotation);
+        float depth = vanishingPower(mapPt.x / Constants.MAP_SIZE_X);
+        transposeCenter(dspPt, depth);
+        return dspPt;
     }
 
     /**
-     * Transposes position based on vanishing point
+     * Transposes mapPosition based on vanishing point
      * @param displayPt
-     * @param centerTransposition Vanishing point of display cylinder
+     * @param depth Z-depth for displaying point
      * @return
      */
-    public static Vector3 transposeCenter(Vector3 displayPt, Vector2 centerTransposition) {
-        Vector2 scaledV = new Vector2(centerTransposition);
+    public static Vector2 transposeCenter(Vector2 displayPt, float depth) {
+        Vector2 scaledV = new Vector2(GameScreen.vanishingPoint);
         scaledV.setLength(Constants.CENTER_DISPLACEMENT);
-        scaledV.scl(1.0f - (float) Math.pow(displayPt.z, 1f/Constants.FUNNEL_POWER));
-        return displayPt.add(scaledV.x, scaledV.y, 0f);
+        // "Funnel power" affects funnel curvature
+        scaledV.scl(1.0f - (float) Math.pow(depth, 1f/Constants.FUNNEL_POWER));
+        return displayPt.add(scaledV.x, scaledV.y);
     }
 
-    public static float vanishingPower(float x) throws IllegalArgumentException {
-//        if (x > 1f || x < 0f) throw new IllegalArgumentException("Parameter must be in range [0, 1].");
+    public static float vanishingPower(float x) {
         return (float) Math.pow(x, Constants.VANISHING_STRETCH);
     }
 }

@@ -9,34 +9,34 @@ import com.badlogic.gdx.math.Matrix4;
  */
 public class MyShapeRenderer extends ShapeRenderer {
     private static final String TAG = MyShapeRenderer.class.getName();
-    public SpriteBatch batch;
+    public SpriteBatch spriteBatch;
 
-    public MyShapeRenderer() {
+    public MyShapeRenderer(SpriteBatch batch) {
         super();
-        batch = new SpriteBatch();
+        this.spriteBatch = batch;
     }
 
     @Override
     public void setProjectionMatrix(Matrix4 matrix) {
         super.setProjectionMatrix(matrix);
-        batch.setProjectionMatrix(matrix);
+        spriteBatch.setProjectionMatrix(matrix);
     }
 
     @Override
     public void translate(float x, float y, float z) {
         super.translate(x, y, z);
-        batch.setTransformMatrix(getTransformMatrix());
+        spriteBatch.setTransformMatrix(getTransformMatrix());
     }
 
     @Override
     public void rotate(float axisX, float axisY, float axisZ, float degrees) {
         super.rotate(axisX, axisY, axisZ, degrees);
-        batch.setTransformMatrix(getTransformMatrix());
+        spriteBatch.setTransformMatrix(getTransformMatrix());
     }
 
     @Override
     public void scale(float scaleX, float scaleY, float scaleZ) {
         super.scale(scaleX, scaleY, scaleZ);
-        batch.setTransformMatrix(getTransformMatrix());
+        spriteBatch.setTransformMatrix(getTransformMatrix());
     }
 }

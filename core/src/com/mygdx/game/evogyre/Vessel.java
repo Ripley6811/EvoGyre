@@ -1,16 +1,9 @@
 package com.mygdx.game.evogyre;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.g2d.Animation;
 
 /**
@@ -42,7 +35,8 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         shield = new Shield(2f*Constants.SHIELD_RADIUS,
                 2f*Constants.SHIELD_WIDTH_MULTIPLIER*Constants.SHIELD_RADIUS,
                 Constants.STARTING_SHIELD_POINTS);
-        polygon = Constants.VESSEL_POLYGON;
+        collisionPolygon = Constants.VESSEL_POLYGON;
+        hitPoints = Constants.VESSEL_HIT_POINTS;
     }
 
     @Override
@@ -61,9 +55,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
     @Override
     public void damage(int amount) {
-        if (!shield.takeDamage()) {
-            // TODO: ship itself takes damage without shielding
-        }
+        super.damage(shield.takeDamage(amount));
     }
 
     @Override
@@ -90,12 +82,19 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         return false;
     }
 
-    public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+    @Override
+    public void render(MyShapeRenderer renderer, float delta) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
         float missileRightOffset = Constants.MISSILE_RIGHT_OFFSET;
         float missileLeftOffset = Constants.MISSILE_LEFT_OFFSET;
-        float rotation = positionAngle() + mapRotation + 180f;
+        float rotation = positionAngle() + GameScreen.dspRotation + 180f;
+        dspPosition = ProjectionUtils.projectPoint3D(mapPosition);
+
+        dspPolygon.clear();
+        for (Vector2 v : collisionPolygon) {
+            dspPolygon.add(new Vector2(v).rotate(rotation).scl(dspPosition.z).add(dspPosition.x, dspPosition.y));
+        }
 
         TextureRegion texture = fly_level.getKeyFrame(elapsedTime);
         if (justFired) {
@@ -124,46 +123,46 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         }
         int pWidth = texture.getRegionWidth();
         int pHeight = texture.getRegionHeight();
-        display = ProjectionUtils.projectPoint(position, mapRotation, vanishingPoint);
 
         // Draw missiles under wings
         if (nMissiles > 0) {
             int mWidth = missile.getRegionWidth();
             int mHeight = missile.getRegionHeight();
-            renderer.batch.begin();
-            renderer.batch.draw(missile,
-                    display.x + missileRightOffset * pWidth,
-                    display.y - 0.4f * pHeight,
+            GameScreen.batch.begin();
+            GameScreen.batch.draw(missile,
+                    dspPosition.x + missileRightOffset * pWidth,
+                    dspPosition.y - 0.4f * pHeight,
                     -missileRightOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
                     mWidth, mHeight,
                     0.5f, 0.5f,  // Scale
                     rotation - 90f);
-            renderer.batch.draw(missile,
-                    display.x + missileLeftOffset * pWidth,
-                    display.y - 0.4f * pHeight,
+            GameScreen.batch.draw(missile,
+                    dspPosition.x + missileLeftOffset * pWidth,
+                    dspPosition.y - 0.4f * pHeight,
                     -missileLeftOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
                     mWidth, mHeight,
                     0.5f, 0.5f,  // Scale
                     rotation - 90f);
-            renderer.batch.end();
+            GameScreen.batch.end();
         }
 
         // Draw vessel
-        renderer.batch.begin();
-        renderer.batch.draw(texture,
-                display.x - 0.5f * pWidth,
-                display.y - 0.5f * pHeight,
-                0.5f * pWidth, 0.5f * pHeight,
+        GameScreen.batch.begin();
+        GameScreen.batch.draw(texture,
+                dspPosition.x - Constants.HALF_SHIP,
+                dspPosition.y - Constants.HALF_SHIP,
+                Constants.HALF_SHIP, Constants.HALF_SHIP,
                 pWidth, pHeight,
                 1.28f, 0.8f,  // Scale
                 rotation - 90f);
-        renderer.batch.end();
+        GameScreen.batch.end();
 
-        // Show collision polygon in debug mode
+        // Show collision collisionPolygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.drawDebugPolygon(renderer, this);
+            DrawingUtils.drawDebugPolygon(renderer,
+                    DrawingUtils.vectors2floats(dspPolygon));
         }
 
-        shield.render(renderer, delta, display, positionAngle() + mapRotation);
+        shield.render(renderer, delta, dspPosition, rotation + 180f);
     }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.evogyre;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -11,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Actor {
     private static final String TAG = Actor.class.getName();
-    Vector2 position,
+    Vector2 mapPosition,
             velocity,
             acceleration;
     public float ACTOR_FRAME_RATE = 0.1f;
@@ -22,18 +23,22 @@ public class Actor {
     public boolean isDead = false;
     public boolean isEntering = true;
     public Constants.Flight_Patterns pattern;
-    public Vector3 display;
-    public Array<Vector2> polygon;// TODO: Save ship/shield shape to Actor for collision checking
+    public Vector3 dspPosition;
+    public Array<Vector2> collisionPolygon;  // Non-transposed final collision shape
+    public Array<Vector2> dspPolygon;  // Transposed shape for collision calculations
+    public int damage = 0;
+    public int hitPoints;
 
     public Actor(float x, float y) {
-        position = new Vector2(x, y);
+        mapPosition = new Vector2(x, y);
         velocity = new Vector2(0, 0);
         acceleration = new Vector2(0, 0);
         pattern = Constants.Flight_Patterns.SNAKE_SPIRAL;
+        dspPolygon = new Array<Vector2>();
     }
 
     public float positionAngle() {
-        return position.y;
+        return mapPosition.y;
     }
 
     public boolean fire() {
@@ -46,6 +51,13 @@ public class Actor {
      * @return Distance moved along y-axis.
      */
     public float update(float delta) {
+        // Update hit points and damage
+        if (damage > 0) {
+            hitPoints -= damage;
+            damage = 0;
+        }
+        if (hitPoints <= 0) isDead = true;
+
         // Update animation
         elapsedTime += delta;
 
@@ -53,13 +65,17 @@ public class Actor {
         velocity.x += acceleration.x * delta;
         velocity.y += acceleration.y * delta;
         velocity.limit(Constants.MAX_VELOCITY);
-        // Update and constrain position
-        position.x += velocity.x * delta;
-        position.y += velocity.y * delta;
-        if (position.y < 0f) position.y += Constants.MAP_SIZE_Y_360;
-        if (position.y >= Constants.MAP_SIZE_Y_360) position.y -= Constants.MAP_SIZE_Y_360;
+        // Update and constrain map position
+        mapPosition.x += velocity.x * delta;
+        mapPosition.y += velocity.y * delta;
+        if (mapPosition.y < 0f) mapPosition.y += Constants.MAP_SIZE_Y_360;
+        if (mapPosition.y >= Constants.MAP_SIZE_Y_360) mapPosition.y -= Constants.MAP_SIZE_Y_360;
         // Return change in y
         return velocity.y * delta;
+    }
+
+    public void damage(int amount) {
+        damage += amount;
     }
 
     /**
@@ -83,7 +99,7 @@ public class Actor {
         return new Animation(ACTOR_FRAME_RATE, textures, Animation.PlayMode.LOOP);
     }
 
-    public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+    public void render(MyShapeRenderer renderer, float delta) {
 
     }
 }

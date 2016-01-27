@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.math.Polygon;
 
 /**
  * Created by Jay on 1/20/2016.
@@ -59,37 +60,28 @@ public class BulletManager {
         }
     }
 
-    public void render(MyShapeRenderer renderer, float mapRotation, Vector2 vanishingPoint) {
+    public void render() {
         Vector3 placement;
-        Vector3 placement2;
-        renderer.batch.begin();
+        Vector2 placement2;  // Z-depth not needed
+        GameScreen.batch.begin();
         for (Bullet b: bullets) {
             if (b.isFinished) continue;
-            placement = ProjectionUtils.projectPoint(b.position, mapRotation, vanishingPoint);
-            placement2 = ProjectionUtils.projectPoint(b.lastPosition, mapRotation, vanishingPoint);
+            placement = ProjectionUtils.projectPoint3D(b.position);
+            placement2 = ProjectionUtils.projectPoint2D(b.lastPosition);
             float angle = new Vector2(placement.x-placement2.x, placement.y-placement2.y).angle();
             TextureRegion texture = bulletTextures.get(b.type);
             int width = texture.getRegionWidth();
             int height = texture.getRegionHeight();
-            if (b.isRound) {
-                renderer.batch.draw(texture,
-                        placement.x - 0.5f * width,
-                        placement.y - 0.5f * height,
-                        0.5f * width, 0.5f * height,
-                        width, height,
-                        placement.z / 2f, placement.z / 2f,  // Scale
-                        angle + 90f);
-            } else {
-                renderer.batch.draw(texture,
-                        placement.x - 0.5f * width,
-                        placement.y - 0.5f * height,
-                        0.5f * width, 0.5f * height,
-                        width, height,
-                        placement.z / 2f, placement.z * placement.z,  // Scale
-                        angle + 90f);
-            }
+            GameScreen.batch.draw(texture,
+                    placement.x - 0.5f * width,
+                    placement.y - 0.5f * height,
+                    0.5f * width, 0.5f * height,
+                    width, height,
+                    placement.z * (b.isRound ? 0.8f : 0.5f),
+                    placement.z * (b.isRound ? 0.8f : placement.z),  // Scale
+                    angle + 90f);
         }
-        renderer.batch.end();
+        GameScreen.batch.end();
     }
 
     private class Bullet {
@@ -99,10 +91,6 @@ public class BulletManager {
         Vector2 lastPosition;  // For aligning bullet image
         boolean isFinished = false;
         boolean isRound;
-
-        public Bullet(int type, Vector2 position, Vector2 velocity) {
-            this(type, position, velocity, false);
-        }
 
         public Bullet(int type, Vector2 position, Vector2 velocity, boolean isRound) {
             this.type = type;
@@ -115,11 +103,19 @@ public class BulletManager {
 
     public int checkForCollisions(Actor ship) {
         int hits = 0;
-        for (Bullet b: bullets) {
-            // TODO: THIS IS WRONG, need it translated to display position
-            if (Intersector.isPointInPolygon(ship.polygon, b.position)) {
-                hits += 1;
-                b.isFinished = true;
+        if (bullets.size > 0) {
+            for (Bullet b : bullets) {
+                if (!b.isFinished && ship.dspPolygon.size > 0) {
+                    Vector2 currPos = ProjectionUtils.projectPoint2D(b.position);
+                    Vector2 lastPos = ProjectionUtils.projectPoint2D(b.lastPosition);
+                    Polygon polygon = new Polygon(DrawingUtils.vectors2floats(ship.dspPolygon));
+                    // `intersectSegmentPolygon` prevents bullet skipping over enemy
+                    if (Intersector.intersectSegmentPolygon(currPos, lastPos, polygon)) {
+                        hits += 1;
+                        b.isFinished = true;
+                        ship.damage(1);
+                    }
+                }
             }
         }
         return hits;
