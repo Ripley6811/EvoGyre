@@ -5,6 +5,12 @@ Gyruss-inspired game written with LibGDX
 
 
 ## Gameplay
+**Left-Right arrows** - Move your ship
+**Up-arrow** - Toggle green rings on/off
+**Down-arrow** - Toggle moving or fixed ship
+**W** - Fire weapon
+**1 to 4** - (temporary) Try different weapon layouts
+
 
 
 ## Design Notes
@@ -36,6 +42,7 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 - Sound Effects - Jay W J
 
 ## References
+- [LibGDX reference](https://libgdx.badlogicgames.com/nightlies/docs/api/)
 - [Tweening algorithms](http://gizma.com/easing/)
 - [Equation for point on an ellipse given axes and angle](http://math.stackexchange.com/questions/432902/how-to-get-the-radius-of-an-ellipse-at-a-specific-angle-by-knowing-its-semi-majo)
 - [How to make a planet (in PhotoShop)](http://www.solarvoyager.com/images/tutorials/planet_tutorial_large.jpg)
