@@ -5,11 +5,13 @@ Gyruss-inspired game written with LibGDX
 
 
 ## Gameplay
-**Left-Right arrows** - Move your ship
-**Up-arrow** - Toggle green rings on/off
-**Down-arrow** - Toggle moving or fixed ship
-**W** - Fire weapon
-**1 to 4** - (temporary) Try different weapon layouts
+| Key | Action |
+| --- | --- |
+| **Left-Right arrows** | Move your ship |
+| **Up-arrow** | Toggle green rings on/off |
+| **Down-arrow** | Toggle moving or fixed ship |
+| **W** | Fire weapon |
+| **1 to 4** | (temporary) Try different weapon layouts |
 
 
 
