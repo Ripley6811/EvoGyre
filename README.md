@@ -57,3 +57,5 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 - [ ] Add missiles
 - [ ] Add boss
 - [ ] Add shield and weapon powerups
+- [ ] Indicator for shield strength
+- [ ] Android accelerometer controls
