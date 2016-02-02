@@ -26,7 +26,7 @@ public class GameScreen extends InputAdapter implements Screen {
     EvoGyreGame game;
     FitViewport actionViewport;
     static SpriteBatch batch;
-    static MyShapeRenderer renderer;
+    static MyShapeRenderer myRenderer;
 
     TextureAtlas atlas;
     Array<Actor> debris;
@@ -63,10 +63,10 @@ public class GameScreen extends InputAdapter implements Screen {
         vessels = new Array<Vessel>();
 
         batch = new SpriteBatch();
-        renderer = new MyShapeRenderer(batch);
-        renderer.setAutoShapeType(true);
-        renderer.setProjectionMatrix(actionViewport.getCamera().combined);
-        renderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
+        myRenderer = new MyShapeRenderer(batch);
+        myRenderer.setAutoShapeType(true);
+        myRenderer.setProjectionMatrix(actionViewport.getCamera().combined);
+        myRenderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
 
         /** LOAD ASSETS **/
         atlas = game.assets.get(Constants.MAIN_ATLAS);
@@ -279,7 +279,7 @@ public class GameScreen extends InputAdapter implements Screen {
         DrawingUtils.clearScreen();
 
         /** DRAW STARS **/
-        VisualEffects.drawStars(renderer, dspRotation, vanishingPoint);
+        VisualEffects.drawStars(myRenderer, dspRotation, vanishingPoint);
 
         /** DRAW PLANET **/
         GameScreen.batch.begin();
@@ -293,26 +293,26 @@ public class GameScreen extends InputAdapter implements Screen {
         GameScreen.batch.end();
 
         /** DRAW FUNNEL **/
-        VisualEffects.drawTunnel(delta, renderer, dspRotation, vanishingPoint, game.settings.DRAW_RINGS());
+        VisualEffects.drawTunnel(delta, myRenderer, dspRotation, vanishingPoint, game.settings.DRAW_RINGS());
 
         /** DRAW TEMP DEBRIS **/
         DrawingUtils.enableBlend();
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.setColor(new Color(.8f, .9f, 1f, 0.3f));
+        myRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        myRenderer.setColor(new Color(.8f, .9f, 1f, 0.3f));
         for (Actor d: debris) {
             Vector3 placement = ProjectionUtils.projectPoint3D(d.mapPosition);
-            renderer.circle(placement.x, placement.y, 1f*placement.z);
+            myRenderer.circle(placement.x, placement.y, 1f * placement.z);
         }
-        renderer.end();
+        myRenderer.end();
         DrawingUtils.disableBlend();
 
         /** Draw player vessels **/
         for (Vessel vessel: vessels) {
-            vessel.render(renderer, delta);
+            vessel.render(myRenderer, delta);
         }
 
         /** Draw enemies **/
-        enemies.render(renderer, delta, dspRotation, vanishingPoint);
+        enemies.render(myRenderer, delta, dspRotation, vanishingPoint);
 
         playerBullets.render();
     }

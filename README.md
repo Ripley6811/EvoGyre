@@ -5,13 +5,13 @@ Gyruss-inspired game written with LibGDX
 
 
 ## Gameplay
-| Key | Action |
-| --- | --- |
-| **Left-Right arrows** | Move your ship |
-| **Up-arrow** | Toggle green rings on/off |
-| **Down-arrow** | Toggle moving or fixed ship |
-| **W** | Fire weapon |
-| **1 to 4** | (temporary) Try different weapon layouts |
+Key | Action
+--- | ---
+**Left-Right arrows** | Move your ship
+**Up-arrow** | Toggle green rings on/off
+**Down-arrow** | Toggle moving or fixed ship
+**W** | Fire weapon
+**1 to 4** | (temporary) Try different weapon layouts
 
 
 
@@ -49,3 +49,11 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 - [Equation for point on an ellipse given axes and angle](http://math.stackexchange.com/questions/432902/how-to-get-the-radius-of-an-ellipse-at-a-specific-angle-by-knowing-its-semi-majo)
 - [How to make a planet (in PhotoShop)](http://www.solarvoyager.com/images/tutorials/planet_tutorial_large.jpg)
     - [30+ Photoshop Tutorials For Creating Space And Planets](http://naldzgraphics.net/tutorials/30-photoshop-tutorials-for-creating-space-and-planets/)
+
+
+## TODO
+- [ ] Refactor back to not use static members of GameScreen
+- [ ] Design level(s)
+- [ ] Add missiles
+- [ ] Add boss
+- [ ] Add shield and weapon powerups
