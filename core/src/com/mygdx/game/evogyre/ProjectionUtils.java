@@ -15,13 +15,13 @@ public class ProjectionUtils {
      * @param mapPt Game map coordinate
      * @return Vector for rendering to screen
      */
-    public static Vector3 projectPoint3D(Vector2 mapPt) {
+    public static Vector3 projectPoint3D(GameScreen screen, Vector2 mapPt) {
         // Distant objects move slower. F(x) = a * x^2
         Vector2 dspPt = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE_X), 0f);
         // Y-component becomes the degrees away from positive x-axis.
-        dspPt.rotate(mapPt.y + GameScreen.dspRotation);
+        dspPt.rotate(mapPt.y + screen.dspRotation);
         float depth = vanishingPower(mapPt.x / Constants.MAP_SIZE_X);
-        transposeCenter(dspPt, depth);
+        transposeCenter(screen, dspPt, depth);
         return new Vector3(dspPt, depth);
     }
 
@@ -31,13 +31,13 @@ public class ProjectionUtils {
      * @param mapPt Game map coordinate
      * @return Vector for rendering to screen
      */
-    public static Vector2 projectPoint2D(Vector2 mapPt) {
+    public static Vector2 projectPoint2D(GameScreen screen, Vector2 mapPt) {
         // Distant objects move slower. F(x) = a * x^2
         Vector2 dspPt = new Vector2(Constants.PROJECTION_RADIUS * vanishingPower(mapPt.x / Constants.MAP_SIZE_X), 0f);
         // Y-component becomes the degrees away from positive x-axis.
-        dspPt.rotate(mapPt.y + GameScreen.dspRotation);
+        dspPt.rotate(mapPt.y + screen.dspRotation);
         float depth = vanishingPower(mapPt.x / Constants.MAP_SIZE_X);
-        transposeCenter(dspPt, depth);
+        transposeCenter(screen, dspPt, depth);
         return dspPt;
     }
 
@@ -47,8 +47,8 @@ public class ProjectionUtils {
      * @param depth Z-depth for displaying point
      * @return
      */
-    public static Vector2 transposeCenter(Vector2 displayPt, float depth) {
-        Vector2 scaledV = new Vector2(GameScreen.vanishingPoint);
+    public static Vector2 transposeCenter(GameScreen screen, Vector2 displayPt, float depth) {
+        Vector2 scaledV = new Vector2(screen.vanishingPoint);
         scaledV.setLength(Constants.CENTER_DISPLACEMENT);
         // "Funnel power" affects funnel curvature
         scaledV.scl(1.0f - (float) Math.pow(depth, 1f/Constants.FUNNEL_POWER));

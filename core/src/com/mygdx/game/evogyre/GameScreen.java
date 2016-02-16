@@ -25,13 +25,13 @@ public class GameScreen extends InputAdapter implements Screen {
 
     EvoGyreGame game;
     FitViewport actionViewport;
-    static SpriteBatch batch;
-    static MyShapeRenderer myRenderer;
+    SpriteBatch batch;
+    MyShapeRenderer myRenderer;
 
     TextureAtlas atlas;
     Array<Actor> debris;
     // Unit vector giving direction of vanishing point transposition.
-    static Vector2 vanishingPoint = new Vector2(0f, 1f);
+    Vector2 vanishingPoint = new Vector2(0f, 1f);
     // Player vessel array. Allows possibly multiple vessels as power-up
     Array<Vessel> vessels;
     Random random = new Random();
@@ -39,10 +39,12 @@ public class GameScreen extends InputAdapter implements Screen {
     BulletManager enemyBullets;
     EnemyManager enemies;
     TextureRegion planet;
+    TextureRegion textShields;
+    TextureRegion textWeapons;
 
     float timerGame;
     float timerDebris;
-    static float dspRotation = 0f;
+    float dspRotation = 0f;
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any mapPosition
@@ -74,6 +76,8 @@ public class GameScreen extends InputAdapter implements Screen {
         enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
         enemies = new EnemyManager(atlas, enemyBullets);
         planet = atlas.createSprite("lavender");
+        textShields = atlas.createSprite("text_shields");
+        textWeapons = atlas.createSprite("text_weapons");
 
         DrawingUtils.initGLSettings();
 
@@ -192,7 +196,8 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public void updateInput(float delta) {
         // Getting pressed keys
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W)
+                || Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             // Fire primary weapon
             for (Vessel vessel: vessels) {
                 if (!vessel.isDead && vessel.fire()){
@@ -252,12 +257,12 @@ public class GameScreen extends InputAdapter implements Screen {
     public void updateCollision() {
         for (Actor enemy: enemies.enemies) {
             if (!enemy.isDead) {
-                int hits = playerBullets.checkForCollisions(enemy);
+                int hits = playerBullets.checkForCollisions(this, enemy);
             }
         }
         for (Actor vessel: vessels) {
             if (!vessel.isDead) {
-                int hits = enemyBullets.checkForCollisions(vessel);
+                int hits = enemyBullets.checkForCollisions(this, vessel);
             }
         }
     }
@@ -282,25 +287,25 @@ public class GameScreen extends InputAdapter implements Screen {
         VisualEffects.drawStars(myRenderer, dspRotation, vanishingPoint);
 
         /** DRAW PLANET **/
-        GameScreen.batch.begin();
-        Vector3 pos = ProjectionUtils.projectPoint3D(new Vector2(0, 0));
-        GameScreen.batch.draw(planet,
+        myRenderer.batch.begin();
+        Vector3 pos = ProjectionUtils.projectPoint3D(this, new Vector2(0, 0));
+        myRenderer.batch.draw(planet,
                 pos.x - planet.getRegionWidth() / 2, pos.y - planet.getRegionHeight() / 2,
                 planet.getRegionWidth() / 2, planet.getRegionWidth() / 2,
                 planet.getRegionWidth(), planet.getRegionHeight(),
                 0.5f, 0.5f,
                 dspRotation);
-        GameScreen.batch.end();
+        myRenderer.batch.end();
 
         /** DRAW FUNNEL **/
-        VisualEffects.drawTunnel(delta, myRenderer, dspRotation, vanishingPoint, game.settings.DRAW_RINGS());
+        VisualEffects.drawTunnel(this, delta, game.settings.DRAW_RINGS());
 
         /** DRAW TEMP DEBRIS **/
         DrawingUtils.enableBlend();
         myRenderer.begin(ShapeRenderer.ShapeType.Filled);
         myRenderer.setColor(new Color(.8f, .9f, 1f, 0.3f));
         for (Actor d: debris) {
-            Vector3 placement = ProjectionUtils.projectPoint3D(d.mapPosition);
+            Vector3 placement = ProjectionUtils.projectPoint3D(this, d.mapPosition);
             myRenderer.circle(placement.x, placement.y, 1f * placement.z);
         }
         myRenderer.end();
@@ -308,13 +313,78 @@ public class GameScreen extends InputAdapter implements Screen {
 
         /** Draw player vessels **/
         for (Vessel vessel: vessels) {
-            vessel.render(myRenderer, delta);
+            vessel.render(this, delta);
         }
 
         /** Draw enemies **/
-        enemies.render(myRenderer, delta, dspRotation, vanishingPoint);
+        enemies.render(this, delta);
 
-        playerBullets.render();
+        playerBullets.render(this);
+
+        drawHUD();
+    }
+
+    public void drawHUD() {
+        float PADDING = Constants.PADDING;
+        float HALFDISP = Constants.DISPLAY_SIZE/2;
+        float DX = Constants.WEAPON_BLOCKS_XOFFSET;
+        float DY = Constants.WEAPON_BLOCKS_YOFFSET;
+
+        /** Shield/Health bars **/
+        myRenderer.batch.begin();
+        myRenderer.batch.draw(
+                textShields,
+                PADDING - HALFDISP,
+                -Constants.GAUGE_TEXT_HEIGHT - PADDING + HALFDISP,
+                Constants.GAUGE_TEXT_WIDTH,
+                Constants.GAUGE_TEXT_HEIGHT
+        );
+        myRenderer.batch.draw(
+                textWeapons,
+                DX + PADDING - HALFDISP,
+                DY - Constants.GAUGE_TEXT_HEIGHT - PADDING + HALFDISP,
+                Constants.GAUGE_TEXT_WIDTH,
+                Constants.GAUGE_TEXT_HEIGHT
+        );
+        myRenderer.batch.end();
+        myRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i=0; i<vessels.get(0).getShieldHitPoints(); i++) {
+            myRenderer.triangle(
+                    64 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING - 16,
+                    84 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING - 16,
+                    67 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING,
+                    Constants.SHIELD_STRENGTH_COLOR_BOTTOM,
+                    Constants.SHIELD_STRENGTH_COLOR_BOTTOM,
+                    Constants.SHIELD_STRENGTH_COLOR_TOP
+            );
+            myRenderer.triangle(
+                    67 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING,
+                    84 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING - 16,
+                    87 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING,
+                    Constants.SHIELD_STRENGTH_COLOR_TOP,
+                    Constants.SHIELD_STRENGTH_COLOR_BOTTOM,
+                    Constants.SHIELD_STRENGTH_COLOR_TOP
+            );
+        }
+        for (int i=0; i<vessels.get(0).weaponLevel+1; i++) {
+            myRenderer.triangle(
+                    DX + 64 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING - 16,
+                    DX + 84 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING - 16,
+                    DX + 67 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING,
+                    Constants.WEAPON_STRENGTH_COLOR_BOTTOM,
+                    Constants.WEAPON_STRENGTH_COLOR_BOTTOM,
+                    Constants.WEAPON_STRENGTH_COLOR_TOP
+            );
+            myRenderer.triangle(
+                    DX + 67 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING,
+                    DX + 84 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING - 16,
+                    DX + 87 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING,
+                    Constants.WEAPON_STRENGTH_COLOR_TOP,
+                    Constants.WEAPON_STRENGTH_COLOR_BOTTOM,
+                    Constants.WEAPON_STRENGTH_COLOR_TOP
+            );
+        }
+        myRenderer.end();
     }
 
     @Override

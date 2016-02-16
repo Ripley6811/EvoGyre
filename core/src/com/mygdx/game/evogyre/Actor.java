@@ -99,7 +99,7 @@ public class Actor {
         return new Animation(ACTOR_FRAME_RATE, textures, Animation.PlayMode.LOOP);
     }
 
-    public void render(MyShapeRenderer renderer, float delta) {
+    public void render(GameScreen screen, float delta) {
 
     }
 }

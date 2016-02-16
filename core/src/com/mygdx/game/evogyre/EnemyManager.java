@@ -102,14 +102,14 @@ public class EnemyManager {
         }
     }
 
-    public void render(MyShapeRenderer renderer, float delta, float mapRotation, Vector2 vanishingPoint) {
+    public void render(GameScreen screen, float delta) {
         for (Actor enemy: enemies) {
             if (!enemy.isDead) {
                 enemy.update(delta);
-                enemy.render(renderer, delta);
+                enemy.render(screen, delta);
             }
         }
 
-        bulletManager.render();
+        bulletManager.render(screen);
     }
 }

@@ -37,12 +37,12 @@ public class EnemyBallship extends Actor {
     }
 
     @Override
-    public void render(MyShapeRenderer renderer, float delta) {
+    public void render(GameScreen screen, float delta) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
         elapsedTime += delta;
-        float rotation = positionAngle() + GameScreen.dspRotation;
-        dspPosition = ProjectionUtils.projectPoint3D(mapPosition);
+        float rotation = positionAngle() + screen.dspRotation;
+        dspPosition = ProjectionUtils.projectPoint3D(screen, mapPosition);
 
         // Update collision polygon
         dspPolygon.clear();
@@ -54,27 +54,27 @@ public class EnemyBallship extends Actor {
         int pWidth = texture.getRegionWidth();
         int pHeight = texture.getRegionHeight();
 
-        GameScreen.batch.begin();
-        GameScreen.batch.draw(inner_ball,
+        screen.batch.begin();
+        screen.batch.draw(inner_ball,
                 dspPosition.x - Constants.HALF_BALLSHIP,
                 dspPosition.y - Constants.HALF_BALLSHIP,
                 0.5f * pWidth, Constants.HALF_BALLSHIP,
                 pWidth, pHeight,
                 1.1f * dspPosition.z, 1.1f * dspPosition.z,  // Scale
                 rotation + 800 * elapsedTime);
-        GameScreen.batch.draw(texture,
+        screen.batch.draw(texture,
                 dspPosition.x - Constants.HALF_BALLSHIP,
                 dspPosition.y - Constants.HALF_BALLSHIP,
                 Constants.HALF_BALLSHIP, Constants.HALF_BALLSHIP,
                 pWidth, pHeight,
                 0.6f * dspPosition.z, 0.6f * dspPosition.z,  // Scale
                 rotation + 90f);
-        GameScreen.batch.end();
+        screen.batch.end();
 
 
         // Show collision collisionPolygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.drawDebugPolygon(renderer,
+            DrawingUtils.drawDebugPolygon(screen.myRenderer,
                     DrawingUtils.vectors2floats(dspPolygon));
         }
     }

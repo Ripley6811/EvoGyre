@@ -3,6 +3,7 @@ package com.mygdx.game.evogyre;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -25,6 +26,10 @@ public class Shield {
         this.effects = new Array<ShieldBlast>();
     }
 
+    public int getHitPoints() {
+        return hitPoints;
+    }
+
     /**
      * Attempts to reduce shield points.
      * @return Remaining damage after shield absorption.
@@ -44,10 +49,10 @@ public class Shield {
         return amount;
     }
 
-    public void render(MyShapeRenderer renderer, float delta, Vector3 center, float angle) {
+    public void render(MyShapeRenderer myRenderer, float delta, Vector3 center, float angle) {
         if (hitPoints > 0) {
-            GameScreen.batch.begin();
-            GameScreen.batch.draw(texture,
+            myRenderer.batch.begin();
+            myRenderer.batch.draw(texture,
                     center.x - 0.5f * width,
                     center.y - 0.5f * height,
                     0.5f * width, 0.5f * height,
@@ -57,13 +62,13 @@ public class Shield {
                     0, 0,  // texel space coordinate (offset image within drawing area)
                     texture.getWidth(), texture.getHeight(),  // texel
                     false, false);
-            GameScreen.batch.end();
+            myRenderer.batch.end();
         }
 
         for (ShieldBlast effect: effects) {
             if (!effect.isDone) {
-                // TODO: Bring this method into this class (?)
-                VisualEffects.shieldGradientEffect(renderer, center, true, effect.phase, effect.alpha);
+                // TODO: Bring the following method into this class (?)
+                VisualEffects.shieldGradientEffect(myRenderer, center, true, effect.phase, effect.alpha);
             }
             effect.update(delta);
         }
@@ -94,8 +99,8 @@ public class Shield {
      * the tweening effect. Multiple instances can overlap in the dspPosition.
      */
     private class ShieldBlast {
-        float phase;
-        float alpha;
+        float phase;  // Gradient offset
+        float alpha;  // Transparency
         boolean isDone;
 
         public ShieldBlast() {
@@ -106,9 +111,7 @@ public class Shield {
 
         public void update(float delta) {
             if (!isDone) {
-                // TODO: add curve like createjs ease.circOut for phase
                 phase = Math.max(0f, phase - delta * Constants.PHASE_MULTIPLIER);
-                // TODO: add curve like createjs ease.quadOut for alpha
                 alpha = Math.max(0f, alpha - delta * Constants.ALPHA_FADE_MULTIPLIER);
                 if (alpha == 0f) {
                     isDone = true;

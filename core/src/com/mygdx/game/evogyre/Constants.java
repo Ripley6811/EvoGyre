@@ -12,14 +12,14 @@ import com.badlogic.gdx.utils.JsonValue;
  * Created by Jay on 1/12/2016.
  */
 public class Constants {
-    /* LOGGING LEVELS */
+    /** LOGGING LEVELS */
     // Application logging levels from lowest to highest. Choose one.
-//    public static final int LOG_LEVEL = Application.LOG_NONE;
+    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
-    public static final int LOG_LEVEL = Application.LOG_INFO;
+//    public static final int LOG_LEVEL = Application.LOG_INFO;
 //    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
-    /* DISPLAYED TEXT */
+    /** DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
     public static final String STORY = "In the year 2143, we lost Earth to the Xenovulpe. " +
             "It was the last human stronghold in the Solar system. Now, 32 years later, " +
@@ -27,13 +27,13 @@ public class Constants {
             "shielding, time-dilation engines and numerous armaments, those invaders don't " +
             "stand a chance.";
 
-    /* GAME SETTINGS */
+    /** GAME SETTINGS */
     public static final String[] DIFFICULTY_NAMES = {"Easy", "Hard", "Insane!"};
     public static final Array<String> DIFFICULTY = new Array<String>(DIFFICULTY_NAMES);
     public static final Color BACKGROUND_COLOR = Color.BLACK;
     public static final String MAIN_ATLAS = "images/evogyre.pack.atlas";
 
-    /* WORLD SETTINGS */
+    /** WORLD SETTINGS */
     public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
     public static final float PROJECTION_RADIUS = 280f;
     // Affects curvature of cylinder/funnel. 1 = cylinder, over 1 increases curve
@@ -53,7 +53,7 @@ public class Constants {
     public static final int HALF_SHIP = 20;
     public static final int HALF_BALLSHIP = 24;
 
-    /* WEAPONS */
+    /** WEAPONS */
     public static final JsonValue PRIMARY_WEAPON_SETUP =
             new JsonReader().parse(Gdx.files.internal("json/primary_weapon_setup.json"));
     public static final JsonValue ENEMY_WEAPON_SETUP =
@@ -69,7 +69,7 @@ public class Constants {
     // Reduce and randomize enemy firing rate
     public static final float ENEMY_FIRE_REDUCTION = 0.005f;  // 0.06 = 6% success rate
 
-    /* ACTOR */
+    /** ACTOR */
     public static final float ACCELERATION_RATE = 300f;
     public static final float MAX_VELOCITY = 150f;
     public enum Flight_Patterns {
@@ -85,7 +85,7 @@ public class Constants {
             new JsonReader().parse(Gdx.files.internal("json/level_1.json")).get("enemies");
     public static final float ABREAST_DISTANCE = 12f;  // Degrees
 
-    /* SHIELDS */
+    /** SHIELDS */
     public static final float SHIELD_RADIUS = 20f;
     public static final float SHIELD_WIDTH_MULTIPLIER = 1.3f;
     public static final float SHIELD_EFFECT_OFFSET = 15f;
@@ -98,14 +98,14 @@ public class Constants {
     public static final int TRIDENT_HIT_POINTS = 4;
     public static final int BALLSHIP_HIT_POINTS = 2;
 
-    /* ACCELEROMETER */
+    /** ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
     // Used for sticky movement when using accelerometer
     public static final float ACTOR_STATIC_THRESHOLD = 0.08f;
     // Multiply to velocity to slow down
     public static final float ACTOR_MOTION_FRICTION = 0.8f;
 
-    /* COLLISION POLYGONS FOR ACTORS */
+    /** COLLISION POLYGONS FOR ACTORS */
     // Trident = The green T-shaped enemy craft
     private static Vector2[] tp_corners = {
             new Vector2(12f, 20f),  // Tip
@@ -131,4 +131,15 @@ public class Constants {
             new Vector2(-1f, 20)  // right wing
     };
     public static final Array<Vector2> VESSEL_POLYGON = new Array<Vector2>(vp_corners);
+
+    /** HUD */
+    public static final Color SHIELD_STRENGTH_COLOR_TOP = new Color(0.6f, 0.7f, 1f, 1f);
+    public static final Color SHIELD_STRENGTH_COLOR_BOTTOM = new Color(0.2f, 0.3f, 1f, 1f);
+    public static final Color WEAPON_STRENGTH_COLOR_TOP = new Color(1f, 0.5f, 0.7f, 1f);
+    public static final Color WEAPON_STRENGTH_COLOR_BOTTOM = new Color(1f, 0.1f, 0.3f, 1f);
+    public static final float PADDING = 8f;
+    public static final float GAUGE_TEXT_WIDTH = 65f;
+    public static final float GAUGE_TEXT_HEIGHT = 16f;
+    public static final float WEAPON_BLOCKS_XOFFSET = -3f;
+    public static final float WEAPON_BLOCKS_YOFFSET = -21f;
 }

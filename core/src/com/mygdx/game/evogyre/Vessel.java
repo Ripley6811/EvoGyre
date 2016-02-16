@@ -39,6 +39,10 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         hitPoints = Constants.VESSEL_HIT_POINTS;
     }
 
+    public int getShieldHitPoints() {
+        return shield.getHitPoints();
+    }
+
     @Override
     public void accelerate(Vector2 accelVector) {
         if (accelVector.isZero()) decelerate();
@@ -83,13 +87,13 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     }
 
     @Override
-    public void render(MyShapeRenderer renderer, float delta) {
+    public void render(GameScreen screen, float delta) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
         float missileRightOffset = Constants.MISSILE_RIGHT_OFFSET;
         float missileLeftOffset = Constants.MISSILE_LEFT_OFFSET;
-        float rotation = positionAngle() + GameScreen.dspRotation + 180f;
-        dspPosition = ProjectionUtils.projectPoint3D(mapPosition);
+        float rotation = positionAngle() + screen.dspRotation + 180f;
+        dspPosition = ProjectionUtils.projectPoint3D(screen, mapPosition);
 
         dspPolygon.clear();
         for (Vector2 v : collisionPolygon) {
@@ -128,41 +132,41 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
         if (nMissiles > 0) {
             int mWidth = missile.getRegionWidth();
             int mHeight = missile.getRegionHeight();
-            GameScreen.batch.begin();
-            GameScreen.batch.draw(missile,
+            screen.batch.begin();
+            screen.batch.draw(missile,
                     dspPosition.x + missileRightOffset * pWidth,
                     dspPosition.y - 0.4f * pHeight,
                     -missileRightOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
                     mWidth, mHeight,
                     0.5f, 0.5f,  // Scale
                     rotation - 90f);
-            GameScreen.batch.draw(missile,
+            screen.batch.draw(missile,
                     dspPosition.x + missileLeftOffset * pWidth,
                     dspPosition.y - 0.4f * pHeight,
                     -missileLeftOffset * pWidth, 0.4f * pHeight,  // Origin for rotation, scale
                     mWidth, mHeight,
                     0.5f, 0.5f,  // Scale
                     rotation - 90f);
-            GameScreen.batch.end();
+            screen.batch.end();
         }
 
         // Draw vessel
-        GameScreen.batch.begin();
-        GameScreen.batch.draw(texture,
+        screen.batch.begin();
+        screen.batch.draw(texture,
                 dspPosition.x - Constants.HALF_SHIP,
                 dspPosition.y - Constants.HALF_SHIP,
                 Constants.HALF_SHIP, Constants.HALF_SHIP,
                 pWidth, pHeight,
                 1.28f, 0.8f,  // Scale
                 rotation - 90f);
-        GameScreen.batch.end();
+        screen.batch.end();
 
         // Show collision collisionPolygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.drawDebugPolygon(renderer,
+            DrawingUtils.drawDebugPolygon(screen.myRenderer,
                     DrawingUtils.vectors2floats(dspPolygon));
         }
 
-        shield.render(renderer, delta, dspPosition, rotation + 180f);
+        shield.render(screen.myRenderer, delta, dspPosition, rotation + 180f);
     }
 }

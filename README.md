@@ -29,7 +29,8 @@ Collision interaction is based on the projected point and rendered image size
 (Map motion coordinates do not correspond well to image size).
 
 #### Image assets
-Spaceship graphics provided by [Udacity](www.udacity.com). Planets created by JWJ in
+Spaceship graphics provided by [Udacity](www.udacity.com). Planets and HUD
+text created by JWJ in
 Photoshop. Other special effects designed by JWJ in LibGDX.
 
 
@@ -39,7 +40,7 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 - Special Effects - Jay W J
 - Art Assets
     - Spaceships & Bullets - Udacity
-    - Planets - Jay W J
+    - Planets & Text - Jay W J
 - Music - Jay W J
 - Sound Effects - Jay W J
 
@@ -52,10 +53,14 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 
 
 ## TODO
-- [ ] Refactor back to not use static members of GameScreen
-- [ ] Design level(s)
-- [ ] Add missiles
-- [ ] Add boss
+- [x] Indicator for shield strength
+- [ ] Add ship explosions
 - [ ] Add shield and weapon powerups
-- [ ] Indicator for shield strength
 - [ ] Android accelerometer controls
+- [ ] Opening screen and options
+- [ ] End game screen
+- [ ] Design level(s)
+- [ ] Add missiles (Optional)
+- [ ] Add boss
+- [ ] Sound FX
+- [x] Refactor back to not use static members of GameScreen

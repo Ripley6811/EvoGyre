@@ -6,371 +6,385 @@ filter: Nearest,Nearest
 repeat: none
 star
   rotate: false
-  xy: 212, 2
+  xy: 766, 178
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: 1
 star
   rotate: false
-  xy: 540, 44
+  xy: 2, 2
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: 2
 star
   rotate: false
-  xy: 652, 110
+  xy: 884, 168
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: 3
 boss
   rotate: false
-  xy: 210, 186
+  xy: 210, 188
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 1
 boss
   rotate: false
-  xy: 210, 120
+  xy: 210, 122
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 2
 boss
   rotate: false
-  xy: 324, 186
+  xy: 324, 188
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 3
 boss
   rotate: false
-  xy: 210, 54
+  xy: 210, 56
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 4
 bosscore
   rotate: false
-  xy: 324, 120
+  xy: 324, 122
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 1
 bosscore
   rotate: false
-  xy: 438, 186
+  xy: 438, 188
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 2
 bosscore
   rotate: false
-  xy: 324, 54
+  xy: 324, 56
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 3
 bosscore
   rotate: false
-  xy: 438, 120
+  xy: 438, 122
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 4
 bossdamage
   rotate: false
-  xy: 552, 186
+  xy: 552, 188
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 1
 bossdamage
   rotate: false
-  xy: 438, 54
+  xy: 438, 56
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 2
 bossdamage
   rotate: false
-  xy: 552, 120
+  xy: 552, 122
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 3
 bossdamage
   rotate: false
-  xy: 666, 186
+  xy: 666, 188
   size: 112, 64
   orig: 112, 64
   offset: 0, 0
   index: 4
 turret
   rotate: false
-  xy: 506, 20
+  xy: 850, 144
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 turretshoot
   rotate: false
-  xy: 552, 36
+  xy: 906, 170
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 turretturn
   rotate: false
-  xy: 586, 36
+  xy: 552, 38
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 turretturnshoot
   rotate: false
-  xy: 620, 36
+  xy: 586, 38
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 ball_inner
   rotate: false
-  xy: 552, 70
+  xy: 552, 72
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 ball_outer
   rotate: false
-  xy: 666, 136
+  xy: 666, 138
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: -1
 explosion
   rotate: false
-  xy: 666, 136
+  xy: 666, 138
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: 4
 enemy
   rotate: false
-  xy: 2, 2
+  xy: 956, 212
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 enemy
   rotate: false
-  xy: 830, 210
+  xy: 128, 4
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 enemyshoot
   rotate: false
-  xy: 44, 2
+  xy: 170, 4
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 enemyshoot
   rotate: false
-  xy: 872, 210
+  xy: 780, 178
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 enemyturn
   rotate: false
-  xy: 86, 2
+  xy: 822, 178
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 enemyturn
   rotate: false
-  xy: 914, 210
+  xy: 864, 178
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 enemyturnshoot
   rotate: false
-  xy: 128, 2
+  xy: 212, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 enemyturnshoot
   rotate: false
-  xy: 956, 210
+  xy: 254, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 explosion
   rotate: false
-  xy: 780, 202
+  xy: 602, 72
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: 1
 explosion
   rotate: false
-  xy: 602, 70
+  xy: 716, 138
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: 2
 explosion
   rotate: false
-  xy: 716, 136
+  xy: 906, 204
   size: 48, 48
   orig: 48, 48
   offset: 0, 0
   index: 3
+text_shields
+  rotate: false
+  xy: 2, 12
+  size: 124, 32
+  orig: 124, 32
+  offset: 0, 0
+  index: -1
+text_weapons
+  rotate: false
+  xy: 780, 220
+  size: 124, 32
+  orig: 124, 32
+  offset: 0, 0
+  index: -1
 lavender
   rotate: false
-  xy: 2, 44
+  xy: 2, 46
   size: 206, 206
   orig: 206, 206
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 170, 2
+  xy: 296, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 player
   rotate: false
-  xy: 212, 12
+  xy: 338, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 playershoot
   rotate: false
-  xy: 254, 12
+  xy: 380, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 playershoot
   rotate: false
-  xy: 296, 12
+  xy: 422, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 playerturn
   rotate: false
-  xy: 338, 12
+  xy: 464, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 playerturn
   rotate: false
-  xy: 380, 12
+  xy: 506, 14
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 playerturnshoot
   rotate: false
-  xy: 422, 12
+  xy: 766, 136
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 1
 playerturnshoot
   rotate: false
-  xy: 464, 12
+  xy: 808, 136
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 extralife
   rotate: false
-  xy: 998, 200
+  xy: 998, 202
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 missileammo
   rotate: false
-  xy: 718, 110
+  xy: 574, 12
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 points
   rotate: false
-  xy: 744, 110
+  xy: 600, 12
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 triplelaser
   rotate: false
-  xy: 884, 184
+  xy: 966, 186
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 bluelaser
   rotate: false
-  xy: 998, 226
+  xy: 998, 228
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 missile
   rotate: false
-  xy: 666, 110
+  xy: 620, 46
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 missile
   rotate: false
-  xy: 692, 110
+  xy: 548, 12
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 redlaser
   rotate: false
-  xy: 780, 176
+  xy: 666, 112
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 round_lg
   rotate: false
-  xy: 806, 176
+  xy: 692, 112
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 round_sm
   rotate: false
-  xy: 832, 184
+  xy: 718, 112
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 sharp
   rotate: false
-  xy: 858, 184
+  xy: 940, 178
   size: 24, 24
   orig: 24, 24
   offset: 0, 0

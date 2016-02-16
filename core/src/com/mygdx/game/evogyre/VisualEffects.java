@@ -70,8 +70,7 @@ public class VisualEffects {
         sineOut = new Tween.SineOut(-Constants.MAP_SIZE_X, 0f, duration);
         funnelAlpha = 0.1f;
     }
-    public static void drawTunnel(float delta, ShapeRenderer renderer,
-                                  float mapRotation, Vector2 vanishingPoint,
+    public static void drawTunnel(GameScreen screen, float delta,
                                   boolean showDrawing) {
         if (sineOut == null) drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
 
@@ -91,15 +90,15 @@ public class VisualEffects {
             ringDistances[i] = i * Constants.RING_INTERVAL + ringDisplacement;
         }
         DrawingUtils.enableBlend();
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(funnelColor);
+        screen.myRenderer.begin(ShapeRenderer.ShapeType.Line);
+        screen.myRenderer.setColor(funnelColor);
         for (float ringX: ringDistances) {
             float i = Constants.MAP_SIZE_X - ringX;
-            Vector3 tmpV1 = ProjectionUtils.projectPoint3D(new Vector2(i, 0));
-            Vector3 tmpV2 = ProjectionUtils.projectPoint3D(new Vector2(i, 180));
-            renderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
+            Vector3 tmpV1 = ProjectionUtils.projectPoint3D(screen, new Vector2(i, 0));
+            Vector3 tmpV2 = ProjectionUtils.projectPoint3D(screen, new Vector2(i, 180));
+            screen.myRenderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
         }
-        renderer.end();
+        screen.myRenderer.end();
         DrawingUtils.disableBlend();
     }
 

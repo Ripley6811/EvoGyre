@@ -60,19 +60,19 @@ public class BulletManager {
         }
     }
 
-    public void render() {
+    public void render(GameScreen screen) {
         Vector3 placement;
         Vector2 placement2;  // Z-depth not needed
-        GameScreen.batch.begin();
+        screen.batch.begin();
         for (Bullet b: bullets) {
             if (b.isFinished) continue;
-            placement = ProjectionUtils.projectPoint3D(b.position);
-            placement2 = ProjectionUtils.projectPoint2D(b.lastPosition);
+            placement = ProjectionUtils.projectPoint3D(screen, b.position);
+            placement2 = ProjectionUtils.projectPoint2D(screen, b.lastPosition);
             float angle = new Vector2(placement.x-placement2.x, placement.y-placement2.y).angle();
             TextureRegion texture = bulletTextures.get(b.type);
             int width = texture.getRegionWidth();
             int height = texture.getRegionHeight();
-            GameScreen.batch.draw(texture,
+            screen.batch.draw(texture,
                     placement.x - 0.5f * width,
                     placement.y - 0.5f * height,
                     0.5f * width, 0.5f * height,
@@ -81,7 +81,7 @@ public class BulletManager {
                     placement.z * (b.isRound ? 0.8f : placement.z),  // Scale
                     angle + 90f);
         }
-        GameScreen.batch.end();
+        screen.batch.end();
     }
 
     private class Bullet {
@@ -101,13 +101,13 @@ public class BulletManager {
         }
     }
 
-    public int checkForCollisions(Actor ship) {
+    public int checkForCollisions(GameScreen screen, Actor ship) {
         int hits = 0;
         if (bullets.size > 0) {
             for (Bullet b : bullets) {
                 if (!b.isFinished && ship.dspPolygon.size > 0) {
-                    Vector2 currPos = ProjectionUtils.projectPoint2D(b.position);
-                    Vector2 lastPos = ProjectionUtils.projectPoint2D(b.lastPosition);
+                    Vector2 currPos = ProjectionUtils.projectPoint2D(screen, b.position);
+                    Vector2 lastPos = ProjectionUtils.projectPoint2D(screen, b.lastPosition);
                     Polygon polygon = new Polygon(DrawingUtils.vectors2floats(ship.dspPolygon));
                     // `intersectSegmentPolygon` prevents bullet skipping over enemy
                     if (Intersector.intersectSegmentPolygon(currPos, lastPos, polygon)) {

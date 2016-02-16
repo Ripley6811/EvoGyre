@@ -45,11 +45,11 @@ public class EnemyTrident extends Actor {
     }
 
     @Override
-    public void render(MyShapeRenderer renderer, float delta) {
+    public void render(GameScreen screen, float delta) {
         // Update fire cool-down
         fireCooldown = Math.max(0f, fireCooldown-delta);
-        float rotation = positionAngle() + GameScreen.dspRotation;
-        dspPosition = ProjectionUtils.projectPoint3D(mapPosition);
+        float rotation = positionAngle() + screen.dspRotation;
+        dspPosition = ProjectionUtils.projectPoint3D(screen, mapPosition);
 
         // Update collision polygon
         dspPolygon.clear();
@@ -79,20 +79,20 @@ public class EnemyTrident extends Actor {
         int pWidth = texture.getRegionWidth();
         int pHeight = texture.getRegionHeight();
 
-        GameScreen.batch.begin();
-        GameScreen.batch.draw(texture,
+        screen.batch.begin();
+        screen.batch.draw(texture,
                 dspPosition.x - Constants.HALF_SHIP,
                 dspPosition.y - Constants.HALF_SHIP,
                 Constants.HALF_SHIP, Constants.HALF_SHIP,
                 pWidth, pHeight,
                 1.28f* dspPosition.z, 0.8f* dspPosition.z,  // Scale
                 rotation + 90f);
-        GameScreen.batch.end();
+        screen.batch.end();
 
 
         // Show collision polygon in debug mode
         if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
-            DrawingUtils.drawDebugPolygon(renderer,
+            DrawingUtils.drawDebugPolygon(screen.myRenderer,
                     DrawingUtils.vectors2floats(dspPolygon));
         }
     }
