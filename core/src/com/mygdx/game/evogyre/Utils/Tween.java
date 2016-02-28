@@ -1,4 +1,4 @@
-package com.mygdx.game.evogyre;
+package com.mygdx.game.evogyre.Utils;
 
 /**
  * Created by Jay on 1/18/2016.
@@ -8,7 +8,7 @@ package com.mygdx.game.evogyre;
 public class Tween {
     private static final String TAG = Tween.class.getName();
 
-    static class SineOut {
+    public static class SineOut {
         private float timePassed;
         private float startValue;
         private float endValue;

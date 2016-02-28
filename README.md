@@ -32,6 +32,7 @@ Collision interaction is based on the projected point and rendered image size
 Spaceship graphics provided by [Udacity](www.udacity.com). Planets and HUD
 text created by JWJ in
 Photoshop. Other special effects designed by JWJ in LibGDX.
+Title created in Photoshop using two fonts found through Google Fonts: "Nothing You Could Do" by Kimberly Geswein and "Michroma" by Vernon Adams.
 
 
 ## Credits
@@ -50,6 +51,7 @@ Photoshop. Other special effects designed by JWJ in LibGDX.
 - [Equation for point on an ellipse given axes and angle](http://math.stackexchange.com/questions/432902/how-to-get-the-radius-of-an-ellipse-at-a-specific-angle-by-knowing-its-semi-majo)
 - [How to make a planet (in PhotoShop)](http://www.solarvoyager.com/images/tutorials/planet_tutorial_large.jpg)
     - [30+ Photoshop Tutorials For Creating Space And Planets](http://naldzgraphics.net/tutorials/30-photoshop-tutorials-for-creating-space-and-planets/)
+- [Google Fonts search](https://www.google.com/fonts)
 
 
 ## TODO

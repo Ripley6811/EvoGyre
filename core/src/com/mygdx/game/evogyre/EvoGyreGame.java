@@ -27,7 +27,7 @@ public class EvoGyreGame extends Game {
         settingsScreen = new SettingsScreen(this);
         storyScreen = new StoryScreen(this);
         gameScreen = new GameScreen(this);
-        setScreen(gameScreen);
+        setScreen(titleScreen);
     }
 
 

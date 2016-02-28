@@ -34,7 +34,7 @@ public class VisualEffects {
         // TODO: Create a less computationally intensive alternate version
         Color col1 = new Color(0,0,0,0);
 
-        DrawingUtils.enableBlend();
+        com.mygdx.game.evogyre.Utils.DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Line);
 
         float SHIELD_RADIUS = Constants.SHIELD_RADIUS;
@@ -61,13 +61,13 @@ public class VisualEffects {
             }
         }
         renderer.end();
-        DrawingUtils.disableBlend();
+        com.mygdx.game.evogyre.Utils.DrawingUtils.disableBlend();
     }
 
-    private static Tween.SineOut sineOut;
+    private static com.mygdx.game.evogyre.Utils.Tween.SineOut sineOut;
     private static float funnelAlpha;
     public static void drawTunnelInit(float duration) {
-        sineOut = new Tween.SineOut(-Constants.MAP_SIZE_X, 0f, duration);
+        sineOut = new com.mygdx.game.evogyre.Utils.Tween.SineOut(-Constants.MAP_SIZE_X, 0f, duration);
         funnelAlpha = 0.1f;
     }
     public static void drawTunnel(GameScreen screen, float delta,
@@ -89,7 +89,7 @@ public class VisualEffects {
         for (int i = 0; i < ringDistances.length; i++) {
             ringDistances[i] = i * Constants.RING_INTERVAL + ringDisplacement;
         }
-        DrawingUtils.enableBlend();
+        com.mygdx.game.evogyre.Utils.DrawingUtils.enableBlend();
         screen.myRenderer.begin(ShapeRenderer.ShapeType.Line);
         screen.myRenderer.setColor(funnelColor);
         for (float ringX: ringDistances) {
@@ -99,7 +99,7 @@ public class VisualEffects {
             screen.myRenderer.circle((tmpV1.x + tmpV2.x) / 2, (tmpV1.y + tmpV2.y) / 2, tmpV1.dst(tmpV2) / 2, 100);
         }
         screen.myRenderer.end();
-        DrawingUtils.disableBlend();
+        com.mygdx.game.evogyre.Utils.DrawingUtils.disableBlend();
     }
 
     private static Array<Vector2> stars;
@@ -114,7 +114,7 @@ public class VisualEffects {
             }
         }
 
-        DrawingUtils.enableBlend();
+        com.mygdx.game.evogyre.Utils.DrawingUtils.enableBlend();
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Constants.STAR_COLOR);
         for (Vector2 star: stars) {
@@ -124,6 +124,6 @@ public class VisualEffects {
             renderer.circle(rotateStar.x, rotateStar.y, 1f);
         }
         renderer.end();
-        DrawingUtils.disableBlend();
+        com.mygdx.game.evogyre.Utils.DrawingUtils.disableBlend();
     }
 }

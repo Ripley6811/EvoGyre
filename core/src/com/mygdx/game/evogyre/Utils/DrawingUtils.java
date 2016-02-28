@@ -1,4 +1,4 @@
-package com.mygdx.game.evogyre;
+package com.mygdx.game.evogyre.Utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.evogyre.Constants;
+import com.mygdx.game.evogyre.MyShapeRenderer;
 
 /**
  * Created by Jay on 1/26/2016.
