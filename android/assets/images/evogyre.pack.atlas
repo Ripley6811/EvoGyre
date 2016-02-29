@@ -111,28 +111,28 @@ bossdamage
   index: 4
 turret
   rotate: false
-  xy: 254, 2
+  xy: 478, 84
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 turretshoot
   rotate: false
-  xy: 288, 2
+  xy: 478, 50
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 turretturn
   rotate: false
-  xy: 478, 84
+  xy: 478, 16
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 turretturnshoot
   rotate: false
-  xy: 478, 50
+  xy: 554, 11
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -235,6 +235,20 @@ explosion
   orig: 48, 48
   offset: 0, 0
   index: 3
+bluepane
+  rotate: false
+  xy: 254, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+bluepanedark
+  rotate: false
+  xy: 288, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 text_shields
   rotate: false
   xy: 2, 2
@@ -314,35 +328,35 @@ playerturnshoot
   index: 1
 playerturnshoot
   rotate: false
-  xy: 504, 3
+  xy: 512, 3
   size: 40, 40
   orig: 40, 40
   offset: 0, 0
   index: 2
 extralife
   rotate: false
-  xy: 478, 24
+  xy: 588, 19
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 missileammo
   rotate: false
-  xy: 598, 19
+  xy: 666, 19
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 points
   rotate: false
-  xy: 624, 19
+  xy: 692, 19
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 triplelaser
   rotate: false
-  xy: 863, 3
+  xy: 997, 127
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
@@ -356,42 +370,42 @@ bluelaser
   index: -1
 missile
   rotate: false
-  xy: 546, 19
+  xy: 614, 19
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 1
 missile
   rotate: false
-  xy: 572, 19
+  xy: 640, 19
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: 2
 redlaser
   rotate: false
-  xy: 650, 19
+  xy: 811, 3
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 round_lg
   rotate: false
-  xy: 676, 19
+  xy: 837, 3
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 round_sm
   rotate: false
-  xy: 811, 3
+  xy: 863, 3
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 sharp
   rotate: false
-  xy: 837, 3
+  xy: 889, 11
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
