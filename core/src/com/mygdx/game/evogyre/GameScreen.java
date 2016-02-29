@@ -52,7 +52,6 @@ public class GameScreen extends InputAdapter implements Screen {
     boolean pause = false;
 
     public GameScreen(EvoGyreGame game) {
-        Gdx.input.setInputProcessor(this);
         Gdx.input.setCatchBackKey(true);
         this.game = game;
         actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
@@ -115,6 +114,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Gdx.app.log(TAG, "called 'show()'");
+        Gdx.input.setInputProcessor(this);
         pause = false;
     }
 

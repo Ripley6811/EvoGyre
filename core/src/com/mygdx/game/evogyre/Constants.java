@@ -3,6 +3,7 @@ package com.mygdx.game.evogyre;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -21,11 +22,14 @@ public class Constants {
 
     /** DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
-    public static final String STORY = "In the year 2143, we lost Earth to the Xenovulpe. " +
-            "It was the last human stronghold in the Solar system. Now, 32 years later, " +
-            "we will take the system back, planet by planet! With recent discoveries in tranverse photolithic " +
-            "shielding, time-dilation engines and numerous armaments, those invaders don't " +
-            "stand a chance.";
+    public static final String STORY = "In the year 2143, we lost Neptune to an alien invasion. " +
+            "It had held a colony of over 30,000 humans and was unprepared for war. Now, 32 years later, " +
+            "we will take Neptune back and solidify our dominion over the Solar System! With recent discoveries in tranverse photolithic " +
+            "shielding and improved armaments, those invaders don't " +
+            "stand a chance!";
+    public static final String CONTROLS = "Space or W  --  Fire lasers\n" +
+            "Left/Right Arrow  --  Strafe left/right (rotate)\n" +
+            "Down Arrow  --  Toggle fixed or rotating ship\n";
 
     /** GAME SETTINGS */
     public static final String[] DIFFICULTY_NAMES = {"Easy", "Hard", "Insane!"};
@@ -148,4 +152,23 @@ public class Constants {
     public static final float GAUGE_TEXT_HEIGHT = 16f;
     public static final float WEAPON_BLOCKS_XOFFSET = -3f;
     public static final float WEAPON_BLOCKS_YOFFSET = -21f;
+    public static final float PANEL_TWEEN_TIME = 0.9f;
+    public static final Rectangle buttonRect1 = new Rectangle(
+            Constants.DISPLAY_SIZE*.1f,
+            Constants.DISPLAY_SIZE*.43f,
+            Constants.DISPLAY_SIZE*.25f,
+            65
+    );
+    public static final Rectangle buttonRect2 = new Rectangle(
+            buttonRect1.x + Constants.DISPLAY_SIZE*.275f,
+            buttonRect1.y,
+            buttonRect1.width,
+            buttonRect1.height
+    );
+    public static final Rectangle buttonRect3 = new Rectangle(
+            buttonRect2.x + Constants.DISPLAY_SIZE*.275f,
+            buttonRect2.y,
+            buttonRect2.width,
+            buttonRect2.height
+    );
 }

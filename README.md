@@ -57,6 +57,7 @@ Title created in Photoshop using two fonts found through Google Fonts: "Nothing 
 ## TODO
 - [x] Indicator for shield strength
 - [ ] Add ship explosions
+- [ ] Add Score to HUD
 - [ ] Add shield and weapon powerups
 - [ ] Android accelerometer controls
 - [ ] Opening screen and options
