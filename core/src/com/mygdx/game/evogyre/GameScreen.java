@@ -1,5 +1,6 @@
 package com.mygdx.game.evogyre;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -39,6 +40,7 @@ public class GameScreen extends InputAdapter implements Screen {
     BulletManager playerBullets;
     BulletManager enemyBullets;
     EnemyManager enemies;
+    PowerupManager powerupManager;
     TextureRegion planet;
     TextureRegion textShields;
     TextureRegion textWeapons;
@@ -74,6 +76,7 @@ public class GameScreen extends InputAdapter implements Screen {
         atlas = game.assets.get(Constants.MAIN_ATLAS);
         playerBullets = new BulletManager(atlas, Constants.PRIMARY_WEAPON_SETUP);
         enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
+        powerupManager = new PowerupManager(atlas);
         enemies = new EnemyManager(atlas, enemyBullets);
         planet = atlas.createSprite("lavender");
         textShields = atlas.createSprite("text_shields");
@@ -90,7 +93,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public void init() {
         dspRotation = 0f;
         vessels.clear();
-        vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f, atlas));
+        vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f, atlas, playerBullets.weaponsCount()-1));
         vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
         VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         timerGame = 0f;
@@ -193,6 +196,8 @@ public class GameScreen extends InputAdapter implements Screen {
         playerBullets.update(delta);
 
         enemyBullets.update(delta);
+
+        powerupManager.update(delta);
     }
 
     public void updateInput(float delta) {
@@ -217,10 +222,16 @@ public class GameScreen extends InputAdapter implements Screen {
         }
 
         // TODO: For testing, switch weapons with number keys
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_1)) vessels.get(0).weaponLevel = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_2)) vessels.get(0).weaponLevel = 1;
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_3)) vessels.get(0).weaponLevel = 2;
-        if (Gdx.input.isKeyPressed(Input.Keys.NUM_4)) vessels.get(0).weaponLevel = 3;
+        if (Constants.LOG_LEVEL != Application.LOG_NONE) {
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_1))
+                vessels.get(0).weaponLevel = 0;
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_2))
+                vessels.get(0).weaponLevel = 1;
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_3))
+                vessels.get(0).weaponLevel = 2;
+            if (Gdx.input.isKeyPressed(Input.Keys.NUM_4))
+                vessels.get(0).weaponLevel = 3;
+        }
     }
 
     public void updateRotation(float delta) {
@@ -258,12 +269,17 @@ public class GameScreen extends InputAdapter implements Screen {
     public void updateCollision() {
         for (Actor enemy: enemies.enemies) {
             if (!enemy.isDead) {
-                int hits = playerBullets.checkForCollisions(this, enemy);
+                playerBullets.checkForCollisions(this, enemy);
             }
         }
         for (Actor vessel: vessels) {
             if (!vessel.isDead) {
-                int hits = enemyBullets.checkForCollisions(this, vessel);
+                enemyBullets.checkForCollisions(this, vessel);
+            }
+        }
+        for (Vessel vessel: vessels) {
+            if (!vessel.isDead) {
+                powerupManager.checkCollision(this, vessel);
             }
         }
     }
@@ -321,6 +337,8 @@ public class GameScreen extends InputAdapter implements Screen {
         enemies.render(this, delta);
 
         playerBullets.render(this);
+
+        powerupManager.render(this);
 
         drawHUD();
     }

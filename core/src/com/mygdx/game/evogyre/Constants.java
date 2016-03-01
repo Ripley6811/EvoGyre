@@ -137,10 +137,13 @@ public class Constants {
     public static final Array<Vector2> VESSEL_POLYGON = new Array<Vector2>(vp_corners);
 
     /** POWERUPS */
-    public enum Powerup_Types {
+    public enum PowerUp_Types {
         SHIELD,
         WEAPON
     }
+    public static final float POWER_UP_VELOCITY = 100f;
+    public static final float POWER_UP_INTERVAL = 10f;
+    public static final long POWER_UP_RANDOM_SEED = 3451;
 
     /** HUD */
     public static final Color SHIELD_STRENGTH_COLOR_TOP = new Color(0.6f, 0.7f, 1f, 1f);

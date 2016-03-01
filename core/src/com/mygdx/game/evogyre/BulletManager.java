@@ -42,6 +42,10 @@ public class BulletManager {
         }
     }
 
+    public int weaponsCount() {
+        return bulletTextures.size;
+    }
+
     public void update(float delta) {
         // Remove finished bullets from array
         while (bullets.size > 0 && bullets.first().isFinished) {
@@ -102,8 +106,7 @@ public class BulletManager {
         }
     }
 
-    public int checkForCollisions(GameScreen screen, Actor ship) {
-        int hits = 0;
+    public void checkForCollisions(GameScreen screen, Actor ship) {
         if (bullets.size > 0) {
             for (Bullet b : bullets) {
                 if (!b.isFinished && ship.dspPolygon.size > 0) {
@@ -112,13 +115,12 @@ public class BulletManager {
                     Polygon polygon = new Polygon(DrawingUtils.vectors2floats(ship.dspPolygon));
                     // `intersectSegmentPolygon` prevents bullet skipping over enemy
                     if (Intersector.intersectSegmentPolygon(currPos, lastPos, polygon)) {
-                        hits += 1;
                         b.isFinished = true;
                         ship.damage(1);
+                        ship.weaponLevel = Math.max(ship.weaponLevel - 1, 0);
                     }
                 }
             }
         }
-        return hits;
     }
 }

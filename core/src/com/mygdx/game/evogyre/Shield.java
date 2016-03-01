@@ -17,11 +17,13 @@ public class Shield {
     private float height;
     private Array<ShieldBlast> effects;
     private Texture texture;
+    private int maxHitPoints;
 
     public Shield(float width, float height, int hitPoints) {
         this.width = width;
         this.height = height;
         this.hitPoints = hitPoints;
+        this.maxHitPoints = hitPoints;
         this.texture = createTexture();
         this.effects = new Array<ShieldBlast>();
     }
@@ -47,6 +49,10 @@ public class Shield {
         }
 
         return amount;
+    }
+
+    public void recharge(int amount) {
+        hitPoints = Math.min(hitPoints + amount, maxHitPoints);
     }
 
     public void render(MyShapeRenderer myRenderer, float delta, Vector3 center, float angle) {

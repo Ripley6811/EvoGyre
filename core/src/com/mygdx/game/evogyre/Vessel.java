@@ -21,8 +21,9 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     private final TextureRegion missile;
     private final Shield shield;
     private int nMissiles = 1;
+    private int maxWeaponLevel;
 
-    public Vessel(float x, float y, TextureAtlas atlas) {
+    public Vessel(float x, float y, TextureAtlas atlas, int maxWeaponLevel) {
         super(x, y);
         fly_level = animateLoop(atlas.findRegions("player"));
         fly_right = animateLoop(atlas.findRegions("playerturn"));
@@ -38,6 +39,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
                 Constants.STARTING_SHIELD_POINTS);
         collisionPolygon = Constants.VESSEL_POLYGON;
         hitPoints = Constants.VESSEL_HIT_POINTS;
+        this.maxWeaponLevel = maxWeaponLevel;
     }
 
     public int getShieldHitPoints() {
@@ -65,7 +67,11 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
     @Override
     public void recharge(int amount) {
+        shield.recharge(amount);
+    }
 
+    public void incrementWeaponLevel() {
+        weaponLevel = Math.min(weaponLevel + 1, maxWeaponLevel);
     }
 
     public void addMissiles(int amount) {
