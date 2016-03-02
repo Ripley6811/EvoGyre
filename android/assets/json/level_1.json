@@ -157,5 +157,14 @@
       "enterYPos": 0,
       "pattern": "snake_spiral"
     }
+//  ,
+//    {
+//      "enterTime": 120,
+//      "quantity": 1,
+//      "interval": 0,
+//      "type": "boss",
+//      "enterYPos": 0,
+//      "pattern": "boss"
+//    }
   ]
 }

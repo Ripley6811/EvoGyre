@@ -44,6 +44,8 @@ public class GameScreen extends InputAdapter implements Screen {
     TextureRegion planet;
     TextureRegion textShields;
     TextureRegion textWeapons;
+    TextureRegion shipFixedButton;
+    TextureRegion shipRotateButton;
 
     float timerGame;
     float timerDebris;
@@ -81,6 +83,8 @@ public class GameScreen extends InputAdapter implements Screen {
         planet = atlas.createSprite("lavender");
         textShields = atlas.createSprite("text_shields");
         textWeapons = atlas.createSprite("text_weapons");
+        shipFixedButton = atlas.createSprite("ship_fixed_button");
+        shipRotateButton = atlas.createSprite("ship_rotate_button");
 
         DrawingUtils.initGLSettings();
 
@@ -136,6 +140,9 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // TODO: Create a boolean for dealing with continuous touch, use for firing weapons
+        Vector2 pt = actionViewport.unproject(new Vector2(screenX, screenY))
+                .sub(Constants.DISPLAY_SIZE / 2, Constants.DISPLAY_SIZE / 2);
+        if (Constants.rotateButtonRect.contains(pt)) vesselFixed = !vesselFixed;
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -404,6 +411,17 @@ public class GameScreen extends InputAdapter implements Screen {
             );
         }
         myRenderer.end();
+
+        /** DRAW SHIP ROTATION BUTTON */
+        myRenderer.batch.begin();
+        TextureRegion texture = vesselFixed ? shipFixedButton : shipRotateButton;
+        myRenderer.batch.draw(texture,
+                Constants.rotateButtonRect.x,
+                Constants.rotateButtonRect.y,
+                Constants.rotateButtonRect.width,
+                Constants.rotateButtonRect.height
+        );
+        myRenderer.batch.end();
     }
 
     @Override

@@ -69,7 +69,7 @@ public class PowerupManager {
         }
         if (powerups.size > 0) {
             PowerUp p = powerups.get(0);
-            if (p.position.x > Constants.MAP_SIZE_X || p.isFinished) {
+            if (p.position.x > Constants.MAP_SIZE_X * 1.1f || p.isFinished) {
                 powerups.removeIndex(0);
             }
         }

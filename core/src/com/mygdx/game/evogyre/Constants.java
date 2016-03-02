@@ -15,9 +15,9 @@ import com.badlogic.gdx.utils.JsonValue;
 public class Constants {
     /** LOGGING LEVELS */
     // Application logging levels from lowest to highest. Choose one.
-    public static final int LOG_LEVEL = Application.LOG_NONE;
+//    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
-//    public static final int LOG_LEVEL = Application.LOG_INFO;
+    public static final int LOG_LEVEL = Application.LOG_INFO;
 //    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
     /** DISPLAYED TEXT */
@@ -150,7 +150,7 @@ public class Constants {
     public static final Color SHIELD_STRENGTH_COLOR_BOTTOM = new Color(0.2f, 0.3f, 1f, 1f);
     public static final Color WEAPON_STRENGTH_COLOR_TOP = new Color(1f, 0.5f, 0.7f, 1f);
     public static final Color WEAPON_STRENGTH_COLOR_BOTTOM = new Color(1f, 0.1f, 0.3f, 1f);
-    public static final float PADDING = 8f;
+    public static final float PADDING = 10f;
     public static final float GAUGE_TEXT_WIDTH = 65f;
     public static final float GAUGE_TEXT_HEIGHT = 16f;
     public static final float WEAPON_BLOCKS_XOFFSET = -3f;
@@ -173,5 +173,10 @@ public class Constants {
             buttonRect2.y,
             buttonRect2.width,
             buttonRect2.height
+    );
+    public static final Rectangle rotateButtonRect = new Rectangle(
+            200, 204,
+            105 * .9f,
+            95 * .9f
     );
 }
