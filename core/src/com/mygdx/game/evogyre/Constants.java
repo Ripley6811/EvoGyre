@@ -15,9 +15,9 @@ import com.badlogic.gdx.utils.JsonValue;
 public class Constants {
     /** LOGGING LEVELS */
     // Application logging levels from lowest to highest. Choose one.
-//    public static final int LOG_LEVEL = Application.LOG_NONE;
+    public static final int LOG_LEVEL = Application.LOG_NONE;
 //    public static final int LOG_LEVEL = Application.LOG_ERROR;
-    public static final int LOG_LEVEL = Application.LOG_INFO;
+//    public static final int LOG_LEVEL = Application.LOG_INFO;
 //    public static final int LOG_LEVEL = Application.LOG_DEBUG;
 
     /** DISPLAYED TEXT */
@@ -79,7 +79,8 @@ public class Constants {
     public enum Flight_Patterns {
         SNAKE_ZIGZAG ("snake-zigzag"),
         ABREAST_ZIGZAG ("abreast-zigzag"),
-        SNAKE_SPIRAL ("snake-spiral");
+        SNAKE_SPIRAL ("snake-spiral"),
+        BOSS ("boss");
         public final String string;
         Flight_Patterns(String str) {
             this.string = str;
@@ -101,6 +102,7 @@ public class Constants {
     public static final int VESSEL_HIT_POINTS = 1;
     public static final int TRIDENT_HIT_POINTS = 4;
     public static final int BALLSHIP_HIT_POINTS = 2;
+    public static final int BOSS_HIT_POINTS = 20;
 
     /** ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
@@ -126,6 +128,14 @@ public class Constants {
             new Vector2(0, 13f)  // right wing
     };
     public static final Array<Vector2> BALLSHIP_POLYGON = new Array<Vector2>(bp_corners);
+    // Boss = The large green ship
+    private static Vector2[] boss_corners = {
+            new Vector2(12, 6),  // Tip
+            new Vector2(12, -6),  // left wing
+            new Vector2(0, -13f),  // right wing
+            new Vector2(0, 13f)  // right wing
+    };
+    public static final Array<Vector2> BOSS_POLYGON = new Array<Vector2>(boss_corners);
     // Vessel = The player craft
     private static Vector2[] vp_corners = {
             new Vector2(17f, 0),  // Tip

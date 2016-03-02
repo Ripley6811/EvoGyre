@@ -156,15 +156,22 @@
       "type": "ball",
       "enterYPos": 0,
       "pattern": "snake_spiral"
+    },
+    {
+      "enterTime": 120,
+      "quantity": 30,
+      "interval": 0,
+      "type": "trident",
+      "enterYPos": 180,
+      "pattern": "abreast_zigzag"
+    },
+    {
+      "enterTime": 125,
+      "quantity": 1,
+      "interval": 0,
+      "type": "boss",
+      "enterYPos": 0,
+      "pattern": "boss"
     }
-//  ,
-//    {
-//      "enterTime": 120,
-//      "quantity": 1,
-//      "interval": 0,
-//      "type": "boss",
-//      "enterYPos": 0,
-//      "pattern": "boss"
-//    }
   ]
 }

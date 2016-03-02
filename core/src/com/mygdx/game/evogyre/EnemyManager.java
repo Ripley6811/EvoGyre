@@ -36,13 +36,14 @@ public class EnemyManager {
         Actor enemy = null;
         if (type.equals("trident")) enemy = new EnemyTrident(0f, startY, efp, atlas);
         if (type.equals("ball")) enemy = new EnemyBallship(0f, startY, efp, atlas);
+        if (type.equals("boss")) enemy = new EnemyBoss(0f, startY, efp, atlas);
         enemy.velocity = new Vector2(70f, 50f);
         queueTimes.add(startTime);
         enemyQueue.add(enemy);
 
     }
 
-    public void update(float elapsedTime) {
+    public void update(float elapsedTime, float playerY) {
         // Move enemies from queue and into play when start time is reached.
         while (enemyQueue.size > 0 && queueTimes.get(0) < elapsedTime) {
             queueTimes.removeIndex(0);
@@ -81,6 +82,25 @@ public class EnemyManager {
                             enemy.velocity.x *= 0.8f;
                     }
                     break;
+                case BOSS:
+                    if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 6 * Constants.RING_INTERVAL && enemy.isEntering) {
+                        enemy.isEntering = false;
+                    } else if (!enemy.isEntering) {
+                        if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 6 * Constants.RING_INTERVAL)
+                            enemy.velocity.x *= 0.8f;
+                    }
+                    float playerDistance = 0f;
+                    if (enemy.mapPosition.y > playerY) {
+                        float difference = enemy.mapPosition.y - playerY;
+                        if (difference < 180f) playerDistance = -difference;
+                        else playerDistance = 360f - difference;
+                    } else {
+                        float difference = playerY - enemy.mapPosition.y;
+                        if (difference < 180f) playerDistance = difference;
+                        else playerDistance = -(360f - difference);
+                    }
+                    enemy.velocity.y = playerDistance * 2f;
+                    break;
             }
         }
 
@@ -91,9 +111,10 @@ public class EnemyManager {
 
         // Fire enemy bullets
         for (Actor enemy: enemies) {
-            if (random.nextFloat() < Constants.ENEMY_FIRE_REDUCTION) {
+            int weaponLevel = enemy.weaponLevel;
+            if ((weaponLevel == 2 && random.nextFloat() < 10 * Constants.ENEMY_FIRE_REDUCTION)
+                    || random.nextFloat() < Constants.ENEMY_FIRE_REDUCTION ) {
                 if (!enemy.isDead && enemy.fire()) {
-                    int weaponLevel = enemy.weaponLevel;
                     float xPos = enemy.mapPosition.x;
                     float yPos = enemy.mapPosition.y;
                     bulletManager.add(weaponLevel, xPos, yPos);

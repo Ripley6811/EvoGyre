@@ -198,7 +198,7 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
 
-        enemies.update(timerGame);
+        enemies.update(timerGame, vessels.get(0).positionAngle());
 
         playerBullets.update(delta);
 
