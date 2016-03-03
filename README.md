@@ -33,7 +33,7 @@ Spaceship graphics provided by [Udacity](www.udacity.com). Planets and HUD
 text created by JWJ in
 Photoshop. Other special effects designed by JWJ in LibGDX.
 Title created in Photoshop using two fonts found through Google Fonts: "Nothing You Could Do" by Kimberly Geswein and "Michroma" by Vernon Adams.
-
+"SHIELDS" "WEAPONS" font is OCR A Extended.
 
 ## Credits
 

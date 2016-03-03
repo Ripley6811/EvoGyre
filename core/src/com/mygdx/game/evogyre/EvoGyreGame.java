@@ -11,8 +11,8 @@ public class EvoGyreGame extends Game {
     GameSettings settings;
 
     TitleScreen titleScreen;
-    SettingsScreen settingsScreen;
-    StoryScreen storyScreen;
+//    SettingsScreen settingsScreen;
+//    StoryScreen storyScreen;
     GameScreen gameScreen;
 
     @Override
@@ -24,8 +24,8 @@ public class EvoGyreGame extends Game {
         settings = new GameSettings();
 
         titleScreen = new TitleScreen(this);
-        settingsScreen = new SettingsScreen(this);
-        storyScreen = new StoryScreen(this);
+//        settingsScreen = new SettingsScreen(this);
+//        storyScreen = new StoryScreen(this);
         gameScreen = new GameScreen(this);
         setScreen(titleScreen);
     }

@@ -51,6 +51,7 @@ public class Constants {
     public static final int NUMBER_OF_RINGS = 20;
     public static final float RING_INTERVAL = MAP_SIZE_X / NUMBER_OF_RINGS;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
+    public static final float PLAYER_START_ANGLE = 300f;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
     public static final Color COLLISION_DEBUG_COLOR = new Color(0f, 1f, 1f, 0.8f);
@@ -191,5 +192,17 @@ public class Constants {
             200, 204,
             105 * .9f,
             95 * .9f
+    );
+    public static final Rectangle buttonGotoMenu = new Rectangle(
+            0 - Constants.DISPLAY_SIZE*.125f,
+            -65,
+            Constants.DISPLAY_SIZE*.25f,
+            65
+    );
+    public static final Rectangle buttonStartOver = new Rectangle(
+            buttonGotoMenu.x,
+            buttonGotoMenu.y - buttonGotoMenu.height * 1.1f,
+            buttonGotoMenu.width,
+            buttonGotoMenu.height
     );
 }

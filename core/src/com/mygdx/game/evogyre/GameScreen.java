@@ -6,16 +6,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.evogyre.Utils.DrawingUtils;
+import com.mygdx.game.evogyre.Utils.Tween;
 
 import java.util.Random;
 
@@ -29,6 +34,7 @@ public class GameScreen extends InputAdapter implements Screen {
     FitViewport actionViewport;
     SpriteBatch batch;
     MyShapeRenderer myRenderer;
+    BitmapFont font;
 
     TextureAtlas atlas;
     Array<Actor> debris;
@@ -45,26 +51,29 @@ public class GameScreen extends InputAdapter implements Screen {
     TextureRegion planet;
     TextureRegion textShields;
     TextureRegion textWeapons;
+    TextureRegion textScore;
     TextureRegion shipFixedButton;
     TextureRegion shipRotateButton;
+    NinePatch bluePatch;
+    NinePatch bluePatchDark;
+    Tween.QuadInOut blueButtonTween;
 
     float timerGame;
     float timerDebris;
     float dspRotation = 0f;
+    float playerAngle = Constants.PLAYER_START_ANGLE;
+    long score = 0;
     boolean vesselFixed = false;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any mapPosition
     boolean pause = false;
+    boolean gameOver = false;
 
     public GameScreen(EvoGyreGame game) {
         Gdx.input.setCatchBackKey(true);
         this.game = game;
         actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
         actionViewport.apply(true);
-
-        timerGame = 0f;
-        timerDebris = 0f;
-        setAccelerometerBalanced();
 
         debris = new Array<Actor>();
         vessels = new Array<Vessel>();
@@ -79,14 +88,28 @@ public class GameScreen extends InputAdapter implements Screen {
         atlas = game.assets.get(Constants.MAIN_ATLAS);
         playerBullets = new BulletManager(atlas, Constants.PRIMARY_WEAPON_SETUP);
         enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
-        powerupManager = new PowerupManager(atlas);
-        explosionManager = new ExplosionManager(atlas);
-        enemies = new EnemyManager(atlas, enemyBullets);
         planet = atlas.createSprite("lavender");
         textShields = atlas.createSprite("text_shields");
         textWeapons = atlas.createSprite("text_weapons");
+        textScore = atlas.createSprite("text_score");
         shipFixedButton = atlas.createSprite("ship_fixed_button");
         shipRotateButton = atlas.createSprite("ship_rotate_button");
+
+        /** SETUP FONT */
+        font = new BitmapFont();
+        font.setColor(Color.CYAN);
+        font.getData().setScale(3f);
+        font.getRegion().getTexture().setFilter(
+                Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        bluePatch = new NinePatch(
+                atlas.createSprite("bluepane"),
+                15,15,15,15
+        );
+        bluePatchDark = new NinePatch(
+                atlas.createSprite("bluepanedark"),
+                15,15,15,15
+        );
 
         DrawingUtils.initGLSettings();
 
@@ -98,11 +121,20 @@ public class GameScreen extends InputAdapter implements Screen {
      */
     public void init() {
         dspRotation = 0f;
+        score = 0;
+        debris.clear();
         vessels.clear();
-        vessels.add(new Vessel(Constants.MAP_SIZE_X, 300f, atlas, playerBullets.weaponsCount()-1));
-        vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f);
+        vessels.add(new Vessel(Constants.MAP_SIZE_X, playerAngle,
+                atlas, playerBullets.weaponsCount() - 1));
+        vanishingPoint.setAngle(playerAngle + 180f);
         VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         timerGame = 0f;
+        timerDebris = 0f;
+        setAccelerometerBalanced();
+
+        powerupManager = new PowerupManager(atlas);
+        explosionManager = new ExplosionManager(atlas);
+        enemies = new EnemyManager(atlas, enemyBullets);
 
         // Load level enemies
         for (JsonValue group: Constants.ATTACK_PLAN_1) {
@@ -118,6 +150,13 @@ public class GameScreen extends InputAdapter implements Screen {
                 else enterTime += interval;
             }
         }
+
+
+        blueButtonTween = new Tween.QuadInOut(
+                bluePatch.getTotalWidth(),
+                Constants.buttonRect1.width,
+                Constants.PANEL_TWEEN_TIME
+        );
     }
 
     @Override
@@ -125,6 +164,7 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.app.log(TAG, "called 'show()'");
         Gdx.input.setInputProcessor(this);
         pause = false;
+        init();
     }
 
     public void setAccelerometerBalanced() {
@@ -145,6 +185,12 @@ public class GameScreen extends InputAdapter implements Screen {
         Vector2 pt = actionViewport.unproject(new Vector2(screenX, screenY))
                 .sub(Constants.DISPLAY_SIZE / 2, Constants.DISPLAY_SIZE / 2);
         if (Constants.rotateButtonRect.contains(pt)) vesselFixed = !vesselFixed;
+
+        if (gameOver) {
+            if (Constants.buttonGotoMenu.contains(pt))
+                game.setScreen(game.titleScreen);
+            if (Constants.buttonStartOver.contains(pt)) this.init();
+        }
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -200,7 +246,12 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
 
-        enemies.update(timerGame, vessels.get(0).positionAngle());
+        if (vessels.size > 0 && vessels.get(0).isDead) vessels.removeIndex(0);
+        else if (vessels.size == 0) {
+            endGame();
+        }
+
+        enemies.update(timerGame, playerAngle);
 
         playerBullets.update(delta);
 
@@ -209,6 +260,10 @@ public class GameScreen extends InputAdapter implements Screen {
         powerupManager.update(delta);
 
         explosionManager.update(delta);
+    }
+
+    public void endGame() {
+        gameOver = true;
     }
 
     public void updateInput(float delta) {
@@ -273,14 +328,14 @@ public class GameScreen extends InputAdapter implements Screen {
                     dspRotation -= distMoved;
                 }
             }
-            vanishingPoint.setAngle(vessels.get(0).positionAngle() + 180f + dspRotation);
+            vanishingPoint.setAngle(playerAngle + 180f + dspRotation);
         }
     }
 
     public void updateCollision() {
         for (Actor enemy: enemies.enemies) {
             if (!enemy.isDead) {
-                playerBullets.checkForCollisions(this, enemy);
+                score += playerBullets.checkForCollisions(this, enemy);
             }
         }
         for (Actor vessel: vessels) {
@@ -298,6 +353,8 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public void render(float delta) {
         if (delta > 0.05f) return;  // Avoids spikes in delta value.
+
+        if (vessels.size > 0) playerAngle = vessels.get(0).positionAngle();
 
         if (!pause) {
             // TODO: keep all updates out of the render methods
@@ -353,10 +410,10 @@ public class GameScreen extends InputAdapter implements Screen {
 
         explosionManager.render(this);
 
-        drawHUD();
+        drawHUD(delta);
     }
 
-    public void drawHUD() {
+    public void drawHUD(float delta) {
         float PADDING = Constants.PADDING;
         float HALFDISP = Constants.DISPLAY_SIZE/2;
         float DX = Constants.WEAPON_BLOCKS_XOFFSET;
@@ -378,9 +435,17 @@ public class GameScreen extends InputAdapter implements Screen {
                 Constants.GAUGE_TEXT_WIDTH,
                 Constants.GAUGE_TEXT_HEIGHT
         );
+        myRenderer.batch.draw(
+                textScore,
+                2*DX + PADDING - HALFDISP,
+                2*DY - Constants.GAUGE_TEXT_HEIGHT - PADDING + HALFDISP,
+                Constants.GAUGE_TEXT_WIDTH,
+                Constants.GAUGE_TEXT_HEIGHT
+        );
         myRenderer.batch.end();
         myRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (int i=0; i<vessels.get(0).getShieldHitPoints(); i++) {
+        int hitPoints = vessels.size > 0 ? vessels.get(0).getShieldHitPoints() : 0;
+        for (int i=0; i<hitPoints; i++) {
             myRenderer.triangle(
                     64 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING - 16,
                     84 + PADDING - HALFDISP + i * 21f, HALFDISP - PADDING - 16,
@@ -398,7 +463,8 @@ public class GameScreen extends InputAdapter implements Screen {
                     Constants.SHIELD_STRENGTH_COLOR_TOP
             );
         }
-        for (int i=0; i<vessels.get(0).weaponLevel+1; i++) {
+        int wLevel = vessels.size > 0 ? vessels.get(0).weaponLevel+1 : 0;
+        for (int i=0; i<wLevel; i++) {
             myRenderer.triangle(
                     DX + 64 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING - 16,
                     DX + 84 + PADDING - HALFDISP + i * 21f, DY + HALFDISP - PADDING - 16,
@@ -428,6 +494,86 @@ public class GameScreen extends InputAdapter implements Screen {
                 Constants.rotateButtonRect.height
         );
         myRenderer.batch.end();
+
+        /** DRAW SCORE */
+        font.getData().setScale(1.2f);
+        myRenderer.batch.begin();
+        for (int i=0; i<2; i++) {
+            font.draw(myRenderer.batch,
+                    "" + score,
+                    Constants.DISPLAY_SIZE * -0.375f,
+                    Constants.DISPLAY_SIZE * 0.41f,
+                    Constants.DISPLAY_SIZE * 1f,
+                    Align.left, false);
+        }
+        myRenderer.batch.end();
+
+        /** DRAW GAME OVER AND BUTTONS */
+        if (gameOver) {
+            font.getData().setScale(3f);
+            myRenderer.batch.begin();
+            for (int i=0; i<3; i++) {
+                font.draw(myRenderer.batch,
+                        "Game Over",
+                        Constants.DISPLAY_SIZE * 0f,
+                        Constants.DISPLAY_SIZE * 0.1f,
+                        Constants.DISPLAY_SIZE * 0f,
+                        Align.center, true);
+            }
+            myRenderer.batch.end();
+
+
+            /** DRAW NINEPATCH PANE */
+            myRenderer.batch.begin();
+            float blueButtonWidth = blueButtonTween.next(delta);
+            Vector2 pt = actionViewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+            pt.sub(Constants.DISPLAY_SIZE / 2, Constants.DISPLAY_SIZE / 2);
+            NinePatch buttonPatch1, buttonPatch2;
+            if (Constants.buttonGotoMenu.contains(pt)) {
+                buttonPatch1 = bluePatch;
+            } else {
+                buttonPatch1 = bluePatchDark;
+            }
+            if (Constants.buttonStartOver.contains(pt)) {
+                buttonPatch2 = bluePatch;
+            } else {
+                buttonPatch2 = bluePatchDark;
+            }
+            buttonPatch1.draw(myRenderer.batch,
+                    Constants.buttonGotoMenu.x,
+                    Constants.buttonGotoMenu.y,
+                    blueButtonWidth,
+                    Constants.buttonGotoMenu.height
+            );
+            buttonPatch2.draw(myRenderer.batch,
+                    Constants.buttonStartOver.x,
+                    Constants.buttonStartOver.y,
+                    blueButtonWidth,
+                    Constants.buttonStartOver.height
+            );
+            myRenderer.batch.end();
+
+            /** DRAW TEXT AFTER PANES EXPAND */
+            font.getData().setScale(1.4f);
+            if (blueButtonTween.isDone()) {
+                myRenderer.batch.begin();
+//                float width = Constants.buttonGotoMenu.width/2 + 2;
+                float height = Constants.buttonGotoMenu.height/2 + 10;
+                font.draw(myRenderer.batch,
+                        "Menu",
+                        Constants.buttonGotoMenu.x,
+                        Constants.buttonGotoMenu.y + height,
+                        Constants.buttonGotoMenu.width,
+                        Align.center, false);
+                font.draw(myRenderer.batch,
+                        "Retry",
+                        Constants.buttonStartOver.x,
+                        Constants.buttonStartOver.y + height,
+                        Constants.buttonStartOver.width,
+                        Align.center, false);
+                myRenderer.batch.end();
+            }
+        }
     }
 
     @Override

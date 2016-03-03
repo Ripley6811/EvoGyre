@@ -106,7 +106,8 @@ public class BulletManager {
         }
     }
 
-    public void checkForCollisions(GameScreen screen, Actor ship) {
+    public int checkForCollisions(GameScreen screen, Actor ship) {
+        int hits = 0;
         if (bullets.size > 0) {
             for (Bullet b : bullets) {
                 if (!b.isFinished && ship.dspPolygon.size > 0) {
@@ -117,6 +118,7 @@ public class BulletManager {
                     if (Intersector.intersectSegmentPolygon(currPos, lastPos, polygon)) {
                         b.isFinished = true;
                         ship.damage(1);
+                        hits += 1;
                         if (ship.subClass.contains("Vessel")) {
                             ship.weaponLevel = Math.max(ship.weaponLevel - 1, 0);
                         }
@@ -124,5 +126,6 @@ public class BulletManager {
                 }
             }
         }
+        return hits;
     }
 }

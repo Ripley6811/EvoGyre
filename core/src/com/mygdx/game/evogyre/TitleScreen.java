@@ -83,6 +83,16 @@ public class TitleScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(this);
+        bluePatchTween = new Tween.QuadInOut(
+                bluePatch.getTotalWidth(),
+                Constants.DISPLAY_SIZE*.8f,
+                Constants.PANEL_TWEEN_TIME
+        );
+        blueButtonTween = new Tween.QuadInOut(
+                bluePatch.getTotalWidth(),
+                Constants.buttonRect1.width,
+                Constants.PANEL_TWEEN_TIME
+        );
     }
 
     @Override
