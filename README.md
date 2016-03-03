@@ -40,8 +40,8 @@ Title created in Photoshop using two fonts found through Google Fonts: "Nothing 
 - Creative Lead - Jay W J
 - Special Effects - Jay W J
 - Art Assets
-    - Spaceships & Bullets - Udacity
-    - Planets & Text - Jay W J
+    - Spaceships, Bullets, Explosions - Udacity
+    - Planets, Text, Buttons - Jay W J
 - Music - Jay W J
 - Sound Effects - Jay W J
 

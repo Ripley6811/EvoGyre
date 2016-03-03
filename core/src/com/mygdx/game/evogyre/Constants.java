@@ -103,7 +103,7 @@ public class Constants {
     public static final int VESSEL_HIT_POINTS = 1;
     public static final int TRIDENT_HIT_POINTS = 4;
     public static final int BALLSHIP_HIT_POINTS = 2;
-    public static final int BOSS_HIT_POINTS = 100;
+    public static final int BOSS_HIT_POINTS = 160;
 
     /** ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
