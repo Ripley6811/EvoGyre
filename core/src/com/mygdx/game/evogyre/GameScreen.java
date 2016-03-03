@@ -68,6 +68,7 @@ public class GameScreen extends InputAdapter implements Screen {
     Vector2 accelBalancer = new Vector2();  // For centering device in any mapPosition
     boolean pause = false;
     boolean gameOver = false;
+    boolean gameWon = false;
 
     public GameScreen(EvoGyreGame game) {
         Gdx.input.setCatchBackKey(true);
@@ -86,8 +87,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
         /** LOAD ASSETS **/
         atlas = game.assets.get(Constants.MAIN_ATLAS);
-        playerBullets = new BulletManager(atlas, Constants.PRIMARY_WEAPON_SETUP);
-        enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
         planet = atlas.createSprite("lavender");
         textShields = atlas.createSprite("text_shields");
         textWeapons = atlas.createSprite("text_weapons");
@@ -120,16 +119,19 @@ public class GameScreen extends InputAdapter implements Screen {
      * Initialize new game. Loads level enemies and attributes from JSON.
      */
     public void init() {
-        dspRotation = 0f;
         score = 0;
         debris.clear();
         vessels.clear();
+        playerBullets = new BulletManager(atlas, Constants.PRIMARY_WEAPON_SETUP);
+        enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
         vessels.add(new Vessel(Constants.MAP_SIZE_X, playerAngle,
                 atlas, playerBullets.weaponsCount() - 1));
         vanishingPoint.setAngle(playerAngle + 180f);
         VisualEffects.drawTunnelInit(Constants.ANIMATE_FUNNEL_DURATION);
         timerGame = 0f;
         timerDebris = 0f;
+        gameOver = false;
+        gameWon = false;
         setAccelerometerBalanced();
 
         powerupManager = new PowerupManager(atlas);
@@ -150,7 +152,6 @@ public class GameScreen extends InputAdapter implements Screen {
                 else enterTime += interval;
             }
         }
-
 
         blueButtonTween = new Tween.QuadInOut(
                 bluePatch.getTotalWidth(),
@@ -209,6 +210,9 @@ public class GameScreen extends InputAdapter implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             vesselFixed = !vesselFixed;
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
+            game.setScreen(game.titleScreen);
+        }
         return super.keyDown(keycode);
     }
 
@@ -248,7 +252,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
         if (vessels.size > 0 && vessels.get(0).isDead) vessels.removeIndex(0);
         else if (vessels.size == 0) {
-            endGame();
+            endGame(false);
+        }
+
+        if (enemies.allKilled()) {
+            endGame(true);
         }
 
         enemies.update(timerGame, playerAngle);
@@ -262,7 +270,8 @@ public class GameScreen extends InputAdapter implements Screen {
         explosionManager.update(delta);
     }
 
-    public void endGame() {
+    public void endGame(boolean isWin) {
+        gameWon = isWin;
         gameOver = true;
     }
 
@@ -301,6 +310,7 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     public void updateRotation(float delta) {
+
         if (accelAvailable) {
             float accelX = Gdx.input.getAccelerometerX() - accelBalancer.x,
                   accelY = Gdx.input.getAccelerometerY() - accelBalancer.y;
@@ -328,6 +338,7 @@ public class GameScreen extends InputAdapter implements Screen {
                     dspRotation -= distMoved;
                 }
             }
+            if (vessels.size > 0) playerAngle = vessels.get(0).positionAngle();
             vanishingPoint.setAngle(playerAngle + 180f + dspRotation);
         }
     }
@@ -353,8 +364,6 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public void render(float delta) {
         if (delta > 0.05f) return;  // Avoids spikes in delta value.
-
-        if (vessels.size > 0) playerAngle = vessels.get(0).positionAngle();
 
         if (!pause) {
             // TODO: keep all updates out of the render methods
@@ -514,7 +523,7 @@ public class GameScreen extends InputAdapter implements Screen {
             myRenderer.batch.begin();
             for (int i=0; i<3; i++) {
                 font.draw(myRenderer.batch,
-                        "Game Over",
+                        gameWon ? "You Won!!" : "Game Over",
                         Constants.DISPLAY_SIZE * 0f,
                         Constants.DISPLAY_SIZE * 0.1f,
                         Constants.DISPLAY_SIZE * 0f,
@@ -557,7 +566,6 @@ public class GameScreen extends InputAdapter implements Screen {
             font.getData().setScale(1.4f);
             if (blueButtonTween.isDone()) {
                 myRenderer.batch.begin();
-//                float width = Constants.buttonGotoMenu.width/2 + 2;
                 float height = Constants.buttonGotoMenu.height/2 + 10;
                 font.draw(myRenderer.batch,
                         "Menu",
@@ -566,7 +574,7 @@ public class GameScreen extends InputAdapter implements Screen {
                         Constants.buttonGotoMenu.width,
                         Align.center, false);
                 font.draw(myRenderer.batch,
-                        "Retry",
+                        "Replay",
                         Constants.buttonStartOver.x,
                         Constants.buttonStartOver.y + height,
                         Constants.buttonStartOver.width,

@@ -31,6 +31,11 @@ public class EnemyManager {
         random = new Random(12345L);
     }
 
+    public boolean allKilled() {
+        if (enemies.size == 0 && enemyQueue.size == 0) return true;
+        return false;
+    }
+
     public void enqueue(String type, float startTime, float startY, String pattern) {
         Constants.Flight_Patterns efp = Constants.Flight_Patterns.valueOf(pattern.toUpperCase());
         Actor enemy = null;
