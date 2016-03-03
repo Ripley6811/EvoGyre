@@ -21,6 +21,7 @@ public class EnemyTrident extends Actor {
 
     public EnemyTrident(float x, float y, Constants.Flight_Patterns pattern, TextureAtlas atlas) {
         super(x, y);
+        subClass = TAG;
         this.pattern = pattern;
         fly_level = animateLoop(atlas.findRegions("enemy"));
         fly_right = animateLoop(atlas.findRegions("enemyturn"));

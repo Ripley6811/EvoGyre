@@ -117,7 +117,9 @@ public class BulletManager {
                     if (Intersector.intersectSegmentPolygon(currPos, lastPos, polygon)) {
                         b.isFinished = true;
                         ship.damage(1);
-                        ship.weaponLevel = Math.max(ship.weaponLevel - 1, 0);
+                        if (ship.subClass.contains("Vessel")) {
+                            ship.weaponLevel = Math.max(ship.weaponLevel - 1, 0);
+                        }
                     }
                 }
             }

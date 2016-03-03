@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Actor {
     private static final String TAG = Actor.class.getName();
+    public String subClass = "";
     Vector2 mapPosition,
             velocity,
             acceleration;
@@ -50,13 +51,17 @@ public class Actor {
      * @param delta
      * @return Distance moved along y-axis.
      */
-    public float update(float delta) {
+    public float update(GameScreen screen, float delta) {
         // Update hit points and damage
         if (damage > 0) {
             hitPoints -= damage;
             damage = 0;
         }
-        if (hitPoints <= 0) isDead = true;
+        if (hitPoints <= 0) {
+            isDead = true;
+            screen.explosionManager.add(mapPosition);
+            return 0f;
+        }
 
         // Update animation
         elapsedTime += delta;
@@ -65,7 +70,7 @@ public class Actor {
         velocity.x += acceleration.x * delta;
         velocity.y += acceleration.y * delta;
         velocity.limit(Constants.MAX_VELOCITY);
-        // Update and constrain map position
+        // Update and constrain map mapPosition
         mapPosition.x += velocity.x * delta;
         mapPosition.y += velocity.y * delta;
         if (mapPosition.y < 0f) mapPosition.y += Constants.MAP_SIZE_Y_360;

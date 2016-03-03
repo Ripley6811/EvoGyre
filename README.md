@@ -20,7 +20,7 @@ Key | Action
 #### Projection
 All motion calculations are done on a rectangular map that wraps around in the y-direction.
 The map positions are projected onto the funnel shape display.
-Y ranges from 0 to 360 and corresponds to a position on the cross-section of the funnel.
+Y ranges from 0 to 360 and corresponds to a mapPosition on the cross-section of the funnel.
 X corresponds to the distance down the funnel and does not wrap.
 
 #### Collisions
@@ -56,11 +56,10 @@ Title created in Photoshop using two fonts found through Google Fonts: "Nothing 
 
 ## TODO
 - [x] Add boss
-- [ ] !!! Add ship explosions
-- [ ] !!! End game screen
+- [x] Add ship explosions
+- [ ] !!! Score and End game screen
 - [ ] !!! Android accelerometer controls
 - [x] Indicator for shield strength
-- [ ] Add Score to HUD
 - [x] Add shield and weapon powerups
 - [x] Opening screen and options
 - [ ] Add missiles (Optional)

@@ -19,6 +19,7 @@ public class EnemyBoss extends Actor {
 
     public EnemyBoss(float x, float y, Constants.Flight_Patterns pattern, TextureAtlas atlas) {
         super(x, y);
+        subClass = TAG;
         this.pattern = pattern;
         boss_whole = animateLoop(atlas.findRegions("boss"));
         boss_damage = animateLoop(atlas.findRegions("bossdamage"));
@@ -92,14 +93,14 @@ public class EnemyBoss extends Actor {
                 pWidth / 2 - 290f, pHeight / 2 + 100f,
                 pWidth, pHeight,
                 0.4f* dspPosition.z, 0.6f* dspPosition.z,  // Scale
-                rotation + 105f);
+                rotation + 115f);
         screen.batch.draw(turret,
                 dspPosition.x - pWidth / 2 - 290f,
                 dspPosition.y - pHeight / 2 - 100f,
                 pWidth / 2 + 290f, pHeight / 2 + 100f,
                 pWidth, pHeight,
                 0.4f* dspPosition.z, 0.6f* dspPosition.z,  // Scale
-                rotation + 75f);
+                rotation + 65f);
         screen.batch.end();
 
 

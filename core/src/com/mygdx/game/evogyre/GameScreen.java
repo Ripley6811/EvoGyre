@@ -41,6 +41,7 @@ public class GameScreen extends InputAdapter implements Screen {
     BulletManager enemyBullets;
     EnemyManager enemies;
     PowerupManager powerupManager;
+    ExplosionManager explosionManager;
     TextureRegion planet;
     TextureRegion textShields;
     TextureRegion textWeapons;
@@ -79,6 +80,7 @@ public class GameScreen extends InputAdapter implements Screen {
         playerBullets = new BulletManager(atlas, Constants.PRIMARY_WEAPON_SETUP);
         enemyBullets = new BulletManager(atlas, Constants.ENEMY_WEAPON_SETUP);
         powerupManager = new PowerupManager(atlas);
+        explosionManager = new ExplosionManager(atlas);
         enemies = new EnemyManager(atlas, enemyBullets);
         planet = atlas.createSprite("lavender");
         textShields = atlas.createSprite("text_shields");
@@ -205,6 +207,8 @@ public class GameScreen extends InputAdapter implements Screen {
         enemyBullets.update(delta);
 
         powerupManager.update(delta);
+
+        explosionManager.update(delta);
     }
 
     public void updateInput(float delta) {
@@ -264,7 +268,7 @@ public class GameScreen extends InputAdapter implements Screen {
             }
             for (Vessel actor : vessels) {
                 actor.accelerate(new Vector2(0, accelY));
-                float distMoved = actor.update(delta);
+                float distMoved = actor.update(this, delta);
                 if (vesselFixed) {
                     dspRotation -= distMoved;
                 }
@@ -346,6 +350,8 @@ public class GameScreen extends InputAdapter implements Screen {
         playerBullets.render(this);
 
         powerupManager.render(this);
+
+        explosionManager.render(this);
 
         drawHUD();
     }

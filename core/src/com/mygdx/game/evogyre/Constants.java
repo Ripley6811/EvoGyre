@@ -102,7 +102,7 @@ public class Constants {
     public static final int VESSEL_HIT_POINTS = 1;
     public static final int TRIDENT_HIT_POINTS = 4;
     public static final int BALLSHIP_HIT_POINTS = 2;
-    public static final int BOSS_HIT_POINTS = 20;
+    public static final int BOSS_HIT_POINTS = 100;
 
     /** ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
@@ -130,10 +130,12 @@ public class Constants {
     public static final Array<Vector2> BALLSHIP_POLYGON = new Array<Vector2>(bp_corners);
     // Boss = The large green ship
     private static Vector2[] boss_corners = {
-            new Vector2(12, 6),  // Tip
-            new Vector2(12, -6),  // left wing
-            new Vector2(0, -13f),  // right wing
-            new Vector2(0, 13f)  // right wing
+            new Vector2(50, 40),  // Tip
+            new Vector2(50, -40),  // left wing
+            new Vector2(25, -140),
+            new Vector2(0, -140f),  // right wing
+            new Vector2(0, 140f),  // right wing
+            new Vector2(25, 140)
     };
     public static final Array<Vector2> BOSS_POLYGON = new Array<Vector2>(boss_corners);
     // Vessel = The player craft
@@ -141,6 +143,7 @@ public class Constants {
             new Vector2(17f, 0),  // Tip
             new Vector2(-1f, -20),  // left wing
             new Vector2(-4f, -20),
+            new Vector2(-8f, 0),  // Tip
             new Vector2(-4f, 20),
             new Vector2(-1f, 20)  // right wing
     };
@@ -153,7 +156,7 @@ public class Constants {
     }
     public static final float POWER_UP_VELOCITY = 100f;
     public static final float POWER_UP_INTERVAL = 10f;
-    public static final long POWER_UP_RANDOM_SEED = 3451;
+    public static final long POWER_UP_RANDOM_SEED = 121;
 
     /** HUD */
     public static final Color SHIELD_STRENGTH_COLOR_TOP = new Color(0.6f, 0.7f, 1f, 1f);

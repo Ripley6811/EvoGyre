@@ -19,6 +19,7 @@ public class EnemyBallship extends Actor {
 
     public EnemyBallship(float x, float y, Constants.Flight_Patterns pattern, TextureAtlas atlas) {
         super(x, y);
+        subClass = TAG;
         this.pattern = pattern;
         large_ball = atlas.findRegion("ball_outer");
         inner_ball = atlas.findRegion("ball_inner");

@@ -25,6 +25,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
     public Vessel(float x, float y, TextureAtlas atlas, int maxWeaponLevel) {
         super(x, y);
+        subClass = TAG;
         fly_level = animateLoop(atlas.findRegions("player"));
         fly_right = animateLoop(atlas.findRegions("playerturn"));
         fly_left = animateLoop(atlas.findRegions("playerturn"));

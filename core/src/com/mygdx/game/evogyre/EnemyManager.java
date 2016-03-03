@@ -99,7 +99,7 @@ public class EnemyManager {
                         if (difference < 180f) playerDistance = difference;
                         else playerDistance = -(360f - difference);
                     }
-                    enemy.velocity.y = playerDistance * 2f;
+                    enemy.velocity.y = playerDistance;
                     break;
             }
         }
@@ -126,7 +126,7 @@ public class EnemyManager {
     public void render(GameScreen screen, float delta) {
         for (Actor enemy: enemies) {
             if (!enemy.isDead) {
-                enemy.update(delta);
+                enemy.update(screen, delta);
                 enemy.render(screen, delta);
             }
         }
