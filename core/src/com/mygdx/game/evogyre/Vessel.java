@@ -50,7 +50,10 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
     @Override
     public void accelerate(Vector2 accelVector) {
         if (accelVector.isZero()) decelerate();
-        if (velocity.hasOppositeDirection(accelVector)) velocity.scl(0f);
+        if (velocity.hasOppositeDirection(accelVector)) {
+            acceleration.scl(0);
+            velocity.scl(0f);
+        }
         acceleration.add(accelVector);
         acceleration.setLength(Constants.ACCELERATION_RATE);
     }

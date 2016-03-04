@@ -1,6 +1,8 @@
 package com.mygdx.game.evogyre;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -37,9 +39,12 @@ public class TitleScreen extends InputAdapter implements Screen {
     Tween.QuadInOut blueButtonTween;
 
     int storyOrControls = 0;
+    boolean isAndroid = Gdx.app.getType() == Application.ApplicationType.Android;
+    boolean hasAccelerometer = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
 
     public TitleScreen(EvoGyreGame game) {
         Gdx.input.setCatchBackKey(true);
+
         this.game = game;
         actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
         actionViewport.apply(true);
@@ -237,6 +242,7 @@ public class TitleScreen extends InputAdapter implements Screen {
                     Constants.buttonRect3.y + height,
                     0,
                     Align.center, false);
+            // Text for large bottom pane
             font.draw(myRenderer.batch,
                     storyOrControls == 0 ? Constants.STORY : Constants.CONTROLS,
                     Constants.DISPLAY_SIZE * .15f,

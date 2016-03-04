@@ -54,6 +54,8 @@ public class GameScreen extends InputAdapter implements Screen {
     TextureRegion textScore;
     TextureRegion shipFixedButton;
     TextureRegion shipRotateButton;
+    TextureRegion rightArrow;
+    TextureRegion leftArrow;
     NinePatch bluePatch;
     NinePatch bluePatchDark;
     Tween.QuadInOut blueButtonTween;
@@ -62,8 +64,10 @@ public class GameScreen extends InputAdapter implements Screen {
     float timerDebris;
     float dspRotation = 0f;
     float playerAngle = Constants.PLAYER_START_ANGLE;
+    float halfDisplay = Constants.DISPLAY_SIZE / 2;
     long score = 0;
     boolean vesselFixed = false;
+    boolean isAndroid = Gdx.app.getType() == Application.ApplicationType.Android;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any mapPosition
     boolean pause = false;
@@ -93,6 +97,9 @@ public class GameScreen extends InputAdapter implements Screen {
         textScore = atlas.createSprite("text_score");
         shipFixedButton = atlas.createSprite("ship_fixed_button");
         shipRotateButton = atlas.createSprite("ship_rotate_button");
+        rightArrow = atlas.createSprite("right_arrow");
+        leftArrow = atlas.createSprite("right_arrow");
+        leftArrow.flip(true, false);
 
         /** SETUP FONT */
         font = new BitmapFont();
@@ -278,7 +285,8 @@ public class GameScreen extends InputAdapter implements Screen {
     public void updateInput(float delta) {
         // Getting pressed keys
         if (Gdx.input.isKeyPressed(Input.Keys.W)
-                || Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                || Gdx.input.isKeyPressed(Input.Keys.SPACE)
+                || isAndroid) {
             // Fire primary weapon
             for (Vessel vessel: vessels) {
                 if (!vessel.isDead && vessel.fire()){
@@ -288,12 +296,6 @@ public class GameScreen extends InputAdapter implements Screen {
                     playerBullets.add(weaponLevel, xPos, yPos);
                 }
             }
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            // Fire secondary weapon
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            // Fire tertiary weapon
         }
 
         // TODO: For testing, switch weapons with number keys
@@ -310,37 +312,72 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     public void updateRotation(float delta) {
-
+        float accelY = 0f;
         if (accelAvailable) {
-            float accelX = Gdx.input.getAccelerometerX() - accelBalancer.x,
-                  accelY = Gdx.input.getAccelerometerY() - accelBalancer.y;
-            Vector2 deviceAccel = new Vector2(accelX, accelY);
-            deviceAccel.nor();
-            // TODO: Implement accelerometer motion
             if (vesselFixed) {
-                // TODO: Vessel moves with X-axis leaning
+                // Vessel moves with display's X-axis leaning
+//                accelY = Gdx.input.getAccelerometerY();
+//                if (accelY < -Constants.ACTOR_STATIC_THRESHOLD) {
+//                    accelY += Constants.ACTOR_STATIC_THRESHOLD;
+//                } else
+//                if (accelY > Constants.ACTOR_STATIC_THRESHOLD) {
+//                    accelY -= Constants.ACTOR_STATIC_THRESHOLD;
+//                } else {
+//                    accelY = 0f;
+//                }
             } else {
-                // TODO: Move towards deviceAccel positionAngle
+                // Ship moves towards the tablet leaning direction
+//                float accelX = Gdx.input.getAccelerometerX();
+//                Vector2 deviceAccel = new Vector2(accelX, accelY);
+//                deviceAccel.sub(accelBalancer.x, accelBalancer.y);
+//                Gdx.app.debug(TAG, "Tablet lean angle: " + deviceAccel.angle());
+//                Gdx.app.debug(TAG, "Tablet lean length: " + deviceAccel.len());
+//                float goToAngle = (deviceAccel.angle() + 270f) % 360f;
+//                float playerDistance = 0f;
+//                if (playerAngle > goToAngle) {
+//                    float difference = playerAngle - goToAngle;
+//                    if (difference < 180f) playerDistance = -difference;
+//                    else playerDistance = 360f - difference;
+//                } else {
+//                    float difference = goToAngle - playerAngle;
+//                    if (difference < 180f) playerDistance = difference;
+//                    else playerDistance = -(360f - difference);
+//                }
+//                if (Math.abs(playerDistance) > Constants.ACTOR_ANGLE_THRESHOLD
+//                        && deviceAccel.len() > Constants.ACTOR_LEN_THRESHOLD) {
+//                    accelY = playerDistance;
+//                } else {
+//                    accelY = 0f;
+//                }
             }
-        } else {
-            // Key input
-            float accelY = 0f;
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                accelY -= 1f;
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                accelY += 1f;
-            }
-            for (Vessel actor : vessels) {
-                actor.accelerate(new Vector2(0, accelY));
-                float distMoved = actor.update(this, delta);
-                if (vesselFixed) {
-                    dspRotation -= distMoved;
+        }
+        // Key input
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            accelY = -1f;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            accelY = 1f;
+        }
+        // Iterate over two pointers to get the latest touch position
+        for (int i=0; i<2; i++) {
+            if (Gdx.input.isTouched(i)) {
+                Vector2 dspPt = actionViewport.unproject(new Vector2(Gdx.input.getX(i), Gdx.input.getY(i)));
+                if (dspPt.y < halfDisplay / 2) {
+                    accelY = dspPt.x < halfDisplay ? -1f : 1f;
                 }
             }
-            if (vessels.size > 0) playerAngle = vessels.get(0).positionAngle();
-            vanishingPoint.setAngle(playerAngle + 180f + dspRotation);
         }
+
+        for (Vessel actor : vessels) {
+//                Gdx.app.log(TAG, "Keyed Accel: " + accelY);
+            actor.accelerate(new Vector2(0, accelY));
+            float distMoved = actor.update(this, delta);
+            if (vesselFixed) {
+                dspRotation -= distMoved;
+            }
+        }
+        if (vessels.size > 0) playerAngle = vessels.get(0).positionAngle();
+        vanishingPoint.setAngle(playerAngle + 180f + dspRotation);
     }
 
     public void updateCollision() {
@@ -428,6 +465,22 @@ public class GameScreen extends InputAdapter implements Screen {
         float DX = Constants.WEAPON_BLOCKS_XOFFSET;
         float DY = Constants.WEAPON_BLOCKS_YOFFSET;
 
+        /** Draw Accelerometer values */
+        if (Constants.LOG_LEVEL == Application.LOG_DEBUG) {
+            myRenderer.batch.begin();
+            font.draw(
+                    myRenderer.batch,
+                    "X: " + Gdx.input.getAccelerometerX(),
+                    10, 10
+            );
+            font.draw(
+                    myRenderer.batch,
+                    "Y: " + Gdx.input.getAccelerometerY(),
+                    10, -10
+            );
+            myRenderer.batch.end();
+        }
+
         /** Shield/Health bars **/
         myRenderer.batch.begin();
         myRenderer.batch.draw(
@@ -501,6 +554,25 @@ public class GameScreen extends InputAdapter implements Screen {
                 Constants.rotateButtonRect.y,
                 Constants.rotateButtonRect.width,
                 Constants.rotateButtonRect.height
+        );
+        myRenderer.batch.end();
+
+        /** DRAW SHIP MOVEMENT BUTTONS */
+        myRenderer.batch.begin();
+        float arrowWidth = leftArrow.getRegionWidth() * 0.8f;
+        float arrowHeight = leftArrow.getRegionHeight() * 0.8f;
+        float halfDisp = Constants.DISPLAY_SIZE/2;
+        myRenderer.batch.draw(leftArrow,
+                -halfDisp,
+                -halfDisp,
+                arrowWidth,
+                arrowHeight
+        );
+        myRenderer.batch.draw(rightArrow,
+                halfDisp - arrowWidth,
+                -halfDisp,
+                arrowWidth,
+                arrowHeight
         );
         myRenderer.batch.end();
 

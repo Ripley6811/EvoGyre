@@ -22,9 +22,9 @@ public class Constants {
 
     /** DISPLAYED TEXT */
     public static final String GAME_TITLE = "EvoGyre";
-    public static final String STORY = "In the year 2143, we lost Neptune to an alien invasion. " +
-            "It had held a colony of over 30,000 humans and was unprepared for war. Now, 32 years later, " +
-            "we will take Neptune back and solidify our dominion over the Solar System! With recent discoveries in tranverse photolithic " +
+    public static final String STORY = "In the year 2143, we lost Ganymede to an alien invasion. " +
+            "It had held a colony of over 30,000 humans and was unprepared for war. Now, 22 years later, " +
+            "we will take Ganymede back and solidify our dominion over the Solar System! With recent discoveries in tranverse photolithic " +
             "shielding and improved armaments, those invaders don't " +
             "stand a chance!";
     public static final String CONTROLS = "Space or W  --  Fire lasers\n" +
@@ -108,9 +108,12 @@ public class Constants {
     /** ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
     // Used for sticky movement when using accelerometer
-    public static final float ACTOR_STATIC_THRESHOLD = 0.08f;
+    public static final float ACTOR_STATIC_THRESHOLD = 0.4f;
     // Multiply to velocity to slow down
     public static final float ACTOR_MOTION_FRICTION = 0.8f;
+    // No motion if angle between ship and device acceleration is below a minimum
+    public static final float ACTOR_ANGLE_THRESHOLD = 5f;
+    public static final float ACTOR_LEN_THRESHOLD = 0.5f;
 
     /** COLLISION POLYGONS FOR ACTORS */
     // Trident = The green T-shaped enemy craft
