@@ -66,7 +66,7 @@ public class GameScreen extends InputAdapter implements Screen {
     float playerAngle = Constants.PLAYER_START_ANGLE;
     float halfDisplay = Constants.DISPLAY_SIZE / 2;
     long score = 0;
-    boolean vesselFixed = false;
+    boolean vesselFixed;
     boolean isAndroid = Gdx.app.getType() == Application.ApplicationType.Android;
     boolean accelAvailable = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
     Vector2 accelBalancer = new Vector2();  // For centering device in any mapPosition
@@ -77,6 +77,7 @@ public class GameScreen extends InputAdapter implements Screen {
     public GameScreen(EvoGyreGame game) {
         Gdx.input.setCatchBackKey(true);
         this.game = game;
+        vesselFixed = game.settings.FIXED_VESSEL();
         actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
         actionViewport.apply(true);
 
@@ -215,7 +216,8 @@ public class GameScreen extends InputAdapter implements Screen {
             game.settings.DRAW_RINGS(!game.settings.DRAW_RINGS());
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            vesselFixed = !vesselFixed;
+            game.settings.FIXED_VESSEL(!game.settings.FIXED_VESSEL());
+            vesselFixed = game.settings.FIXED_VESSEL();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.BACK)) {
             game.setScreen(game.titleScreen);
@@ -314,8 +316,8 @@ public class GameScreen extends InputAdapter implements Screen {
     public void updateRotation(float delta) {
         float accelY = 0f;
         if (accelAvailable) {
-            if (vesselFixed) {
-                // Vessel moves with display's X-axis leaning
+//            if (vesselFixed) {
+//                // Vessel moves with display's X-axis leaning
 //                accelY = Gdx.input.getAccelerometerY();
 //                if (accelY < -Constants.ACTOR_STATIC_THRESHOLD) {
 //                    accelY += Constants.ACTOR_STATIC_THRESHOLD;
@@ -325,8 +327,8 @@ public class GameScreen extends InputAdapter implements Screen {
 //                } else {
 //                    accelY = 0f;
 //                }
-            } else {
-                // Ship moves towards the tablet leaning direction
+//            } else {
+//                // Ship moves towards the tablet leaning direction
 //                float accelX = Gdx.input.getAccelerometerX();
 //                Vector2 deviceAccel = new Vector2(accelX, accelY);
 //                deviceAccel.sub(accelBalancer.x, accelBalancer.y);
@@ -349,7 +351,7 @@ public class GameScreen extends InputAdapter implements Screen {
 //                } else {
 //                    accelY = 0f;
 //                }
-            }
+//            }
         }
         // Key input
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {

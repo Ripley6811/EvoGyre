@@ -27,9 +27,16 @@ public class Constants {
             "we will take Ganymede back and solidify our dominion over the Solar System! With recent discoveries in tranverse photolithic " +
             "shielding and improved armaments, those invaders don't " +
             "stand a chance!";
-    public static final String CONTROLS = "Space or W  --  Fire lasers\n" +
+    public static final String KEY_CONTROLS = "Space or W  --  Fire lasers\n" +
             "Left/Right Arrow  --  Strafe left/right (rotate)\n" +
-            "Down Arrow  --  Toggle fixed or rotating ship\n";
+            "Down Arrow  --  Toggle fixed or rotating ship\n" +
+            "\n" +
+            "Collect blue and red tiles to strengthen shields and improve weapons.";
+    public static final String TOUCH_CONTROLS = "Lasers fire continuously\n" +
+            "Bottom blue arrows  --  Strafe left/right (rotate)\n" +
+            "Top right icon --  Toggle fixed or rotating ship\n" +
+            "\n" +
+            "Collect blue and red tiles to strengthen shields and improve weapons.";
 
     /** GAME SETTINGS */
     public static final String[] DIFFICULTY_NAMES = {"Easy", "Hard", "Insane!"};
@@ -48,10 +55,11 @@ public class Constants {
     public static final float CENTER_DISPLACEMENT = 0.7f * PROJECTION_RADIUS;
     public static final Color FUNNEL_COLOR = new Color(0.05f,0.4f,0.05f,0.7f);
     public static final boolean DRAW_RINGS = true;
+    public static final boolean FIXED_VESSEL = false;
     public static final int NUMBER_OF_RINGS = 20;
     public static final float RING_INTERVAL = MAP_SIZE_X / NUMBER_OF_RINGS;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
-    public static final float PLAYER_START_ANGLE = 300f;
+    public static final float PLAYER_START_ANGLE = 290f;
     public static final int NUMBER_OF_STARS = 160;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
     public static final Color COLLISION_DEBUG_COLOR = new Color(0f, 1f, 1f, 0.8f);
@@ -63,16 +71,17 @@ public class Constants {
             new JsonReader().parse(Gdx.files.internal("json/primary_weapon_setup.json"));
     public static final JsonValue ENEMY_WEAPON_SETUP =
             new JsonReader().parse(Gdx.files.internal("json/enemy_weapon_setup.json"));
-    public static final float MISSILE_RIGHT_OFFSET = 0.5f;
-    public static final float MISSILE_LEFT_OFFSET = -1.1f;
-    public static final float MISSILE_RIGHT_LEAN_RIGHT = 0.28f;
-    public static final float MISSILE_RIGHT_LEAN_LEFT = 0.4f;
-    public static final float MISSILE_LEFT_LEAN_RIGHT = -1.0f;
-    public static final float MISSILE_LEFT_LEAN_LEFT = -0.88f;
     // Cutoff where bullets are removed.
     public static final float BULLET_CUTOFF = 0.4f * Constants.MAP_SIZE_X;
     // Reduce and randomize enemy firing rate
     public static final float ENEMY_FIRE_REDUCTION = 0.005f;  // 0.06 = 6% success rate
+    // MISSILES NOT IMPLEMENTED
+//    public static final float MISSILE_RIGHT_OFFSET = 0.5f;
+//    public static final float MISSILE_LEFT_OFFSET = -1.1f;
+//    public static final float MISSILE_RIGHT_LEAN_RIGHT = 0.28f;
+//    public static final float MISSILE_RIGHT_LEAN_LEFT = 0.4f;
+//    public static final float MISSILE_LEFT_LEAN_RIGHT = -1.0f;
+//    public static final float MISSILE_LEFT_LEAN_LEFT = -0.88f;
 
     /** ACTOR */
     public static final float ACCELERATION_RATE = 300f;
@@ -107,13 +116,14 @@ public class Constants {
 
     /** ACCELEROMETER */
     public static final float G = 9.8f;  // Gravitational constant
-    // Used for sticky movement when using accelerometer
-    public static final float ACTOR_STATIC_THRESHOLD = 0.4f;
     // Multiply to velocity to slow down
     public static final float ACTOR_MOTION_FRICTION = 0.8f;
-    // No motion if angle between ship and device acceleration is below a minimum
-    public static final float ACTOR_ANGLE_THRESHOLD = 5f;
-    public static final float ACTOR_LEN_THRESHOLD = 0.5f;
+    // ACCELEROMETER CONTROLS NOT IMPLEMENTED
+//    // Used for sticky movement when using accelerometer
+//    public static final float ACTOR_STATIC_THRESHOLD = 0.4f;
+//    // No motion if angle between ship and device acceleration is below a minimum
+//    public static final float ACTOR_ANGLE_THRESHOLD = 5f;
+//    public static final float ACTOR_LEN_THRESHOLD = 0.5f;
 
     /** COLLISION POLYGONS FOR ACTORS */
     // Trident = The green T-shaped enemy craft

@@ -243,8 +243,9 @@ public class TitleScreen extends InputAdapter implements Screen {
                     0,
                     Align.center, false);
             // Text for large bottom pane
+            String controlText = isAndroid ? Constants.TOUCH_CONTROLS : Constants.KEY_CONTROLS;
             font.draw(myRenderer.batch,
-                    storyOrControls == 0 ? Constants.STORY : Constants.CONTROLS,
+                    storyOrControls == 0 ? Constants.STORY : controlText,
                     Constants.DISPLAY_SIZE * .15f,
                     Constants.DISPLAY_SIZE * .4f,
                     Constants.DISPLAY_SIZE * .7f,

@@ -20,4 +20,13 @@ public class GameSettings {
         prefs.putBoolean("DRAW_RINGS", newVal);
         prefs.flush();
     }
+
+    public boolean FIXED_VESSEL() {
+        return prefs.getBoolean("FIXED_VESSEL", Constants.FIXED_VESSEL);
+    }
+
+    public void FIXED_VESSEL(boolean newVal) {
+        prefs.putBoolean("FIXED_VESSEL", newVal);
+        prefs.flush();
+    }
 }

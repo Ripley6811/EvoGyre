@@ -55,14 +55,5 @@ Title created in Photoshop using two fonts found through Google Fonts: "Nothing 
 
 
 ## TODO
-- [x] Add boss
-- [x] Add ship explosions
-- [x] Score and End game screen
-- [ ] ---Android accelerometer controls
-- [x] Indicator for shield strength
-- [x] Add shield and weapon powerups
-- [x] Opening screen and options
-- [ ] !!! Android instructions
 - [ ] Add missiles (Optional)
 - [ ] Sound FX
-- [x] Refactor back to not use static members of GameScreen
