@@ -8,7 +8,9 @@ and swarms of aliens are coming out to stop the player. The single sample level 
 about two minutes long.
 
 ## Gameplay
-Desktop / HTML controls
+
+#### Desktop / HTML controls
+
 Key | Action
 --- | ---
 **Left-Right arrows** | Move your ship
@@ -16,7 +18,8 @@ Key | Action
 **Down-arrow** | Toggle moving or fixed ship
 **Spacebar** or **W** | Fire weapon
 
-Screen / Touch controls
+#### Screen / Touch controls
+
 Touch | Action
 --- | ---
 **Bottom left/right arrows** | Move your ship (strafe)
