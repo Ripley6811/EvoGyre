@@ -154,7 +154,6 @@ public class GameScreen extends InputAdapter implements Screen {
             float startY = group.getFloat("enterYPos");
             String type = group.getString("type");
             for (int i=0; i<group.getInt("quantity"); i++) {
-                // TODO: change enemy type into Enum
                 enemies.enqueue(type, enterTime, startY, group.getString("pattern"));
                 if (isAbreast) startY = (startY + Constants.ABREAST_DISTANCE) % 360f;
                 else enterTime += interval;
@@ -190,7 +189,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // TODO: Create a boolean for dealing with continuous touch, use for firing weapons
         Vector2 pt = actionViewport.unproject(new Vector2(screenX, screenY))
                 .sub(Constants.DISPLAY_SIZE / 2, Constants.DISPLAY_SIZE / 2);
         if (Constants.rotateButtonRect.contains(pt)) vesselFixed = !vesselFixed;
@@ -205,13 +203,11 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        // TODO: End continuous fire
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        // TODO: Same as touchDown with firing
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             game.settings.DRAW_RINGS(!game.settings.DRAW_RINGS());
         }
@@ -227,7 +223,6 @@ public class GameScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean keyUp(int keycode) {
-        // TODO: Same as touchUp when firing
         return super.keyUp(keycode);
     }
 
@@ -300,7 +295,7 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
 
-        // TODO: For testing, switch weapons with number keys
+        // For testing only, switch weapons with number keys
         if (Constants.LOG_LEVEL != Application.LOG_NONE) {
             if (Gdx.input.isKeyPressed(Input.Keys.NUM_1))
                 vessels.get(0).weaponLevel = 0;
@@ -405,8 +400,7 @@ public class GameScreen extends InputAdapter implements Screen {
         if (delta > 0.05f) return;  // Avoids spikes in delta value.
 
         if (!pause) {
-            // TODO: keep all updates out of the render methods
-            // TODO: Enemy mapPosition update remove from render methods
+            // keep all updates out of the render methods
             updateInput(delta);
             updateAssets(delta);
             updateRotation(delta);

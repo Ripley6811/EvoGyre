@@ -2,18 +2,27 @@
 Gyruss-inspired game written with LibGDX
 
 ## Introduction
-
+I wanted to make a game with an interesting projection system like the old arcade
+game called Gyruss. This game is the result. The player is flying towards a planet
+and swarms of aliens are coming out to stop the player. The single sample level is
+about two minutes long.
 
 ## Gameplay
+Desktop / HTML controls
 Key | Action
 --- | ---
 **Left-Right arrows** | Move your ship
 **Up-arrow** | Toggle green rings on/off
 **Down-arrow** | Toggle moving or fixed ship
-**W** | Fire weapon
-**1 to 4** | (temporary) Try different weapon layouts
+**Spacebar** or **W** | Fire weapon
 
+Screen / Touch controls
+Touch | Action
+--- | ---
+**Bottom left/right arrows** | Move your ship (strafe)
+**Top right corner icon** | Toggle moving or fixed ship
 
+Ship fires continuously if Android device is detected.
 
 ## Design Notes
 
@@ -31,19 +40,19 @@ Collision interaction is based on the projected point and rendered image size
 #### Image assets
 Spaceship graphics provided by [Udacity](www.udacity.com). Planets and HUD
 text created by JWJ in
-Photoshop. Other special effects designed by JWJ in LibGDX.
-Title created in Photoshop using two fonts found through Google Fonts: "Nothing You Could Do" by Kimberly Geswein and "Michroma" by Vernon Adams.
-"SHIELDS" "WEAPONS" font is OCR A Extended.
+Photoshop. Title created in Photoshop using two fonts found through Google
+Fonts: "Nothing You Could Do" by Kimberly Geswein and "Michroma" by Vernon Adams.
+"SHIELDS", "WEAPONS" font is OCR A Extended.
+Other special effects designed by JWJ in LibGDX.
+
 
 ## Credits
 
-- Creative Lead - Jay W J
+- Lead Programmer / Designer - Jay W J
 - Special Effects - Jay W J
 - Art Assets
     - Spaceships, Bullets, Explosions - Udacity
     - Planets, Text, Buttons - Jay W J
-- Music - Jay W J
-- Sound Effects - Jay W J
 
 ## References
 - [LibGDX reference](https://libgdx.badlogicgames.com/nightlies/docs/api/)

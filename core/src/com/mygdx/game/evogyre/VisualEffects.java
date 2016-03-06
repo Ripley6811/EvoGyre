@@ -31,7 +31,7 @@ public class VisualEffects {
     public static void shieldGradientEffect(ShapeRenderer renderer,
                                             Vector3 center,
                                             boolean angleInward, float phase, float alpha) {
-        // TODO: Create a less computationally intensive alternate version
+        // TODO: Maybe try a less computationally intensive alternate version
         Color col1 = new Color(0,0,0,0);
 
         com.mygdx.game.evogyre.Utils.DrawingUtils.enableBlend();

@@ -73,7 +73,7 @@ public class Shield {
 
         for (ShieldBlast effect: effects) {
             if (!effect.isDone) {
-                // TODO: Bring the following method into this class (?)
+                // TODO: Maybe bring the following method into this class
                 VisualEffects.shieldGradientEffect(myRenderer, center, true, effect.phase, effect.alpha);
             }
             effect.update(delta);

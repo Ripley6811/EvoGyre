@@ -20,8 +20,6 @@ public class EnemyManager {
     BulletManager bulletManager;
     Random random;
 
-    // TODO: maybe make a max cap for number of enemies on screen and wait for room before adding more.
-
     public EnemyManager(TextureAtlas atlas, BulletManager bulletManager) {
         this.atlas = atlas;
         this.enemies = new Array<Actor>();
@@ -56,11 +54,10 @@ public class EnemyManager {
         }
 
         // Update flight paths
-        // TODO: move patterns to another file or JSON file
+        // TODO: Maybe move patterns to another file or JSON file
         for (Actor enemy: enemies) {
             switch (enemy.pattern) {
                 case SNAKE_SPIRAL:
-                    // TODO: Make better paths
                     if (enemy.isEntering) enemy.velocity.setAngle(45f);
                     if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {
                         enemy.isEntering = false;
@@ -76,7 +73,6 @@ public class EnemyManager {
                         enemy.velocity.x = -Math.abs(enemy.velocity.x);
                     if (enemy.mapPosition.x < Constants.MAP_SIZE_X - 8 * Constants.RING_INTERVAL)
                         enemy.velocity.x = Math.abs(enemy.velocity.x);
-                    // TODO: make plans
                     break;
                 case ABREAST_ZIGZAG:
                     if (enemy.mapPosition.x > Constants.MAP_SIZE_X - 5 * Constants.RING_INTERVAL && enemy.isEntering) {

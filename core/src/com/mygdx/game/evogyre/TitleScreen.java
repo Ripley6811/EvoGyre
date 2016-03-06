@@ -117,19 +117,16 @@ public class TitleScreen extends InputAdapter implements Screen {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        // TODO: End continuous fire
         return super.touchUp(screenX, screenY, pointer, button);
     }
 
     @Override
     public boolean keyDown(int keycode) {
-        // TODO: Same as touchDown
         return super.keyDown(keycode);
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        // TODO: Same as touchUp
         return super.keyUp(keycode);
     }
 
