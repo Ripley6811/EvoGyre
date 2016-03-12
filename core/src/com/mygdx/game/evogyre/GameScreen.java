@@ -18,7 +18,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.evogyre.Utils.DrawingUtils;
 import com.mygdx.game.evogyre.Utils.Tween;
 
@@ -31,7 +31,7 @@ public class GameScreen extends InputAdapter implements Screen {
     private static final String TAG = GameScreen.class.getName();
 
     EvoGyreGame game;
-    FitViewport actionViewport;
+    ExtendViewport actionViewport;
     SpriteBatch batch;
     MyShapeRenderer myRenderer;
     BitmapFont font;
@@ -64,7 +64,7 @@ public class GameScreen extends InputAdapter implements Screen {
     float timerDebris;
     float dspRotation = 0f;
     float playerAngle = Constants.PLAYER_START_ANGLE;
-    float halfDisplay = Constants.DISPLAY_SIZE / 2;
+    float halfDisplay = Constants.GAMEPLAY_SIZE / 2;
     long score = 0;
     boolean vesselFixed;
     boolean isAndroid = Gdx.app.getType() == Application.ApplicationType.Android;
@@ -78,7 +78,7 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.input.setCatchBackKey(true);
         this.game = game;
         vesselFixed = game.settings.FIXED_VESSEL();
-        actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
+        actionViewport = new ExtendViewport(Constants.GAMEPLAY_SIZE, Constants.GAMEPLAY_SIZE);
         actionViewport.apply(true);
 
         debris = new Array<Actor>();
@@ -88,7 +88,7 @@ public class GameScreen extends InputAdapter implements Screen {
         myRenderer = new MyShapeRenderer(batch);
         myRenderer.setAutoShapeType(true);
         myRenderer.setProjectionMatrix(actionViewport.getCamera().combined);
-        myRenderer.translate(Constants.DISPLAY_SIZE / 2f, Constants.DISPLAY_SIZE / 2f, 0);
+        myRenderer.translate(Constants.GAMEPLAY_SIZE / 2f, Constants.GAMEPLAY_SIZE / 2f, 0);
 
         /** LOAD ASSETS **/
         atlas = game.assets.get(Constants.MAIN_ATLAS);
@@ -190,7 +190,7 @@ public class GameScreen extends InputAdapter implements Screen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 pt = actionViewport.unproject(new Vector2(screenX, screenY))
-                .sub(Constants.DISPLAY_SIZE / 2, Constants.DISPLAY_SIZE / 2);
+                .sub(Constants.GAMEPLAY_SIZE / 2, Constants.GAMEPLAY_SIZE / 2);
         if (Constants.rotateButtonRect.contains(pt)) vesselFixed = !vesselFixed;
 
         if (gameOver) {
@@ -198,6 +198,10 @@ public class GameScreen extends InputAdapter implements Screen {
                 game.setScreen(game.titleScreen);
             if (Constants.buttonStartOver.contains(pt)) this.init();
         }
+
+        Gdx.app.debug(TAG, "Screen: " + screenX + ", " + screenY);
+        Gdx.app.debug(TAG, "Unproj: " + pt.x + ", " + pt.y);
+
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -230,6 +234,10 @@ public class GameScreen extends InputAdapter implements Screen {
     public void resize(int width, int height) {
         Gdx.app.log(TAG, "called 'resize()'");
         actionViewport.update(width, height, true);
+        actionViewport.getCamera().position.set(
+                Constants.GAMEPLAY_SIZE/2,Constants.GAMEPLAY_SIZE/2,0f);
+        actionViewport.getCamera().update();
+        myRenderer.setProjectionMatrix(actionViewport.getCamera().combined);
     }
 
     public void updateAssets(float delta) {
@@ -457,7 +465,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public void drawHUD(float delta) {
         float PADDING = Constants.PADDING;
-        float HALFDISP = Constants.DISPLAY_SIZE/2;
+        float HALFDISP = Constants.GAMEPLAY_SIZE /2;
         float DX = Constants.WEAPON_BLOCKS_XOFFSET;
         float DY = Constants.WEAPON_BLOCKS_YOFFSET;
 
@@ -557,7 +565,7 @@ public class GameScreen extends InputAdapter implements Screen {
         myRenderer.batch.begin();
         float arrowWidth = leftArrow.getRegionWidth() * 0.8f;
         float arrowHeight = leftArrow.getRegionHeight() * 0.8f;
-        float halfDisp = Constants.DISPLAY_SIZE/2;
+        float halfDisp = Constants.GAMEPLAY_SIZE /2;
         myRenderer.batch.draw(leftArrow,
                 -halfDisp,
                 -halfDisp,
@@ -565,10 +573,30 @@ public class GameScreen extends InputAdapter implements Screen {
                 arrowHeight
         );
         myRenderer.batch.draw(rightArrow,
+                -halfDisp + arrowWidth,
+                -halfDisp,
+                0,
+                0,
+                arrowWidth,
+                arrowHeight,
+                1f,1f,
+                180f
+        );
+        myRenderer.batch.draw(rightArrow,
                 halfDisp - arrowWidth,
                 -halfDisp,
                 arrowWidth,
                 arrowHeight
+        );
+        myRenderer.batch.draw(leftArrow,
+                halfDisp - 2*arrowWidth,
+                -halfDisp,
+                arrowWidth,
+                0,
+                arrowWidth,
+                arrowHeight,
+                1f,1f,
+                180f
         );
         myRenderer.batch.end();
 
@@ -578,9 +606,9 @@ public class GameScreen extends InputAdapter implements Screen {
         for (int i=0; i<2; i++) {
             font.draw(myRenderer.batch,
                     "" + score,
-                    Constants.DISPLAY_SIZE * -0.375f,
-                    Constants.DISPLAY_SIZE * 0.41f,
-                    Constants.DISPLAY_SIZE * 1f,
+                    Constants.GAMEPLAY_SIZE * -0.375f,
+                    Constants.GAMEPLAY_SIZE * 0.41f,
+                    Constants.GAMEPLAY_SIZE * 1f,
                     Align.left, false);
         }
         myRenderer.batch.end();
@@ -592,9 +620,9 @@ public class GameScreen extends InputAdapter implements Screen {
             for (int i=0; i<3; i++) {
                 font.draw(myRenderer.batch,
                         gameWon ? "You Won!!" : "Game Over",
-                        Constants.DISPLAY_SIZE * 0f,
-                        Constants.DISPLAY_SIZE * 0.1f,
-                        Constants.DISPLAY_SIZE * 0f,
+                        Constants.GAMEPLAY_SIZE * 0f,
+                        Constants.GAMEPLAY_SIZE * 0.1f,
+                        Constants.GAMEPLAY_SIZE * 0f,
                         Align.center, true);
             }
             myRenderer.batch.end();
@@ -604,7 +632,7 @@ public class GameScreen extends InputAdapter implements Screen {
             myRenderer.batch.begin();
             float blueButtonWidth = blueButtonTween.next(delta);
             Vector2 pt = actionViewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-            pt.sub(Constants.DISPLAY_SIZE / 2, Constants.DISPLAY_SIZE / 2);
+            pt.sub(Constants.GAMEPLAY_SIZE / 2, Constants.GAMEPLAY_SIZE / 2);
             NinePatch buttonPatch1, buttonPatch2;
             if (Constants.buttonGotoMenu.contains(pt)) {
                 buttonPatch1 = bluePatch;

@@ -107,10 +107,10 @@ public class VisualEffects {
         if (stars == null) {
             stars = new Array<Vector2>(Constants.NUMBER_OF_STARS);
             Random random = new Random();
-            float DISPLAY_SIZE = Constants.DISPLAY_SIZE;
+            float DISPLAY_SIZE = Constants.GAMEPLAY_SIZE;
             for (int i=0; i<Constants.NUMBER_OF_STARS; i++) {
-                stars.add(new Vector2(2f * DISPLAY_SIZE * random.nextFloat() - DISPLAY_SIZE,
-                        2f * DISPLAY_SIZE * random.nextFloat() - DISPLAY_SIZE));
+                stars.add(new Vector2(3f * DISPLAY_SIZE * random.nextFloat() - 1.5f*DISPLAY_SIZE,
+                        3f * DISPLAY_SIZE * random.nextFloat() - 1.5f*DISPLAY_SIZE));
             }
         }
 

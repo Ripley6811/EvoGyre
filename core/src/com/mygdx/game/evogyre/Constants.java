@@ -45,7 +45,7 @@ public class Constants {
     public static final String MAIN_ATLAS = "images/evogyre.pack.atlas";
 
     /** WORLD SETTINGS */
-    public static final float DISPLAY_SIZE = 600f;  // X and Y dimensions
+    public static final float GAMEPLAY_SIZE = 600f;  // X and Y dimensions
     public static final float PROJECTION_RADIUS = 280f;
     // Affects curvature of cylinder/funnel. 1 = cylinder, over 1 increases curve
     public static final int FUNNEL_POWER = 3;
@@ -60,7 +60,7 @@ public class Constants {
     public static final float RING_INTERVAL = MAP_SIZE_X / NUMBER_OF_RINGS;
     public static final float ANIMATE_FUNNEL_DURATION = 0.2f;
     public static final float PLAYER_START_ANGLE = 290f;
-    public static final int NUMBER_OF_STARS = 160;
+    public static final int NUMBER_OF_STARS = 420;
     public static final Color STAR_COLOR = new Color(1f,1f,0.8f,0.5f);
     public static final Color COLLISION_DEBUG_COLOR = new Color(0f, 1f, 1f, 0.8f);
     public static final int HALF_SHIP = 20;
@@ -184,19 +184,19 @@ public class Constants {
     public static final float WEAPON_BLOCKS_YOFFSET = -21f;
     public static final float PANEL_TWEEN_TIME = 0.9f;
     public static final Rectangle buttonRect1 = new Rectangle(
-            Constants.DISPLAY_SIZE*.1f,
-            Constants.DISPLAY_SIZE*.43f,
-            Constants.DISPLAY_SIZE*.25f,
+            Constants.GAMEPLAY_SIZE *.1f,
+            Constants.GAMEPLAY_SIZE *.43f,
+            Constants.GAMEPLAY_SIZE *.25f,
             65
     );
     public static final Rectangle buttonRect2 = new Rectangle(
-            buttonRect1.x + Constants.DISPLAY_SIZE*.275f,
+            buttonRect1.x + Constants.GAMEPLAY_SIZE *.275f,
             buttonRect1.y,
             buttonRect1.width,
             buttonRect1.height
     );
     public static final Rectangle buttonRect3 = new Rectangle(
-            buttonRect2.x + Constants.DISPLAY_SIZE*.275f,
+            buttonRect2.x + Constants.GAMEPLAY_SIZE *.275f,
             buttonRect2.y,
             buttonRect2.width,
             buttonRect2.height
@@ -207,9 +207,9 @@ public class Constants {
             95 * .9f
     );
     public static final Rectangle buttonGotoMenu = new Rectangle(
-            0 - Constants.DISPLAY_SIZE*.125f,
+            0 - Constants.GAMEPLAY_SIZE *.125f,
             -65,
-            Constants.DISPLAY_SIZE*.25f,
+            Constants.GAMEPLAY_SIZE *.25f,
             65
     );
     public static final Rectangle buttonStartOver = new Rectangle(

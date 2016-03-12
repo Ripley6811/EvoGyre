@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.mygdx.game.evogyre.Utils.DrawingUtils;
 import com.mygdx.game.evogyre.Utils.Tween;
 
@@ -24,7 +24,7 @@ import com.mygdx.game.evogyre.Utils.Tween;
 public class TitleScreen extends InputAdapter implements Screen {
     private static final String TAG = TitleScreen.class.getName();
     EvoGyreGame game;
-    FitViewport actionViewport;
+    ExtendViewport actionViewport;
     SpriteBatch batch;
     MyShapeRenderer myRenderer;
 
@@ -46,7 +46,7 @@ public class TitleScreen extends InputAdapter implements Screen {
         Gdx.input.setCatchBackKey(true);
 
         this.game = game;
-        actionViewport = new FitViewport(Constants.DISPLAY_SIZE, Constants.DISPLAY_SIZE);
+        actionViewport = new ExtendViewport(Constants.GAMEPLAY_SIZE, Constants.GAMEPLAY_SIZE);
         actionViewport.apply(true);
 
         batch = new SpriteBatch();
@@ -68,7 +68,7 @@ public class TitleScreen extends InputAdapter implements Screen {
         );
         bluePatchTween = new Tween.QuadInOut(
                 bluePatch.getTotalWidth(),
-                Constants.DISPLAY_SIZE*.8f,
+                Constants.GAMEPLAY_SIZE *.8f,
                 Constants.PANEL_TWEEN_TIME
         );
         blueButtonTween = new Tween.QuadInOut(
@@ -90,7 +90,7 @@ public class TitleScreen extends InputAdapter implements Screen {
         Gdx.input.setInputProcessor(this);
         bluePatchTween = new Tween.QuadInOut(
                 bluePatch.getTotalWidth(),
-                Constants.DISPLAY_SIZE*.8f,
+                Constants.GAMEPLAY_SIZE *.8f,
                 Constants.PANEL_TWEEN_TIME
         );
         blueButtonTween = new Tween.QuadInOut(
@@ -112,6 +112,10 @@ public class TitleScreen extends InputAdapter implements Screen {
         if (Constants.buttonRect1.contains(pt)) storyOrControls = 0;
         if (Constants.buttonRect2.contains(pt)) storyOrControls = 1;
         if (Constants.buttonRect3.contains(pt)) game.setScreen(game.gameScreen);
+
+        Gdx.app.debug(TAG, "Screen: " + screenX + ", " + screenY);
+        Gdx.app.debug(TAG, "Unproj: " + pt.x + ", " + pt.y);
+
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -134,6 +138,9 @@ public class TitleScreen extends InputAdapter implements Screen {
     public void resize(int width, int height) {
         Gdx.app.log(TAG, "called 'resize()'");
         actionViewport.update(width, height, true);
+        actionViewport.getCamera().position.set(300f,300f,0f);
+        actionViewport.getCamera().update();
+        myRenderer.setProjectionMatrix(actionViewport.getCamera().combined);
     }
 
     @Override
@@ -147,8 +154,8 @@ public class TitleScreen extends InputAdapter implements Screen {
         /** DRAW PLANET **/
         myRenderer.batch.begin();
         myRenderer.batch.draw(planet,
-                Constants.DISPLAY_SIZE * .25f - planet.getRegionWidth() / 2,
-                Constants.DISPLAY_SIZE * .75f - planet.getRegionHeight() / 2,
+                Constants.GAMEPLAY_SIZE * .25f - planet.getRegionWidth() / 2,
+                Constants.GAMEPLAY_SIZE * .75f - planet.getRegionHeight() / 2,
                 planet.getRegionWidth() / 2, planet.getRegionWidth() / 2,
                 planet.getRegionWidth(), planet.getRegionHeight(),
                 1.2f, 1.2f, 0);
@@ -158,8 +165,8 @@ public class TitleScreen extends InputAdapter implements Screen {
         myRenderer.batch.begin();
         myRenderer.batch.draw(
                 titleText,
-                Constants.DISPLAY_SIZE * .01f,
-                Constants.DISPLAY_SIZE * .65f,
+                Constants.GAMEPLAY_SIZE * .01f,
+                Constants.GAMEPLAY_SIZE * .65f,
                 titleText.getRegionWidth(), titleText.getRegionHeight(),
                 titleText.getRegionWidth(), titleText.getRegionHeight(),
                 0.8f, 0.8f,
@@ -208,12 +215,12 @@ public class TitleScreen extends InputAdapter implements Screen {
                 Constants.buttonRect3.height
         );
         bluePatchDark.draw(myRenderer.batch,
-                Constants.DISPLAY_SIZE*.1f,
-                Constants.DISPLAY_SIZE * .05f,
+                Constants.GAMEPLAY_SIZE *.1f,
+                Constants.GAMEPLAY_SIZE * .05f,
                 bluePatchWidth,
                 220
         );
-//        bluePatchWidth = Math.min(bluePatchWidth+800*delta, Constants.DISPLAY_SIZE*.8f);
+//        bluePatchWidth = Math.min(bluePatchWidth+800*delta, Constants.GAMEPLAY_SIZE*.8f);
         myRenderer.batch.end();
 
         /** DRAW TEXT AFTER PANES EXPAND */
@@ -243,9 +250,9 @@ public class TitleScreen extends InputAdapter implements Screen {
             String controlText = isAndroid ? Constants.TOUCH_CONTROLS : Constants.KEY_CONTROLS;
             font.draw(myRenderer.batch,
                     storyOrControls == 0 ? Constants.STORY : controlText,
-                    Constants.DISPLAY_SIZE * .15f,
-                    Constants.DISPLAY_SIZE * .4f,
-                    Constants.DISPLAY_SIZE * .7f,
+                    Constants.GAMEPLAY_SIZE * .15f,
+                    Constants.GAMEPLAY_SIZE * .4f,
+                    Constants.GAMEPLAY_SIZE * .7f,
                     Align.left, true);
             myRenderer.batch.end();
         }
