@@ -52,13 +52,16 @@ public class Actor {
      * @return Distance moved along y-axis.
      */
     public float update(GameScreen screen, float delta) {
+        float volume = 0.1f + (float) Math.pow(this.mapPosition.x / Constants.MAP_SIZE_X, 2);
         // Update hit points and damage
         if (damage > 0) {
             hitPoints -= damage;
             damage = 0;
+            AudioAssets.BULLET_FWAP.play(volume * 0.8f);
         }
-        if (hitPoints <= 0) {
+        if (!isDead && hitPoints <= 0) {
             isDead = true;
+            AudioAssets.SMALL_EXPLOSION.play(volume);
             screen.explosionManager.add(mapPosition);
             return 0f;
         }

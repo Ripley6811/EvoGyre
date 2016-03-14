@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -119,6 +120,10 @@ public class GameScreen extends InputAdapter implements Screen {
         );
 
         DrawingUtils.initGLSettings();
+
+        if (Gdx.app.getType() == Application.ApplicationType.WebGL) {
+            AudioAssets.forceHtmlSoundCache();
+        }
 
         init();
     }
@@ -235,7 +240,7 @@ public class GameScreen extends InputAdapter implements Screen {
         Gdx.app.log(TAG, "called 'resize()'");
         actionViewport.update(width, height, true);
         actionViewport.getCamera().position.set(
-                Constants.GAMEPLAY_SIZE/2,Constants.GAMEPLAY_SIZE/2,0f);
+                Constants.GAMEPLAY_SIZE / 2, Constants.GAMEPLAY_SIZE / 2, 0f);
         actionViewport.getCamera().update();
         myRenderer.setProjectionMatrix(actionViewport.getCamera().combined);
     }
@@ -407,6 +412,15 @@ public class GameScreen extends InputAdapter implements Screen {
     public void render(float delta) {
         if (delta > 0.05f) return;  // Avoids spikes in delta value.
 
+        /** FADE INTRO MUSIC AFTER CHANGING TO GAME SCREEN */
+        Music MUSIC = AudioAssets.INTRO_MUSIC;
+        if (MUSIC.isPlaying() && MUSIC.getVolume() > 0f) {
+            float newVolume = MUSIC.getVolume() - delta * Constants.MUSIC_FADE_MULTIPLIER;
+            if (newVolume < 0f) MUSIC.stop();
+            else MUSIC.setVolume(newVolume);
+        }
+
+        /** RUN UPDATES IF NOT PAUSED */
         if (!pause) {
             // keep all updates out of the render methods
             updateInput(delta);
@@ -415,6 +429,7 @@ public class GameScreen extends InputAdapter implements Screen {
             updateCollision();
         }
 
+        /** BEGIN DRAWING */
         // Background color fill
         DrawingUtils.clearScreen();
 

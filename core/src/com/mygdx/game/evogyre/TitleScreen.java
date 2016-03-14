@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -41,11 +42,13 @@ public class TitleScreen extends InputAdapter implements Screen {
     int storyOrControls = 0;
     boolean isAndroid = Gdx.app.getType() == Application.ApplicationType.Android;
     boolean hasAccelerometer = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
+    float elapsedTime;
 
     public TitleScreen(EvoGyreGame game) {
         Gdx.input.setCatchBackKey(true);
 
         this.game = game;
+        elapsedTime = 0f;
         actionViewport = new ExtendViewport(Constants.GAMEPLAY_SIZE, Constants.GAMEPLAY_SIZE);
         actionViewport.apply(true);
 
@@ -83,6 +86,10 @@ public class TitleScreen extends InputAdapter implements Screen {
         font.getData().setScale(1.4f);
         font.getRegion().getTexture().setFilter(
                 Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+        /** PLAY INTRO MUSIC */
+        AudioAssets.INTRO_MUSIC.setLooping(true);
+//        AudioAssets.INTRO_MUSIC.play();
     }
 
     @Override
@@ -98,6 +105,8 @@ public class TitleScreen extends InputAdapter implements Screen {
                 Constants.buttonRect1.width,
                 Constants.PANEL_TWEEN_TIME
         );
+        AudioAssets.INTRO_MUSIC.setVolume(1.0f);
+        AudioAssets.INTRO_MUSIC.play();
     }
 
     @Override
@@ -145,6 +154,8 @@ public class TitleScreen extends InputAdapter implements Screen {
 
     @Override
     public void render(float delta) {
+        elapsedTime += delta;
+
         // Background color fill
         DrawingUtils.clearScreen();
 
@@ -155,6 +166,7 @@ public class TitleScreen extends InputAdapter implements Screen {
         myRenderer.batch.begin();
         myRenderer.batch.draw(planet,
                 Constants.GAMEPLAY_SIZE * .25f - planet.getRegionWidth() / 2,
+                Interpolation.circleOut.apply(Constants.GAMEPLAY_SIZE, 0, Math.min(1f, elapsedTime/Constants.INTRO_GRAPHICS_TWEEN_TIME)) +
                 Constants.GAMEPLAY_SIZE * .75f - planet.getRegionHeight() / 2,
                 planet.getRegionWidth() / 2, planet.getRegionWidth() / 2,
                 planet.getRegionWidth(), planet.getRegionHeight(),
@@ -165,63 +177,68 @@ public class TitleScreen extends InputAdapter implements Screen {
         myRenderer.batch.begin();
         myRenderer.batch.draw(
                 titleText,
-                Constants.GAMEPLAY_SIZE * .01f,
+                Interpolation.circleOut.apply(Constants.GAMEPLAY_SIZE, 0, Math.min(1f, elapsedTime/Constants.INTRO_GRAPHICS_TWEEN_TIME)) +
+                Constants.GAMEPLAY_SIZE * .1f,
+                Interpolation.circleOut.apply(-Constants.GAMEPLAY_SIZE, 0, Math.min(1f, elapsedTime/Constants.INTRO_GRAPHICS_TWEEN_TIME)) +
                 Constants.GAMEPLAY_SIZE * .65f,
-                titleText.getRegionWidth(), titleText.getRegionHeight(),
+                titleText.getRegionWidth()/2, titleText.getRegionHeight()/2,
                 titleText.getRegionWidth(), titleText.getRegionHeight(),
                 0.8f, 0.8f,
+                Interpolation.circleOut.apply(Constants.GAMEPLAY_SIZE * 5f, 0, Math.min(1f, elapsedTime/Constants.INTRO_GRAPHICS_TWEEN_TIME)) +
                 0f
         );
         myRenderer.batch.end();
 
         /** DRAW NINEPATCH PANE */
-        myRenderer.batch.begin();
-        float bluePatchWidth = bluePatchTween.next(delta);
-        float blueButtonWidth = blueButtonTween.next(delta);
-        Vector2 pt = actionViewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        if (elapsedTime > Constants.INTRO_GRAPHICS_TWEEN_TIME) {
+            myRenderer.batch.begin();
+            float bluePatchWidth = bluePatchTween.next(delta);
+            float blueButtonWidth = blueButtonTween.next(delta);
+            Vector2 pt = actionViewport.unproject(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-        NinePatch buttonPatch1, buttonPatch2, buttonPatch3;
-        if (Constants.buttonRect1.contains(pt)) {
-            buttonPatch1 = bluePatch;
-        } else {
-            buttonPatch1 = bluePatchDark;
-        }
-        if (Constants.buttonRect2.contains(pt)) {
-            buttonPatch2 = bluePatch;
-        } else {
-            buttonPatch2 = bluePatchDark;
-        }
-        if (Constants.buttonRect3.contains(pt)) {
-            buttonPatch3 = bluePatch;
-        } else {
-            buttonPatch3 = bluePatchDark;
-        }
-        buttonPatch1.draw(myRenderer.batch,
-                Constants.buttonRect1.x,
-                Constants.buttonRect1.y,
-                blueButtonWidth,
-                Constants.buttonRect1.height
-        );
-        buttonPatch2.draw(myRenderer.batch,
-                Constants.buttonRect2.x,
-                Constants.buttonRect2.y,
-                blueButtonWidth,
-                Constants.buttonRect2.height
-        );
-        buttonPatch3.draw(myRenderer.batch,
-                Constants.buttonRect3.x,
-                Constants.buttonRect3.y,
-                blueButtonWidth,
-                Constants.buttonRect3.height
-        );
-        bluePatchDark.draw(myRenderer.batch,
-                Constants.GAMEPLAY_SIZE *.1f,
-                Constants.GAMEPLAY_SIZE * .05f,
-                bluePatchWidth,
-                220
-        );
+            NinePatch buttonPatch1, buttonPatch2, buttonPatch3;
+            if (Constants.buttonRect1.contains(pt)) {
+                buttonPatch1 = bluePatch;
+            } else {
+                buttonPatch1 = bluePatchDark;
+            }
+            if (Constants.buttonRect2.contains(pt)) {
+                buttonPatch2 = bluePatch;
+            } else {
+                buttonPatch2 = bluePatchDark;
+            }
+            if (Constants.buttonRect3.contains(pt)) {
+                buttonPatch3 = bluePatch;
+            } else {
+                buttonPatch3 = bluePatchDark;
+            }
+            buttonPatch1.draw(myRenderer.batch,
+                    Constants.buttonRect1.x,
+                    Constants.buttonRect1.y,
+                    blueButtonWidth,
+                    Constants.buttonRect1.height
+            );
+            buttonPatch2.draw(myRenderer.batch,
+                    Constants.buttonRect2.x,
+                    Constants.buttonRect2.y,
+                    blueButtonWidth,
+                    Constants.buttonRect2.height
+            );
+            buttonPatch3.draw(myRenderer.batch,
+                    Constants.buttonRect3.x,
+                    Constants.buttonRect3.y,
+                    blueButtonWidth,
+                    Constants.buttonRect3.height
+            );
+            bluePatchDark.draw(myRenderer.batch,
+                    Constants.GAMEPLAY_SIZE * .1f,
+                    Constants.GAMEPLAY_SIZE * .05f,
+                    bluePatchWidth,
+                    220
+            );
 //        bluePatchWidth = Math.min(bluePatchWidth+800*delta, Constants.GAMEPLAY_SIZE*.8f);
-        myRenderer.batch.end();
+            myRenderer.batch.end();
+        }
 
         /** DRAW TEXT AFTER PANES EXPAND */
         if (bluePatchTween.isDone()) {

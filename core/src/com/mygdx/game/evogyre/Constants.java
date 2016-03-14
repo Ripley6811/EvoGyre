@@ -43,6 +43,8 @@ public class Constants {
     public static final Array<String> DIFFICULTY = new Array<String>(DIFFICULTY_NAMES);
     public static final Color BACKGROUND_COLOR = Color.BLACK;
     public static final String MAIN_ATLAS = "images/evogyre.pack.atlas";
+    public static final float MUSIC_FADE_MULTIPLIER = 0.3f;
+    public static final float INTRO_GRAPHICS_TWEEN_TIME = 4f; // seconds
 
     /** WORLD SETTINGS */
     public static final float GAMEPLAY_SIZE = 600f;  // X and Y dimensions

@@ -66,6 +66,7 @@ public class Vessel extends Actor implements Propulsion, ShieldInterface {
 
     @Override
     public void damage(int amount) {
+        AudioAssets.BULLET_PLINK.play(1f);
         super.damage(shield.takeDamage(amount));
     }
 
