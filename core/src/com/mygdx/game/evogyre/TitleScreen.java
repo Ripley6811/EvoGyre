@@ -156,6 +156,14 @@ public class TitleScreen extends InputAdapter implements Screen {
     public void render(float delta) {
         elapsedTime += delta;
 
+        actionViewport.getCamera().position.set(
+                300f,
+                Interpolation.sineOut.apply(100f, 300f, Math.min(1f, elapsedTime/Constants.INTRO_GRAPHICS_TWEEN_TIME)),
+                0f
+        );
+        actionViewport.getCamera().update();
+        myRenderer.setProjectionMatrix(actionViewport.getCamera().combined);
+
         // Background color fill
         DrawingUtils.clearScreen();
 

@@ -48,6 +48,11 @@ Fonts: "Nothing You Could Do" by Kimberly Geswein and "Michroma" by Vernon Adams
 "SHIELDS", "WEAPONS" font is OCR A Extended.
 Other special effects designed by JWJ in LibGDX.
 
+#### Audio assets
+Audio was created with [CheeseCutter SID Music Editor 2.7](http://theyamo.kapsi.fi/ccutter/about.html)
+and edited with [Audacity 2.1.1](http://audacityteam.org/). Intro music is an
+excerpt from a piece by [abaddon3AD](https://soundcloud.com/theyamo/kalmankone).
+
 
 ## Credits
 
@@ -56,6 +61,8 @@ Other special effects designed by JWJ in LibGDX.
 - Art Assets
     - Spaceships, Bullets, Explosions - Udacity
     - Planets, Text, Buttons - Jay W J
+- Intro Music - [abaddon3AD](https://soundcloud.com/theyamo/kalmankone)
+- Sound FX - Jay W J
 
 ## References
 - [LibGDX reference](https://libgdx.badlogicgames.com/nightlies/docs/api/)
@@ -68,4 +75,3 @@ Other special effects designed by JWJ in LibGDX.
 
 ## TODO
 - [ ] Add missiles (Optional)
-- [ ] Sound FX
