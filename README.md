@@ -1,13 +1,13 @@
 # EvoGyre
 Gyruss-inspired game written with LibGDX
 
-[- PLAY HTML VERSION HERE -](https://dl.dropboxusercontent.com/u/49722688/EvoGyreTest/index.html)
-
 ## Introduction
 I wanted to make a game with an interesting projection system like the old arcade
 game called Gyruss. This game is the result. The player is flying towards a planet
 and swarms of aliens are coming out to stop the player. The single sample level is
 about two minutes long.
+
+![alt tag](/EvoGyre.png)
 
 ## Gameplay
 
@@ -74,6 +74,3 @@ excerpt from a piece by [abaddon3AD](https://soundcloud.com/theyamo/kalmankone).
     - [30+ Photoshop Tutorials For Creating Space And Planets](http://naldzgraphics.net/tutorials/30-photoshop-tutorials-for-creating-space-and-planets/)
 - [Google Fonts search](https://www.google.com/fonts)
 
-
-## TODO
-- [ ] Add missiles (Optional)
